@@ -1,0 +1,1942 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>올리브 웰니스 — 시작하기</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --olive: #4A7C59;
+      --olive-light: #6B9E7A;
+      --olive-pale: #EBF3EC;
+      --olive-mid: #C5DEC9;
+      --beige: #F7F3ED;
+      --beige-dark: #EDE8DF;
+      --text-dark: #1E2B22;
+      --text-mid: #4A5B50;
+      --text-light: #8A9B90;
+      --white: #FFFFFF;
+      --warn: #E07A3A;
+      --card-shadow: 0 2px 16px rgba(74,124,89,0.10);
+    }
+
+    html, body {
+      height: 100%;
+      background: #E8E3DA;
+      font-family: -apple-system, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      overflow: hidden;
+    }
+
+    /* ── Phone frame ── */
+    .phone {
+      max-width: 390px;
+      height: 100vh;
+      margin: 0 auto;
+      background: var(--beige);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── Status bar ── */
+    .status-bar {
+      background: transparent;
+      padding: 14px 20px 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      z-index: 30;
+    }
+    .status-bar.dark .time,
+    .status-bar.dark .icons { color: var(--white); }
+    .status-bar.light .time,
+    .status-bar.light .icons { color: var(--text-dark); }
+    .status-bar .time { font-size: 13px; font-weight: 600; }
+    .status-bar .icons { font-size: 12px; letter-spacing: 2px; }
+
+    /* ── Screen wrapper ── */
+    .screens {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+    .screen {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      transform: translateX(100%);
+      transition: transform 0.38s cubic-bezier(0.4, 0, 0.2, 1);
+      will-change: transform;
+    }
+    .screen.active { transform: translateX(0); }
+    .screen.prev   { transform: translateX(-30%); }
+
+    /* ── SCREEN 0: Splash ── */
+    .splash {
+      background: var(--olive);
+      color: var(--white);
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 0 40px;
+    }
+    .splash-slides {
+      flex: 1;
+      position: relative;
+      width: 100%;
+      overflow: hidden;
+    }
+    .splash-slide {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 80px 32px 20px;
+      opacity: 0;
+      transition: opacity 0.4s;
+      pointer-events: none;
+    }
+    .splash-slide.active { opacity: 1; pointer-events: auto; }
+    .splash-illust {
+      font-size: 96px;
+      margin-bottom: 32px;
+      line-height: 1;
+      filter: drop-shadow(0 8px 24px rgba(0,0,0,0.15));
+    }
+    .splash-headline {
+      font-size: 26px;
+      font-weight: 800;
+      text-align: center;
+      letter-spacing: -0.6px;
+      line-height: 1.3;
+      margin-bottom: 12px;
+    }
+    .splash-sub {
+      font-size: 15px;
+      text-align: center;
+      opacity: 0.75;
+      line-height: 1.6;
+    }
+    .splash-skip {
+      position: absolute;
+      top: 52px; right: 20px;
+      background: rgba(255,255,255,0.2);
+      color: var(--white);
+      border: none;
+      border-radius: 20px;
+      padding: 6px 14px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      z-index: 10;
+    }
+    .splash-bottom {
+      padding: 0 24px;
+      width: 100%;
+    }
+    .splash-dots {
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      margin-bottom: 24px;
+    }
+    .splash-dot {
+      width: 6px; height: 6px;
+      border-radius: 99px;
+      background: rgba(255,255,255,0.4);
+      transition: all 0.3s;
+    }
+    .splash-dot.active {
+      background: var(--white);
+      width: 20px;
+    }
+    .splash-cta {
+      width: 100%;
+      background: var(--white);
+      color: var(--olive);
+      border: none;
+      border-radius: 16px;
+      padding: 17px;
+      font-size: 16px;
+      font-weight: 800;
+      cursor: pointer;
+      letter-spacing: -0.3px;
+      transition: opacity 0.15s;
+    }
+    .splash-cta:active { opacity: 0.9; }
+    .splash-cta-next {
+      width: 100%;
+      background: rgba(255,255,255,0.18);
+      color: var(--white);
+      border: 1.5px solid rgba(255,255,255,0.4);
+      border-radius: 16px;
+      padding: 17px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      letter-spacing: -0.3px;
+    }
+
+    /* ── SCREEN 1: Login ── */
+    .login-screen {
+      background: var(--white);
+      padding: 0;
+    }
+    .login-top {
+      background: linear-gradient(160deg, var(--olive) 0%, var(--olive-light) 100%);
+      padding: 60px 28px 36px;
+      border-radius: 0 0 32px 32px;
+    }
+    .login-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .login-logo-icon {
+      width: 40px; height: 40px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px;
+    }
+    .login-logo-name { color: var(--white); font-size: 20px; font-weight: 800; }
+    .login-headline { color: var(--white); font-size: 22px; font-weight: 800; letter-spacing: -0.5px; line-height: 1.4; }
+    .login-sub { color: rgba(255,255,255,0.75); font-size: 14px; margin-top: 8px; }
+
+    .login-body { padding: 28px 24px; flex: 1; overflow-y: auto; }
+    .login-body::-webkit-scrollbar { display: none; }
+    .login-title { font-size: 15px; font-weight: 700; color: var(--text-dark); margin-bottom: 14px; }
+
+    .social-btn {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 15px 18px;
+      border: none;
+      border-radius: 14px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      margin-bottom: 10px;
+      transition: opacity 0.15s;
+      letter-spacing: -0.2px;
+    }
+    .social-btn:active { opacity: 0.85; }
+    .social-btn.kakao { background: #FEE500; color: #3C1E1E; }
+    .social-btn.apple { background: #1D1D1F; color: var(--white); }
+    .social-btn.google { background: var(--beige-dark); color: var(--text-dark); border: 1px solid #DDD; }
+    .social-icon { font-size: 20px; }
+    .social-arrow { margin-left: auto; font-size: 16px; opacity: 0.5; }
+
+    .consent-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-mid);
+      margin: 20px 0 10px;
+      padding-top: 16px;
+      border-top: 1px solid var(--beige-dark);
+    }
+    .consent-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--beige);
+    }
+    .consent-left { display: flex; align-items: center; gap: 10px; flex: 1; }
+    .consent-badge {
+      font-size: 9px;
+      font-weight: 800;
+      padding: 3px 7px;
+      border-radius: 4px;
+      white-space: nowrap;
+    }
+    .consent-badge.required { background: #FFE8E8; color: #D04040; }
+    .consent-badge.optional { background: var(--beige-dark); color: var(--text-light); }
+    .consent-label { font-size: 13px; color: var(--text-dark); font-weight: 500; }
+    .consent-why {
+      font-size: 11px;
+      color: var(--olive);
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      margin-left: 8px;
+    }
+    .toggle {
+      width: 42px; height: 24px;
+      background: var(--beige-dark);
+      border-radius: 99px;
+      position: relative;
+      cursor: pointer;
+      transition: background 0.25s;
+      flex-shrink: 0;
+    }
+    .toggle.on { background: var(--olive); }
+    .toggle::after {
+      content: '';
+      position: absolute;
+      top: 3px; left: 3px;
+      width: 18px; height: 18px;
+      background: var(--white);
+      border-radius: 50%;
+      transition: transform 0.25s;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+    }
+    .toggle.on::after { transform: translateX(18px); }
+
+    .login-cta-wrap { padding: 0 24px 32px; }
+    .btn-full {
+      width: 100%;
+      background: var(--olive);
+      color: var(--white);
+      border: none;
+      border-radius: 14px;
+      padding: 17px;
+      font-size: 16px;
+      font-weight: 800;
+      cursor: pointer;
+      letter-spacing: -0.3px;
+      transition: opacity 0.15s;
+    }
+    .btn-full:active { opacity: 0.85; }
+    .btn-full:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    /* ── Question screens shared ── */
+    .q-screen {
+      background: var(--beige);
+      display: flex;
+      flex-direction: column;
+    }
+    .q-header {
+      background: var(--white);
+      padding: 52px 20px 16px;
+      border-bottom: 1px solid var(--beige-dark);
+    }
+    .q-progress-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .q-progress-bar {
+      flex: 1;
+      height: 5px;
+      background: var(--beige-dark);
+      border-radius: 99px;
+      overflow: hidden;
+    }
+    .q-progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--olive), var(--olive-light));
+      border-radius: 99px;
+      transition: width 0.5s ease;
+    }
+    .q-step-label { font-size: 11px; font-weight: 700; color: var(--olive); white-space: nowrap; }
+    .q-back {
+      background: none;
+      border: none;
+      color: var(--text-light);
+      font-size: 22px;
+      cursor: pointer;
+      padding: 0;
+      line-height: 1;
+      margin-bottom: 10px;
+      display: inline-block;
+    }
+    .q-purpose {
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+      background: var(--olive-pale);
+      border-radius: 10px;
+      padding: 9px 12px;
+      margin-top: 10px;
+    }
+    .q-purpose-icon { font-size: 13px; flex-shrink: 0; margin-top: 1px; }
+    .q-purpose-text { font-size: 12px; color: var(--olive); font-weight: 500; line-height: 1.5; }
+    .q-title { font-size: 20px; font-weight: 800; color: var(--text-dark); letter-spacing: -0.5px; line-height: 1.4; }
+    .q-sub { font-size: 13px; color: var(--text-light); margin-top: 5px; }
+
+    .q-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px 16px;
+    }
+    .q-body::-webkit-scrollbar { display: none; }
+
+    .q-footer {
+      padding: 12px 16px 32px;
+      background: var(--white);
+      border-top: 1px solid var(--beige-dark);
+    }
+    .btn-next {
+      width: 100%;
+      background: var(--olive);
+      color: var(--white);
+      border: none;
+      border-radius: 14px;
+      padding: 16px;
+      font-size: 15px;
+      font-weight: 800;
+      cursor: pointer;
+      letter-spacing: -0.3px;
+      transition: all 0.2s;
+    }
+    .btn-next:disabled { background: var(--beige-dark); color: var(--text-light); cursor: not-allowed; }
+    .btn-skip {
+      width: 100%;
+      background: none;
+      border: none;
+      color: var(--text-light);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 10px;
+      margin-top: 4px;
+    }
+
+    /* ── Option buttons ── */
+    .option-grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .option-grid-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 8px;
+    }
+    .option-card {
+      background: var(--white);
+      border: 2px solid var(--beige-dark);
+      border-radius: 16px;
+      padding: 16px 12px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      user-select: none;
+    }
+    .option-card:active { transform: scale(0.97); }
+    .option-card.selected {
+      border-color: var(--olive);
+      background: var(--olive-pale);
+    }
+    .option-card .opt-icon { font-size: 28px; margin-bottom: 8px; display: block; }
+    .option-card .opt-label { font-size: 13px; font-weight: 700; color: var(--text-dark); letter-spacing: -0.2px; }
+    .option-card .opt-sub { font-size: 11px; color: var(--text-light); margin-top: 3px; }
+    .option-card.selected .opt-label { color: var(--olive); }
+
+    /* chip style for multi-select */
+    .chip-wrap { display: flex; flex-wrap: wrap; gap: 10px; }
+    .chip {
+      background: var(--white);
+      border: 2px solid var(--beige-dark);
+      border-radius: 99px;
+      padding: 10px 18px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-mid);
+      cursor: pointer;
+      transition: all 0.2s;
+      user-select: none;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .chip:active { transform: scale(0.96); }
+    .chip.selected {
+      border-color: var(--olive);
+      background: var(--olive-pale);
+      color: var(--olive);
+    }
+    .chip-max-note {
+      font-size: 12px;
+      color: var(--text-light);
+      margin-bottom: 14px;
+    }
+
+    /* water intake */
+    .water-options { display: flex; flex-direction: column; gap: 10px; }
+    .water-option {
+      background: var(--white);
+      border: 2px solid var(--beige-dark);
+      border-radius: 14px;
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+      user-select: none;
+    }
+    .water-option:active { transform: scale(0.98); }
+    .water-option.selected {
+      border-color: var(--olive);
+      background: var(--olive-pale);
+    }
+    .water-drops { font-size: 18px; letter-spacing: 1px; }
+    .water-label { font-size: 14px; font-weight: 700; color: var(--text-dark); flex: 1; }
+    .water-option.selected .water-label { color: var(--olive); }
+    .water-desc { font-size: 12px; color: var(--text-light); }
+    .water-check { font-size: 18px; color: transparent; transition: color 0.2s; }
+    .water-option.selected .water-check { color: var(--olive); }
+
+    /* supplement checkboxes */
+    .supp-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    .supp-item {
+      background: var(--white);
+      border: 2px solid var(--beige-dark);
+      border-radius: 12px;
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      transition: all 0.2s;
+      user-select: none;
+    }
+    .supp-item:active { transform: scale(0.97); }
+    .supp-item.selected {
+      border-color: var(--olive);
+      background: var(--olive-pale);
+    }
+    .supp-cb {
+      width: 20px; height: 20px;
+      border-radius: 6px;
+      border: 2px solid var(--olive-mid);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      font-size: 12px;
+      color: transparent;
+      transition: all 0.2s;
+    }
+    .supp-item.selected .supp-cb {
+      background: var(--olive);
+      border-color: var(--olive);
+      color: var(--white);
+    }
+    .supp-name { font-size: 13px; font-weight: 600; color: var(--text-dark); }
+    .supp-item.selected .supp-name { color: var(--olive); }
+    .supp-none {
+      background: var(--white);
+      border: 2px solid var(--beige-dark);
+      border-radius: 12px;
+      padding: 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-bottom: 10px;
+    }
+    .supp-none.selected {
+      border-color: var(--olive-mid);
+      background: var(--beige);
+    }
+    .supp-custom {
+      background: var(--white);
+      border: 1.5px solid var(--beige-dark);
+      border-radius: 12px;
+      padding: 12px 14px;
+      width: 100%;
+      font-size: 13px;
+      color: var(--text-dark);
+      outline: none;
+      margin-top: 4px;
+      font-family: inherit;
+    }
+    .supp-custom:focus { border-color: var(--olive); }
+    .supp-custom::placeholder { color: var(--text-light); }
+
+    /* routine + budget */
+    .routine-option {
+      background: var(--white);
+      border: 2px solid var(--beige-dark);
+      border-radius: 14px;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      cursor: pointer;
+      margin-bottom: 10px;
+      transition: all 0.2s;
+      user-select: none;
+    }
+    .routine-option.selected { border-color: var(--olive); background: var(--olive-pale); }
+    .routine-option:active { transform: scale(0.98); }
+    .routine-icon { font-size: 22px; }
+    .routine-info { flex: 1; }
+    .routine-label { font-size: 14px; font-weight: 700; color: var(--text-dark); }
+    .routine-option.selected .routine-label { color: var(--olive); }
+    .routine-sub { font-size: 12px; color: var(--text-light); margin-top: 2px; }
+    .time-select {
+      background: var(--olive-pale);
+      border: 1.5px solid var(--olive-mid);
+      border-radius: 8px;
+      padding: 6px 10px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--olive);
+      cursor: pointer;
+      outline: none;
+      font-family: inherit;
+    }
+    .budget-section { margin-top: 20px; }
+    .budget-section-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-dark);
+      margin-bottom: 6px;
+    }
+    .budget-section-sub { font-size: 12px; color: var(--text-light); margin-bottom: 14px; }
+    .budget-slider-wrap { padding: 4px 0; }
+    .budget-value-display {
+      text-align: center;
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--olive);
+      margin-bottom: 12px;
+      letter-spacing: -0.5px;
+    }
+    .budget-value-display span { font-size: 14px; font-weight: 600; }
+    input[type="range"] {
+      width: 100%;
+      -webkit-appearance: none;
+      height: 6px;
+      border-radius: 99px;
+      background: var(--olive-mid);
+      outline: none;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 24px; height: 24px;
+      border-radius: 50%;
+      background: var(--olive);
+      box-shadow: 0 2px 8px rgba(74,124,89,0.35);
+      cursor: pointer;
+    }
+    .budget-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      color: var(--text-light);
+      margin-top: 8px;
+    }
+
+    /* ── SCREEN: AI Loading ── */
+    .ai-loading-screen {
+      background: linear-gradient(160deg, #2D5A3D 0%, #4A7C59 50%, #6B9E7A 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 32px;
+      color: var(--white);
+    }
+    .ai-loading-logo {
+      font-size: 64px;
+      margin-bottom: 28px;
+      animation: float 2.5s ease-in-out infinite;
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    .ai-loading-title {
+      font-size: 22px;
+      font-weight: 800;
+      text-align: center;
+      letter-spacing: -0.5px;
+      margin-bottom: 8px;
+    }
+    .ai-loading-sub {
+      font-size: 14px;
+      opacity: 0.75;
+      margin-bottom: 40px;
+      text-align: center;
+    }
+    .ai-steps { width: 100%; display: flex; flex-direction: column; gap: 14px; }
+    .ai-step {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      background: rgba(255,255,255,0.12);
+      border-radius: 14px;
+      padding: 14px 16px;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity 0.4s, transform 0.4s;
+    }
+    .ai-step.visible { opacity: 1; transform: translateY(0); }
+    .ai-step-icon {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.15);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+    .ai-step-icon.done {
+      background: rgba(255,255,255,0.25);
+    }
+    .ai-step-text { flex: 1; font-size: 13px; font-weight: 600; line-height: 1.4; }
+    .ai-step-status { font-size: 18px; }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    .ai-step-status.spinning { display: inline-block; animation: spin 0.8s linear infinite; }
+    .ai-progress-bar {
+      width: 100%;
+      height: 4px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 99px;
+      overflow: hidden;
+      margin-top: 32px;
+    }
+    .ai-progress-fill {
+      height: 100%;
+      background: var(--white);
+      border-radius: 99px;
+      width: 0%;
+      transition: width 0.5s ease;
+    }
+
+    /* ── SCREEN: Result ── */
+    .result-screen {
+      background: var(--beige);
+      display: flex;
+      flex-direction: column;
+    }
+    .result-header {
+      background: linear-gradient(135deg, var(--olive) 0%, var(--olive-light) 100%);
+      padding: 56px 24px 28px;
+      border-radius: 0 0 28px 28px;
+    }
+    .result-tag {
+      background: rgba(255,255,255,0.22);
+      color: var(--white);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 6px;
+      display: inline-block;
+      margin-bottom: 10px;
+      letter-spacing: 0.3px;
+    }
+    .result-title { color: var(--white); font-size: 22px; font-weight: 800; letter-spacing: -0.5px; line-height: 1.4; }
+    .result-sub { color: rgba(255,255,255,0.8); font-size: 13px; margin-top: 6px; }
+
+    .result-body { flex: 1; overflow-y: auto; padding: 20px 16px 100px; }
+    .result-body::-webkit-scrollbar { display: none; }
+
+    .result-card {
+      background: var(--white);
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: var(--card-shadow);
+      margin-bottom: 14px;
+    }
+    .result-card-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 13px 16px;
+      border-bottom: 1px solid var(--beige-dark);
+    }
+    .r-badge {
+      background: var(--olive-pale);
+      color: var(--olive);
+      font-size: 10px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 6px;
+    }
+    .r-badge.orange {
+      background: #FFF0E6;
+      color: var(--warn);
+    }
+    .result-card-title { font-size: 13px; font-weight: 700; color: var(--text-dark); }
+    .result-product-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 16px;
+    }
+    .result-product-img {
+      width: 68px; height: 68px;
+      background: var(--beige);
+      border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 30px;
+      flex-shrink: 0;
+    }
+    .result-product-name { font-size: 15px; font-weight: 700; color: var(--text-dark); margin-bottom: 3px; }
+    .result-product-brand { font-size: 11px; color: var(--text-light); margin-bottom: 5px; }
+    .result-product-price { font-size: 16px; font-weight: 800; color: var(--olive); }
+    .result-reason {
+      margin: 0 16px 12px;
+      background: var(--olive-pale);
+      border-radius: 12px;
+      padding: 11px 14px;
+    }
+    .result-reason-row {
+      display: flex; align-items: center; gap: 5px; margin-bottom: 5px;
+    }
+    .result-reason-row span { font-size: 11px; font-weight: 700; color: var(--olive); }
+    .result-reason-text { font-size: 12px; color: var(--text-mid); line-height: 1.6; }
+    .result-review {
+      margin: 0 16px 16px;
+      background: var(--beige);
+      border-radius: 12px;
+      padding: 11px 14px;
+    }
+    .result-review-row { display: flex; align-items: center; gap: 6px; margin-bottom: 5px; }
+    .result-review-avatar {
+      width: 20px; height: 20px;
+      border-radius: 50%;
+      background: var(--olive-mid);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px;
+    }
+    .result-review-profile { font-size: 11px; font-weight: 600; color: var(--text-mid); }
+    .result-review-stars { margin-left: auto; font-size: 11px; color: #F5A623; }
+    .result-review-text { font-size: 12px; color: var(--text-mid); line-height: 1.55; }
+    .result-card-actions {
+      display: flex; gap: 8px; padding: 0 16px 16px;
+    }
+    .btn-cart {
+      flex: 1;
+      background: var(--olive);
+      color: var(--white);
+      border: none;
+      border-radius: 12px;
+      padding: 13px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+    .btn-cart:active { opacity: 0.85; }
+    .btn-later {
+      flex: 1;
+      background: var(--beige-dark);
+      color: var(--text-mid);
+      border: none;
+      border-radius: 12px;
+      padding: 13px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .result-footer {
+      position: fixed;
+      bottom: 0; left: 50%;
+      transform: translateX(-50%);
+      width: 100%; max-width: 390px;
+      background: var(--white);
+      border-top: 1px solid var(--beige-dark);
+      padding: 12px 16px 32px;
+    }
+
+    /* ── SCREEN: Mission Start ── */
+    .mission-screen {
+      background: var(--beige);
+      display: flex;
+      flex-direction: column;
+    }
+    .mission-top {
+      background: var(--olive);
+      padding: 56px 24px 28px;
+      border-radius: 0 0 28px 28px;
+      text-align: center;
+    }
+    .mission-emoji { font-size: 56px; margin-bottom: 12px; }
+    .mission-top-title { color: var(--white); font-size: 24px; font-weight: 800; letter-spacing: -0.5px; }
+    .mission-top-sub { color: rgba(255,255,255,0.8); font-size: 14px; margin-top: 6px; }
+    .mission-body { flex: 1; overflow-y: auto; padding: 20px 16px 110px; }
+    .mission-body::-webkit-scrollbar { display: none; }
+    .mission-card {
+      background: var(--white);
+      border-radius: 16px;
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 10px;
+      box-shadow: var(--card-shadow);
+      cursor: pointer;
+      transition: all 0.25s;
+      user-select: none;
+    }
+    .mission-card:active { transform: scale(0.98); }
+    .mission-card.checked .m-check { background: var(--olive); border-color: var(--olive); color: var(--white); }
+    .mission-card.checked .m-title { text-decoration: line-through; color: var(--text-light); }
+    .m-check {
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      border: 2.5px solid var(--olive-mid);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      color: transparent;
+      font-size: 14px;
+      transition: all 0.25s;
+    }
+    .m-info { flex: 1; }
+    .m-title { font-size: 15px; font-weight: 700; color: var(--text-dark); margin-bottom: 3px; transition: all 0.2s; }
+    .m-meta { font-size: 11px; color: var(--text-light); }
+    .m-basis {
+      background: var(--olive-pale);
+      color: var(--olive);
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 4px;
+      margin-left: 5px;
+    }
+    .m-time { font-size: 12px; color: var(--text-light); white-space: nowrap; }
+
+    .mission-footer {
+      position: fixed;
+      bottom: 0; left: 50%;
+      transform: translateX(-50%);
+      width: 100%; max-width: 390px;
+      background: var(--white);
+      border-top: 1px solid var(--beige-dark);
+      padding: 12px 16px 32px;
+    }
+    .mission-progress-row {
+      display: flex; align-items: center; gap: 10px; margin-bottom: 12px;
+    }
+    .m-prog-bar {
+      flex: 1; height: 5px;
+      background: var(--olive-pale);
+      border-radius: 99px; overflow: hidden;
+    }
+    .m-prog-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--olive), var(--olive-light));
+      border-radius: 99px;
+      transition: width 0.5s ease;
+      width: 0%;
+    }
+    .m-prog-text { font-size: 12px; color: var(--text-light); white-space: nowrap; }
+    .m-prog-text strong { color: var(--olive); font-weight: 700; }
+
+    /* ── Toast ── */
+    .toast {
+      position: fixed;
+      bottom: 90px; left: 50%;
+      transform: translateX(-50%);
+      background: var(--text-dark);
+      color: var(--white);
+      font-size: 13px;
+      font-weight: 600;
+      padding: 10px 20px;
+      border-radius: 99px;
+      white-space: nowrap;
+      z-index: 999;
+      opacity: 0;
+      transition: opacity 0.3s;
+      pointer-events: none;
+    }
+    .toast.show { opacity: 1; }
+
+    /* ── Consent bottom sheet ── */
+    .sheet-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.4);
+      z-index: 400;
+      align-items: flex-end;
+      justify-content: center;
+    }
+    .sheet-overlay.show { display: flex; }
+    .sheet {
+      background: var(--white);
+      border-radius: 24px 24px 0 0;
+      padding: 24px 24px 40px;
+      width: 100%;
+      max-width: 390px;
+      animation: slideUp 0.3s ease;
+    }
+    @keyframes slideUp {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+    .sheet-title { font-size: 16px; font-weight: 800; color: var(--text-dark); margin-bottom: 10px; }
+    .sheet-body { font-size: 14px; color: var(--text-mid); line-height: 1.7; }
+    .sheet-close {
+      width: 100%;
+      background: var(--olive);
+      color: var(--white);
+      border: none;
+      border-radius: 12px;
+      padding: 14px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+
+    @media (max-width: 390px) { .phone { max-width: 100%; } }
+  </style>
+</head>
+<body>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- Consent sheet -->
+<div class="sheet-overlay" id="sheetOverlay" onclick="closeSheet()">
+  <div class="sheet" onclick="event.stopPropagation()">
+    <div class="sheet-title" id="sheetTitle"></div>
+    <div class="sheet-body" id="sheetBody"></div>
+    <button class="sheet-close" onclick="closeSheet()">확인했어요</button>
+  </div>
+</div>
+
+<div class="phone">
+  <div class="status-bar dark" id="statusBar">
+    <span class="time">9:41</span>
+    <span class="icons">●●● 🔋</span>
+  </div>
+
+  <div class="screens" id="screens">
+
+    <!-- ══ SCREEN 0: Splash ══ -->
+    <div class="screen splash active" id="s0">
+      <button class="splash-skip" id="splashSkip" onclick="goToLogin()">건너뛰기</button>
+      <div class="splash-slides" id="splashSlides">
+        <div class="splash-slide active" id="sl0">
+          <div class="splash-illust">🌿</div>
+          <div class="splash-headline">오늘 내 몸에<br>필요한 것</div>
+          <div class="splash-sub">올리브 웰니스가<br>정확히 알려드려요</div>
+        </div>
+        <div class="splash-slide" id="sl1">
+          <div class="splash-illust">🤖</div>
+          <div class="splash-headline">광고가 아닌<br>근거</div>
+          <div class="splash-sub">AI가 왜 이걸 추천하는지<br>이유를 설명해드려요</div>
+        </div>
+        <div class="splash-slide" id="sl2">
+          <div class="splash-illust">✅</div>
+          <div class="splash-headline">하루 3가지<br>미션</div>
+          <div class="splash-sub">작은 루틴으로<br>건강을 시작해요</div>
+        </div>
+      </div>
+      <div class="splash-bottom">
+        <div class="splash-dots">
+          <div class="splash-dot active" id="d0"></div>
+          <div class="splash-dot" id="d1"></div>
+          <div class="splash-dot" id="d2"></div>
+        </div>
+        <button class="splash-cta-next" id="splashBtn" onclick="nextSlide()">다음 →</button>
+      </div>
+    </div>
+
+    <!-- ══ SCREEN 1: Login ══ -->
+    <div class="screen login-screen" id="s1">
+      <div class="login-top">
+        <div class="login-logo">
+          <div class="login-logo-icon">🌿</div>
+          <span class="login-logo-name">올리브 웰니스</span>
+        </div>
+        <div class="login-headline">3초 만에<br>건강 루틴 시작하기</div>
+        <div class="login-sub">소셜 계정으로 간편하게 시작해요</div>
+      </div>
+      <div class="login-body">
+        <div class="login-title">로그인 방법 선택</div>
+        <button class="social-btn kakao" onclick="doLogin()">
+          <span class="social-icon">💬</span> 카카오로 시작하기
+          <span class="social-arrow">›</span>
+        </button>
+        <button class="social-btn apple" onclick="doLogin()">
+          <span class="social-icon"></span> Apple로 시작하기
+          <span class="social-arrow">›</span>
+        </button>
+        <button class="social-btn google" onclick="doLogin()">
+          <span class="social-icon">G</span> Google로 시작하기
+          <span class="social-arrow">›</span>
+        </button>
+
+        <div class="consent-title">동의 항목</div>
+
+        <div class="consent-item">
+          <div class="consent-left">
+            <span class="consent-badge required">필수</span>
+            <span class="consent-label">서비스 이용약관</span>
+          </div>
+          <div class="toggle on" id="t1" onclick="toggleConsent('t1')"></div>
+        </div>
+        <div class="consent-item">
+          <div class="consent-left">
+            <span class="consent-badge required">필수</span>
+            <span class="consent-label">개인정보 수집·이용</span>
+          </div>
+          <div class="toggle on" id="t2" onclick="toggleConsent('t2')"></div>
+        </div>
+        <div class="consent-item">
+          <div class="consent-left">
+            <span class="consent-badge optional">선택</span>
+            <span class="consent-label">건강정보 수집·이용</span>
+            <span class="consent-why" onclick="openSheet('건강정보 수집 목적','AI 맞춤 추천을 생성하는 데 활용돼요. 식단, 운동, 영양제 등 입력하신 건강 정보를 분석해 나에게 딱 맞는 영양제와 루틴을 추천해드립니다.<br><br>동의하지 않아도 기본 추천 모드로 서비스를 이용할 수 있어요.')">왜?</span>
+          </div>
+          <div class="toggle" id="t3" onclick="toggleConsent('t3')"></div>
+        </div>
+        <div class="consent-item">
+          <div class="consent-left">
+            <span class="consent-badge optional">선택</span>
+            <span class="consent-label">마케팅 수신 동의</span>
+            <span class="consent-why" onclick="openSheet('마케팅 수신 동의','할인·이벤트·신제품 소식을 푸시 알림이나 SMS로 받으실 수 있어요. 동의하지 않아도 서비스 이용에는 전혀 지장이 없어요.')">왜?</span>
+          </div>
+          <div class="toggle" id="t4" onclick="toggleConsent('t4')"></div>
+        </div>
+      </div>
+      <div class="login-cta-wrap">
+        <button class="btn-full" onclick="goToQ(2)">동의하고 시작하기</button>
+      </div>
+    </div>
+
+    <!-- ══ SCREEN 2: Q1 나이대 ══ -->
+    <div class="screen q-screen" id="s2">
+      <div class="q-header">
+        <div class="q-progress-wrap">
+          <div class="q-progress-bar"><div class="q-progress-fill" style="width:14%"></div></div>
+          <span class="q-step-label">1 / 7</span>
+        </div>
+        <button class="q-back" onclick="goBack()">←</button>
+        <div class="q-title">나이대가<br>어떻게 되세요?</div>
+        <div class="q-purpose">
+          <span class="q-purpose-icon">💡</span>
+          <span class="q-purpose-text">연령대별 권장 영양소 기준을 적용해 AI 추천 정확도를 높여요</span>
+        </div>
+      </div>
+      <div class="q-body">
+        <div class="option-grid-2">
+          <div class="option-card" onclick="selectOption(this,'age')" data-val="early20s">
+            <span class="opt-icon">🌱</span>
+            <div class="opt-label">20대 초반</div>
+            <div class="opt-sub">~ 24세</div>
+          </div>
+          <div class="option-card" onclick="selectOption(this,'age')" data-val="late20s">
+            <span class="opt-icon">🌿</span>
+            <div class="opt-label">20대 후반</div>
+            <div class="opt-sub">25 ~ 29세</div>
+          </div>
+          <div class="option-card" onclick="selectOption(this,'age')" data-val="early30s">
+            <span class="opt-icon">🍃</span>
+            <div class="opt-label">30대 초반</div>
+            <div class="opt-sub">30 ~ 34세</div>
+          </div>
+          <div class="option-card" onclick="selectOption(this,'age')" data-val="late30s">
+            <span class="opt-icon">🌲</span>
+            <div class="opt-label">30대 후반</div>
+            <div class="opt-sub">35 ~ 39세</div>
+          </div>
+        </div>
+      </div>
+      <div class="q-footer">
+        <button class="btn-next" id="nextBtn2" disabled onclick="goToQ(3)">다음</button>
+      </div>
+    </div>
+
+    <!-- ══ SCREEN 3: Q2 건강 고민 ══ -->
+    <div class="screen q-screen" id="s3">
+      <div class="q-header">
+        <div class="q-progress-wrap">
+          <div class="q-progress-bar"><div class="q-progress-fill" style="width:28%"></div></div>
+          <span class="q-step-label">2 / 7</span>
+        </div>
+        <button class="q-back" onclick="goBack()">←</button>
+        <div class="q-title">요즘 가장 신경 쓰이는<br>건강 고민은요?</div>
+        <div class="q-sub">최대 3가지 선택 가능해요</div>
+        <div class="q-purpose">
+          <span class="q-purpose-icon">💡</span>
+          <span class="q-purpose-text">고민에 맞는 영양제와 루틴 미션을 먼저 추천해드려요</span>
+        </div>
+      </div>
+      <div class="q-body">
+        <div class="chip-wrap" id="concernChips">
+          <div class="chip" onclick="toggleChip(this,'concerns')" data-val="fatigue">😴 피로감</div>
+          <div class="chip" onclick="toggleChip(this,'concerns')" data-val="sleep">🌙 수면</div>
+          <div class="chip" onclick="toggleChip(this,'concerns')" data-val="focus">🧠 집중력</div>
+          <div class="chip" onclick="toggleChip(this,'concerns')" data-val="digestion">🫧 소화</div>
+          <div class="chip" onclick="toggleChip(this,'concerns')" data-val="immunity">🛡️ 면역</div>
+          <div class="chip" onclick="toggleChip(this,'concerns')" data-val="skin">✨ 피부</div>
+          <div class="chip" onclick="toggleChip(this,'concerns')" data-val="weight">⚖️ 체중</div>
+          <div class="chip" onclick="toggleChip(this,'concerns')" data-val="stress">😤 스트레스</div>
+          <div class="chip" onclick="toggleChip(this,'concerns')" data-val="hair">💆 탈모/모발</div>
+          <div class="chip" onclick="toggleChip(this,'concerns')" data-val="eye">👁️ 눈건강</div>
+          <div class="chip" onclick="toggleChip(this,'concerns')" data-val="joint">🦴 관절</div>
+        </div>
+      </div>
+      <div class="q-footer">
+        <button class="btn-next" id="nextBtn3" disabled onclick="goToQ(4)">다음</button>
+      </div>
+    </div>
+
+    <!-- ══ SCREEN 4: Q3 식단 패턴 ══ -->
+    <div class="screen q-screen" id="s4">
+      <div class="q-header">
+        <div class="q-progress-wrap">
+          <div class="q-progress-bar"><div class="q-progress-fill" style="width:42%"></div></div>
+          <span class="q-step-label">3 / 7</span>
+        </div>
+        <button class="q-back" onclick="goBack()">←</button>
+        <div class="q-title">주로 어떤 식단을<br>드시나요?</div>
+        <div class="q-purpose">
+          <span class="q-purpose-icon">💡</span>
+          <span class="q-purpose-text">식단 패턴에 따라 부족하기 쉬운 영양소가 달라요. 더 정확하게 추천해드릴게요</span>
+        </div>
+      </div>
+      <div class="q-body">
+        <div class="option-grid-2">
+          <div class="option-card" onclick="selectOption(this,'diet')" data-val="balanced">
+            <span class="opt-icon">🍽️</span>
+            <div class="opt-label">균형 잡힌 식단</div>
+            <div class="opt-sub">고기·채소 골고루</div>
+          </div>
+          <div class="option-card" onclick="selectOption(this,'diet')" data-val="veggie">
+            <span class="opt-icon">🥗</span>
+            <div class="opt-label">채식 위주</div>
+            <div class="opt-sub">육류 최소화</div>
+          </div>
+          <div class="option-card" onclick="selectOption(this,'diet')" data-val="vegan">
+            <span class="opt-icon">🌱</span>
+            <div class="opt-label">비건</div>
+            <div class="opt-sub">동물성 완전 배제</div>
+          </div>
+          <div class="option-card" onclick="selectOption(this,'diet')" data-val="if">
+            <span class="opt-icon">⏰</span>
+            <div class="opt-label">간헐적 단식</div>
+            <div class="opt-sub">16:8 / 5:2 등</div>
+          </div>
+          <div class="option-card" onclick="selectOption(this,'diet')" data-val="keto">
+            <span class="opt-icon">🥩</span>
+            <div class="opt-label">저탄수화물</div>
+            <div class="opt-sub">키토·로우카브</div>
+          </div>
+          <div class="option-card" onclick="selectOption(this,'diet')" data-val="irregular">
+            <span class="opt-icon">😅</span>
+            <div class="opt-label">불규칙한 편</div>
+            <div class="opt-sub">끼니를 자주 거름</div>
+          </div>
+        </div>
+      </div>
+      <div class="q-footer">
+        <button class="btn-next" id="nextBtn4" disabled onclick="goToQ(5)">다음</button>
+      </div>
+    </div>
+
+    <!-- ══ SCREEN 5: Q4 운동 습관 ══ -->
+    <div class="screen q-screen" id="s5">
+      <div class="q-header">
+        <div class="q-progress-wrap">
+          <div class="q-progress-bar"><div class="q-progress-fill" style="width:57%"></div></div>
+          <span class="q-step-label">4 / 7</span>
+        </div>
+        <button class="q-back" onclick="goBack()">←</button>
+        <div class="q-title">평소 운동을<br>얼마나 하세요?</div>
+        <div class="q-purpose">
+          <span class="q-purpose-icon">💡</span>
+          <span class="q-purpose-text">운동 강도에 따라 단백질·마그네슘 등 소모량이 달라요</span>
+        </div>
+      </div>
+      <div class="q-body">
+        <div class="water-options">
+          <div class="water-option" onclick="selectWater(this,'exercise')" data-val="daily">
+            <span class="water-drops">💪💪💪</span>
+            <div>
+              <div class="water-label">매일 운동해요</div>
+              <div class="water-desc">하루 30분 이상 규칙적으로</div>
+            </div>
+            <span class="water-check">✓</span>
+          </div>
+          <div class="water-option" onclick="selectWater(this,'exercise')" data-val="34week">
+            <span class="water-drops">💪💪</span>
+            <div>
+              <div class="water-label">주 3–4회</div>
+              <div class="water-desc">꾸준히 하려고 노력해요</div>
+            </div>
+            <span class="water-check">✓</span>
+          </div>
+          <div class="water-option" onclick="selectWater(this,'exercise')" data-val="12week">
+            <span class="water-drops">🚶</span>
+            <div>
+              <div class="water-label">주 1–2회</div>
+              <div class="water-desc">가볍게 하는 정도예요</div>
+            </div>
+            <span class="water-check">✓</span>
+          </div>
+          <div class="water-option" onclick="selectWater(this,'exercise')" data-val="rarely">
+            <span class="water-drops">😴</span>
+            <div>
+              <div class="water-label">거의 안 해요</div>
+              <div class="water-desc">앉아있는 시간이 많아요</div>
+            </div>
+            <span class="water-check">✓</span>
+          </div>
+          <div class="water-option" onclick="selectWater(this,'exercise')" data-val="wantstart">
+            <span class="water-drops">🌱</span>
+            <div>
+              <div class="water-label">이제 시작하고 싶어요</div>
+              <div class="water-desc">운동 루틴을 만들고 싶어요</div>
+            </div>
+            <span class="water-check">✓</span>
+          </div>
+        </div>
+      </div>
+      <div class="q-footer">
+        <button class="btn-next" id="nextBtn5" disabled onclick="goToQ(6)">다음</button>
+      </div>
+    </div>
+
+    <!-- ══ SCREEN 6: Q5 식수량 ══ -->
+    <div class="screen q-screen" id="s6">
+      <div class="q-header">
+        <div class="q-progress-wrap">
+          <div class="q-progress-bar"><div class="q-progress-fill" style="width:71%"></div></div>
+          <span class="q-step-label">5 / 7</span>
+        </div>
+        <button class="q-back" onclick="goBack()">←</button>
+        <div class="q-title">하루에 물을<br>얼마나 마시나요?</div>
+        <div class="q-purpose">
+          <span class="q-purpose-icon">💡</span>
+          <span class="q-purpose-text">수분 섭취량은 체내 영양소 흡수율과 직접 연결돼요</span>
+        </div>
+      </div>
+      <div class="q-body">
+        <div class="water-options">
+          <div class="water-option" onclick="selectWater(this,'water')" data-val="under500">
+            <span class="water-drops">💧</span>
+            <div>
+              <div class="water-label">500ml 미만</div>
+              <div class="water-desc">물 마시는 걸 자주 잊어요</div>
+            </div>
+            <span class="water-check">✓</span>
+          </div>
+          <div class="water-option" onclick="selectWater(this,'water')" data-val="500to1l">
+            <span class="water-drops">💧💧</span>
+            <div>
+              <div class="water-label">500ml ~ 1L</div>
+              <div class="water-desc">조금 더 마셔야 할 것 같아요</div>
+            </div>
+            <span class="water-check">✓</span>
+          </div>
+          <div class="water-option" onclick="selectWater(this,'water')" data-val="1to15l">
+            <span class="water-drops">💧💧💧</span>
+            <div>
+              <div class="water-label">1L ~ 1.5L</div>
+              <div class="water-desc">어느 정도 챙겨 마셔요</div>
+            </div>
+            <span class="water-check">✓</span>
+          </div>
+          <div class="water-option" onclick="selectWater(this,'water')" data-val="15to2l">
+            <span class="water-drops">💧💧💧💧</span>
+            <div>
+              <div class="water-label">1.5L ~ 2L</div>
+              <div class="water-desc">꽤 잘 마시는 편이에요</div>
+            </div>
+            <span class="water-check">✓</span>
+          </div>
+          <div class="water-option" onclick="selectWater(this,'water')" data-val="over2l">
+            <span class="water-drops">💧💧💧💧💧</span>
+            <div>
+              <div class="water-label">2L 이상</div>
+              <div class="water-desc">수분 관리 잘 하고 있어요</div>
+            </div>
+            <span class="water-check">✓</span>
+          </div>
+        </div>
+      </div>
+      <div class="q-footer">
+        <button class="btn-next" id="nextBtn6" disabled onclick="goToQ(7)">다음</button>
+      </div>
+    </div>
+
+    <!-- ══ SCREEN 7: Q6 현재 복용 영양제 ══ -->
+    <div class="screen q-screen" id="s7">
+      <div class="q-header">
+        <div class="q-progress-wrap">
+          <div class="q-progress-bar"><div class="q-progress-fill" style="width:85%"></div></div>
+          <span class="q-step-label">6 / 7</span>
+        </div>
+        <button class="q-back" onclick="goBack()">←</button>
+        <div class="q-title">현재 복용 중인<br>영양제가 있나요?</div>
+        <div class="q-purpose">
+          <span class="q-purpose-icon">💡</span>
+          <span class="q-purpose-text">중복 영양소 섭취를 방지하고 최적 조합을 추천해드려요</span>
+        </div>
+      </div>
+      <div class="q-body">
+        <div class="supp-none" id="suppNone" onclick="toggleSuppNone()">
+          <div class="supp-cb" id="suppNoneCb" style="border-color:var(--olive-mid)">✓</div>
+          <span class="supp-name" style="font-size:14px; color:var(--text-mid)">현재 복용 중인 영양제 없어요</span>
+        </div>
+        <div class="supp-grid" id="suppGrid">
+          <div class="supp-item" onclick="toggleSupp(this)" data-val="multivitamin">
+            <div class="supp-cb">✓</div>
+            <span class="supp-name">멀티비타민</span>
+          </div>
+          <div class="supp-item" onclick="toggleSupp(this)" data-val="vitaminC">
+            <div class="supp-cb">✓</div>
+            <span class="supp-name">비타민C</span>
+          </div>
+          <div class="supp-item" onclick="toggleSupp(this)" data-val="vitaminD">
+            <div class="supp-cb">✓</div>
+            <span class="supp-name">비타민D</span>
+          </div>
+          <div class="supp-item" onclick="toggleSupp(this)" data-val="omega3">
+            <div class="supp-cb">✓</div>
+            <span class="supp-name">오메가3</span>
+          </div>
+          <div class="supp-item" onclick="toggleSupp(this)" data-val="magnesium">
+            <div class="supp-cb">✓</div>
+            <span class="supp-name">마그네슘</span>
+          </div>
+          <div class="supp-item" onclick="toggleSupp(this)" data-val="zinc">
+            <div class="supp-cb">✓</div>
+            <span class="supp-name">아연</span>
+          </div>
+          <div class="supp-item" onclick="toggleSupp(this)" data-val="iron">
+            <div class="supp-cb">✓</div>
+            <span class="supp-name">철분</span>
+          </div>
+          <div class="supp-item" onclick="toggleSupp(this)" data-val="probiotics">
+            <div class="supp-cb">✓</div>
+            <span class="supp-name">프로바이오틱스</span>
+          </div>
+          <div class="supp-item" onclick="toggleSupp(this)" data-val="collagen">
+            <div class="supp-cb">✓</div>
+            <span class="supp-name">콜라겐</span>
+          </div>
+          <div class="supp-item" onclick="toggleSupp(this)" data-val="vitaminB">
+            <div class="supp-cb">✓</div>
+            <span class="supp-name">비타민B군</span>
+          </div>
+          <div class="supp-item" onclick="toggleSupp(this)" data-val="calcium">
+            <div class="supp-cb">✓</div>
+            <span class="supp-name">칼슘</span>
+          </div>
+          <div class="supp-item" onclick="toggleSupp(this)" data-val="lutein">
+            <div class="supp-cb">✓</div>
+            <span class="supp-name">루테인</span>
+          </div>
+        </div>
+        <input class="supp-custom" type="text" placeholder="+ 직접 입력 (예: 코엔자임Q10)" />
+      </div>
+      <div class="q-footer">
+        <button class="btn-next" id="nextBtn7" onclick="goToQ(8)">다음</button>
+      </div>
+    </div>
+
+    <!-- ══ SCREEN 8: Q7 루틴 시간 + 예산 ══ -->
+    <div class="screen q-screen" id="s8">
+      <div class="q-header">
+        <div class="q-progress-wrap">
+          <div class="q-progress-bar"><div class="q-progress-fill" style="width:100%"></div></div>
+          <span class="q-step-label">7 / 7</span>
+        </div>
+        <button class="q-back" onclick="goBack()">←</button>
+        <div class="q-title">루틴 시간과<br>예산을 설정해요</div>
+        <div class="q-purpose">
+          <span class="q-purpose-icon">💡</span>
+          <span class="q-purpose-text">알람 대신, 설정한 시간에 앱을 열면 오늘의 미션이 기다려요</span>
+        </div>
+      </div>
+      <div class="q-body">
+        <div style="font-size:14px; font-weight:700; color:var(--text-dark); margin-bottom:12px;">언제 루틴을 시작할까요?</div>
+        <div class="routine-option selected" id="ro1" onclick="selectRoutine('ro1')">
+          <span class="routine-icon">🌅</span>
+          <div class="routine-info">
+            <div class="routine-label">아침 기상 직후</div>
+            <div class="routine-sub">하루를 건강하게 시작해요</div>
+          </div>
+          <select class="time-select" onclick="event.stopPropagation()">
+            <option>06:30</option><option selected>07:00</option><option>07:30</option>
+            <option>08:00</option><option>08:30</option><option>09:00</option>
+          </select>
+        </div>
+        <div class="routine-option" id="ro2" onclick="selectRoutine('ro2')">
+          <span class="routine-icon">☀️</span>
+          <div class="routine-info">
+            <div class="routine-label">점심 식후</div>
+            <div class="routine-sub">식사 후 바로 챙겨요</div>
+          </div>
+          <select class="time-select" onclick="event.stopPropagation()" style="opacity:0.4">
+            <option>12:00</option><option selected>13:00</option><option>13:30</option>
+          </select>
+        </div>
+        <div class="routine-option" id="ro3" onclick="selectRoutine('ro3')">
+          <span class="routine-icon">🌙</span>
+          <div class="routine-info">
+            <div class="routine-label">저녁 취침 전</div>
+            <div class="routine-sub">하루를 마무리하며 챙겨요</div>
+          </div>
+          <select class="time-select" onclick="event.stopPropagation()" style="opacity:0.4">
+            <option>21:00</option><option selected>22:00</option><option>23:00</option>
+          </select>
+        </div>
+        <div style="font-size:11px; color:var(--text-light); margin-top:6px;">최대 2개 선택 가능해요</div>
+
+        <div class="budget-section">
+          <div class="budget-section-title">월 건강 예산 (선택)</div>
+          <div class="budget-section-sub">예산 범위 내 제품만 우선 추천해드려요. 과소비 걱정 없이!</div>
+          <div class="budget-value-display" id="budgetDisplay">35,000<span>원</span></div>
+          <div class="budget-slider-wrap">
+            <input type="range" min="10000" max="100000" step="5000" value="35000"
+              oninput="updateBudget(this.value)" />
+            <div class="budget-labels">
+              <span>월 1만원</span><span>5만원</span><span>10만원+</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="q-footer">
+        <button class="btn-next" onclick="startAI()">AI 분석 시작하기 →</button>
+        <button class="btn-skip" onclick="startAI()">나중에 설정할게요</button>
+      </div>
+    </div>
+
+    <!-- ══ SCREEN 9: AI Loading ══ -->
+    <div class="screen ai-loading-screen" id="s9">
+      <div class="ai-loading-logo">🧬</div>
+      <div class="ai-loading-title">맞춤 건강 플랜을<br>만들고 있어요</div>
+      <div class="ai-loading-sub">입력하신 정보를 분석 중이에요</div>
+      <div class="ai-steps">
+        <div class="ai-step" id="ast1">
+          <div class="ai-step-icon" id="asi1">🔍</div>
+          <span class="ai-step-text" id="ast1t">건강 고민 키워드 분석 중...</span>
+          <span class="ai-step-status spinning" id="ass1">⟳</span>
+        </div>
+        <div class="ai-step" id="ast2">
+          <div class="ai-step-icon" id="asi2">🥗</div>
+          <span class="ai-step-text" id="ast2t">식단·운동 패턴 파악 중...</span>
+          <span class="ai-step-status" id="ass2">·</span>
+        </div>
+        <div class="ai-step" id="ast3">
+          <div class="ai-step-icon" id="asi3">💊</div>
+          <span class="ai-step-text" id="ast3t">복용 영양제 중복 확인 중...</span>
+          <span class="ai-step-status" id="ass3">·</span>
+        </div>
+        <div class="ai-step" id="ast4">
+          <div class="ai-step-icon" id="asi4">💰</div>
+          <span class="ai-step-text" id="ast4t">예산 범위 내 최적 조합 계산 중...</span>
+          <span class="ai-step-status" id="ass4">·</span>
+        </div>
+      </div>
+      <div class="ai-progress-bar">
+        <div class="ai-progress-fill" id="aiProgressFill"></div>
+      </div>
+    </div>
+
+    <!-- ══ SCREEN 10: Result ══ -->
+    <div class="screen result-screen" id="s10">
+      <div class="result-header">
+        <div class="result-tag">AI 맞춤 결과</div>
+        <div class="result-title">이수현님의<br>첫 번째 추천이에요</div>
+        <div class="result-sub">피로감·집중력 고민 + 비건 식단 기반 분석</div>
+      </div>
+      <div class="result-body">
+
+        <div class="result-card">
+          <div class="result-card-header">
+            <span class="r-badge">AI 추천 1</span>
+            <span class="result-card-title">가장 먼저 필요한 영양제</span>
+          </div>
+          <div class="result-product-row">
+            <div class="result-product-img">💊</div>
+            <div>
+              <div class="result-product-brand">Natrol · 건강기능식품</div>
+              <div class="result-product-name">비타민B12 컴플렉스 60정</div>
+              <div class="result-product-price">18,900원</div>
+            </div>
+          </div>
+          <div class="result-reason">
+            <div class="result-reason-row"><span>💡</span><span>이 추천의 이유</span></div>
+            <div class="result-reason-text">
+              피로감·집중력 저하 + 채식 위주 식단 → 비타민B12는 식물성 식품에 거의 없어 결핍되기 쉬워요. 현재 복용 중인 영양제와 겹치지 않아 바로 시작할 수 있어요.
+            </div>
+          </div>
+          <div class="result-review">
+            <div class="result-review-row">
+              <div class="result-review-avatar">👤</div>
+              <span class="result-review-profile">29세 채식주의 직장인 / 피로감 / 3개월 복용</span>
+              <span class="result-review-stars">★★★★★</span>
+            </div>
+            <div class="result-review-text">"채식 시작하고 피로가 심해졌는데 이거 먹고 나서 한 달 만에 달라졌어요."</div>
+          </div>
+          <div class="result-card-actions">
+            <button class="btn-cart" onclick="showToast('장바구니에 추가했어요 🛒')">장바구니 추가</button>
+            <button class="btn-later" onclick="showToast('나중에 볼게요')">나중에 볼게요</button>
+          </div>
+        </div>
+
+        <div class="result-card">
+          <div class="result-card-header">
+            <span class="r-badge orange">AI 추천 2</span>
+            <span class="result-card-title">함께 챙기면 좋은 영양제</span>
+          </div>
+          <div class="result-product-row">
+            <div class="result-product-img">🌊</div>
+            <div>
+              <div class="result-product-brand">Now Foods · 건강기능식품</div>
+              <div class="result-product-name">마그네슘 400mg 180캡슐</div>
+              <div class="result-product-price">22,000원</div>
+            </div>
+          </div>
+          <div class="result-reason">
+            <div class="result-reason-row"><span>💡</span><span>이 추천의 이유</span></div>
+            <div class="result-reason-text">
+              수면 고민 + 운동을 시작하고 싶어하심 → 마그네슘은 근육 이완과 수면의 질 향상에 도움이 돼요. 식수량이 부족한 경우 흡수율이 낮으니 물 섭취와 함께 챙겨요.
+            </div>
+          </div>
+          <div class="result-card-actions">
+            <button class="btn-cart" onclick="showToast('장바구니에 추가했어요 🛒')">장바구니 추가</button>
+            <button class="btn-later" onclick="showToast('나중에 볼게요')">나중에 볼게요</button>
+          </div>
+        </div>
+
+      </div>
+      <div class="result-footer">
+        <button class="btn-full" onclick="goToQ(11)">오늘의 미션 시작하기 →</button>
+      </div>
+    </div>
+
+    <!-- ══ SCREEN 11: First Mission ══ -->
+    <div class="screen mission-screen" id="s11">
+      <div class="mission-top">
+        <div class="mission-emoji">🎉</div>
+        <div class="mission-top-title">준비 완료!</div>
+        <div class="mission-top-sub">오늘의 첫 미션 3가지예요</div>
+      </div>
+      <div class="mission-body">
+        <div class="mission-card" id="mc1" onclick="checkMission('mc1','mp1')">
+          <div class="m-check">✓</div>
+          <div class="m-info">
+            <div class="m-title">비타민B12 복용하기</div>
+            <div class="m-meta">피로감 고민 기반 <span class="m-basis">AI 추천</span></div>
+          </div>
+          <span class="m-time">· 1분</span>
+        </div>
+        <div class="mission-card" id="mc2" onclick="checkMission('mc2','mp2')">
+          <div class="m-check">✓</div>
+          <div class="m-info">
+            <div class="m-title">물 한 잔 마시기 (500ml)</div>
+            <div class="m-meta">식수량 부족 패턴 보완</div>
+          </div>
+          <span class="m-time">· 1분</span>
+        </div>
+        <div class="mission-card" id="mc3" onclick="checkMission('mc3','mp3')">
+          <div class="m-check">✓</div>
+          <div class="m-info">
+            <div class="m-title">5분 스트레칭</div>
+            <div class="m-meta">운동 시작 고민 기반 <span class="m-basis">AI 추천</span></div>
+          </div>
+          <span class="m-time">· 5분</span>
+        </div>
+
+        <div style="background:var(--white); border-radius:16px; padding:16px; margin-top:10px; box-shadow:var(--card-shadow);">
+          <div style="font-size:12px; font-weight:700; color:var(--text-light); margin-bottom:8px;">💡 오늘의 건강 팁</div>
+          <div style="font-size:13px; color:var(--text-mid); line-height:1.6;">
+            채식 식단 시 비타민B12는 식품으로 보충하기 어렵습니다. 영양제로 꾸준히 보충하면 피로감과 집중력이 4–8주 안에 달라질 수 있어요.
+          </div>
+        </div>
+      </div>
+      <div class="mission-footer">
+        <div class="mission-progress-row">
+          <div class="m-prog-bar"><div class="m-prog-fill" id="mProgFill"></div></div>
+          <span class="m-prog-text"><strong id="mDoneCount">0</strong>/3 완료</span>
+        </div>
+        <button class="btn-full" onclick="goToMain()">홈 화면으로 이동</button>
+      </div>
+    </div>
+
+  </div><!-- end screens -->
+</div><!-- end phone -->
+
+<script>
+  /* ════════════════════════════
+     State
+  ════════════════════════════ */
+  let currentScreen = 0;
+  let splashIdx = 0;
+  const answers = { age: null, concerns: [], diet: null, exercise: null, water: null, supplements: [], routines: ['ro1'] };
+  const missionDone = { mc1: false, mc2: false, mc3: false };
+
+  /* ════════════════════════════
+     Screen navigation
+  ════════════════════════════ */
+  function showScreen(idx) {
+    const all = document.querySelectorAll('.screen');
+    all.forEach((s, i) => {
+      s.classList.remove('active','prev');
+      if (i === idx) s.classList.add('active');
+      else if (i < idx) s.classList.add('prev');
+    });
+    // status bar color
+    const bar = document.getElementById('statusBar');
+    bar.className = 'status-bar ' + ([0,9].includes(idx) ? 'dark' : 'light');
+    currentScreen = idx;
+  }
+
+  function goBack() {
+    if (currentScreen > 0) showScreen(currentScreen - 1);
+  }
+  function goToQ(n) { showScreen(n); }
+  function goToLogin() { showScreen(1); }
+
+  /* ════════════════════════════
+     Splash
+  ════════════════════════════ */
+  function nextSlide() {
+    if (splashIdx < 2) {
+      document.getElementById('sl'+splashIdx).classList.remove('active');
+      splashIdx++;
+      document.getElementById('sl'+splashIdx).classList.add('active');
+      // dots
+      document.querySelectorAll('.splash-dot').forEach((d,i)=> d.classList.toggle('active', i===splashIdx));
+      // button
+      if (splashIdx === 2) {
+        document.getElementById('splashBtn').textContent = '시작하기';
+        document.getElementById('splashBtn').onclick = goToLogin;
+        document.getElementById('splashSkip').style.display = 'none';
+      }
+    } else {
+      goToLogin();
+    }
+  }
+
+  /* ════════════════════════════
+     Login toggles
+  ════════════════════════════ */
+  function toggleConsent(id) {
+    const el = document.getElementById(id);
+    if (id === 't1' || id === 't2') return; // required
+    el.classList.toggle('on');
+  }
+  function doLogin() { showToast('소셜 로그인 연동 중...'); }
+
+  /* ════════════════════════════
+     Q: single select options
+  ════════════════════════════ */
+  function selectOption(el, group) {
+    document.querySelectorAll('[data-val]').forEach(c => {
+      if (c.dataset.group === group || c.closest(`[id^=s]`) === el.closest(`[id^=s]`)) {
+        if (!c.classList.contains('chip') && !c.classList.contains('water-option') && !c.classList.contains('supp-item')) {
+          c.classList.remove('selected');
+        }
+      }
+    });
+    // just deselect siblings in same parent
+    el.parentElement.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+    answers[group] = el.dataset.val;
+    // enable next
+    const screenId = el.closest('.screen').id;
+    const idx = parseInt(screenId.replace('s',''));
+    const btn = document.getElementById('nextBtn' + idx);
+    if (btn) btn.disabled = false;
+  }
+
+  /* ════════════════════════════
+     Q: chip multi-select
+  ════════════════════════════ */
+  function toggleChip(el, group) {
+    if (el.classList.contains('selected')) {
+      el.classList.remove('selected');
+      answers[group] = answers[group].filter(v => v !== el.dataset.val);
+    } else {
+      if (answers[group].length >= 3) { showToast('최대 3가지까지 선택할 수 있어요'); return; }
+      el.classList.add('selected');
+      answers[group].push(el.dataset.val);
+    }
+    document.getElementById('nextBtn3').disabled = answers.concerns.length === 0;
+  }
+
+  /* ════════════════════════════
+     Q: water / exercise option
+  ════════════════════════════ */
+  function selectWater(el, group) {
+    el.parentElement.querySelectorAll('.water-option').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+    answers[group] = el.dataset.val;
+    const screenId = el.closest('.screen').id;
+    const idx = parseInt(screenId.replace('s',''));
+    const btn = document.getElementById('nextBtn' + idx);
+    if (btn) btn.disabled = false;
+  }
+
+  /* ════════════════════════════
+     Q: supplements
+  ════════════════════════════ */
+  let suppNoneSelected = false;
+  function toggleSuppNone() {
+    suppNoneSelected = !suppNoneSelected;
+    const cb = document.getElementById('suppNoneCb');
+    const el = document.getElementById('suppNone');
+    if (suppNoneSelected) {
+      cb.style.background = 'var(--olive-mid)';
+      cb.style.borderColor = 'var(--olive-mid)';
+      cb.style.color = 'var(--white)';
+      el.classList.add('selected');
+      // deselect all
+      document.querySelectorAll('#suppGrid .supp-item').forEach(c => c.classList.remove('selected'));
+      answers.supplements = [];
+    } else {
+      cb.style.background = '';
+      cb.style.borderColor = 'var(--olive-mid)';
+      cb.style.color = 'transparent';
+      el.classList.remove('selected');
+    }
+  }
+  function toggleSupp(el) {
+    suppNoneSelected = false;
+    document.getElementById('suppNone').classList.remove('selected');
+    document.getElementById('suppNoneCb').style.background = '';
+    document.getElementById('suppNoneCb').style.color = 'transparent';
+
+    el.classList.toggle('selected');
+    const v = el.dataset.val;
+    if (el.classList.contains('selected')) {
+      if (!answers.supplements.includes(v)) answers.supplements.push(v);
+    } else {
+      answers.supplements = answers.supplements.filter(x => x !== v);
+    }
+  }
+
+  /* ════════════════════════════
+     Q: routine time select
+  ════════════════════════════ */
+  let routineCount = 1;
+  function selectRoutine(id) {
+    const el = document.getElementById(id);
+    const isSelected = el.classList.contains('selected');
+    if (isSelected) {
+      if (routineCount <= 1) { showToast('최소 1개는 선택해야 해요'); return; }
+      el.classList.remove('selected');
+      el.querySelector('.time-select').style.opacity = '0.4';
+      answers.routines = answers.routines.filter(r => r !== id);
+      routineCount--;
+    } else {
+      if (routineCount >= 2) { showToast('최대 2개까지 선택할 수 있어요'); return; }
+      el.classList.add('selected');
+      el.querySelector('.time-select').style.opacity = '1';
+      answers.routines.push(id);
+      routineCount++;
+    }
+  }
+
+  /* ════════════════════════════
+     Budget slider
+  ════════════════════════════ */
+  function updateBudget(v) {
+    document.getElementById('budgetDisplay').innerHTML =
+      Number(v).toLocaleString() + '<span>원</span>';
+  }
+
+  /* ════════════════════════════
+     AI Loading sequence
+  ════════════════════════════ */
+  function startAI() {
+    showScreen(9);
+    const steps = [
+      { id: 1, text: '건강 고민·식단 분석 완료', delay: 800 },
+      { id: 2, text: '운동·수분 패턴 분석 완료', delay: 1600 },
+      { id: 3, text: '복용 영양제 중복 없음 확인', delay: 2400 },
+      { id: 4, text: '예산 범위 내 최적 조합 완성', delay: 3200 },
+    ];
+    const pcts = [25, 50, 75, 100];
+
+    steps.forEach((step, i) => {
+      // show step
+      setTimeout(() => {
+        const stepEl = document.getElementById('ast' + step.id);
+        stepEl.classList.add('visible');
+        const statusEl = document.getElementById('ass' + step.id);
+        statusEl.className = 'ai-step-status spinning';
+        statusEl.textContent = '⟳';
+        document.getElementById('aiProgressFill').style.width = pcts[i] * 0.5 + '%';
+      }, i === 0 ? 100 : (steps[i-1].delay - 300));
+
+      // complete step
+      setTimeout(() => {
+        const statusEl = document.getElementById('ass' + step.id);
+        statusEl.className = 'ai-step-status';
+        statusEl.textContent = '✅';
+        document.getElementById('ast' + step.id + 't').textContent = step.text;
+        document.getElementById('asi' + step.id).classList.add('done');
+        document.getElementById('aiProgressFill').style.width = pcts[i] + '%';
+        // stop next step spinning
+        if (i < steps.length - 1) {
+          const nextStatus = document.getElementById('ass' + steps[i+1].id);
+          nextStatus.className = 'ai-step-status spinning';
+          nextStatus.textContent = '⟳';
+        }
+      }, step.delay);
+    });
+
+    setTimeout(() => {
+      showScreen(10);
+    }, 3900);
+  }
+
+  /* ════════════════════════════
+     Missions
+  ════════════════════════════ */
+  function checkMission(cardId, progId) {
+    missionDone[cardId] = !missionDone[cardId];
+    document.getElementById(cardId).classList.toggle('checked', missionDone[cardId]);
+    const done = Object.values(missionDone).filter(Boolean).length;
+    document.getElementById('mDoneCount').textContent = done;
+    document.getElementById('mProgFill').style.width = (done / 3 * 100) + '%';
+    if (done === 3) setTimeout(() => showToast('🎉 오늘 루틴 완료! 내일도 화이팅!'), 300);
+  }
+
+  function goToMain() {
+    window.location.href = 'main_screen.html';
+  }
+
+  /* ════════════════════════════
+     Toast
+  ════════════════════════════ */
+  let toastTimer;
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 1900);
+  }
+
+  /* ════════════════════════════
+     Consent sheet
+  ════════════════════════════ */
+  function openSheet(title, body) {
+    document.getElementById('sheetTitle').textContent = title;
+    document.getElementById('sheetBody').innerHTML = body;
+    document.getElementById('sheetOverlay').classList.add('show');
+  }
+  function closeSheet() {
+    document.getElementById('sheetOverlay').classList.remove('show');
+  }
+</script>
+</body>
+</html>

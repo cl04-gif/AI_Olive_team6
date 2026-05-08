@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>올리브 웰니스 — 퍼소나 카드 v1</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+      background: #f0f4f0;
+      min-height: 100vh;
+      padding: 48px 24px;
+      color: #1a1a1a;
+    }
+
+    .page-header {
+      text-align: center;
+      margin-bottom: 48px;
+    }
+    .page-header .service-tag {
+      display: inline-block;
+      background: #3a7d44;
+      color: #fff;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      padding: 4px 12px;
+      border-radius: 20px;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+    }
+    .page-header h1 {
+      font-size: 28px;
+      font-weight: 700;
+      color: #1a1a1a;
+      margin-bottom: 8px;
+    }
+    .page-header p {
+      font-size: 14px;
+      color: #6b7280;
+    }
+
+    .cards-wrapper {
+      display: flex;
+      gap: 32px;
+      max-width: 1100px;
+      margin: 0 auto;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    /* ── CARD ── */
+    .card {
+      background: #fff;
+      border-radius: 20px;
+      width: 500px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    /* header band */
+    .card-header {
+      padding: 28px 28px 24px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+    .card-a .card-header { background: linear-gradient(135deg, #3a7d44 0%, #52a35e 100%); }
+    .card-b .card-header { background: linear-gradient(135deg, #2563a8 0%, #4a8fd4 100%); }
+
+    .avatar {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      border: 3px solid rgba(255,255,255,0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      background: rgba(255,255,255,0.2);
+      flex-shrink: 0;
+    }
+
+    .profile-info { color: #fff; }
+    .profile-info .persona-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      opacity: 0.8;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+    .profile-info .name {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .profile-info .meta {
+      font-size: 13px;
+      opacity: 0.85;
+      line-height: 1.5;
+    }
+    .tech-badge {
+      margin-top: 8px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 12px;
+      padding: 3px 10px;
+      font-size: 12px;
+      font-weight: 500;
+      color: #fff;
+    }
+    .tech-dots { display: flex; gap: 3px; }
+    .dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.35);
+    }
+    .dot.filled { background: #fff; }
+
+    /* body */
+    .card-body { padding: 24px 28px 28px; }
+
+    /* section */
+    .section { margin-bottom: 20px; }
+    .section:last-child { margin-bottom: 0; }
+
+    .section-title {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .card-a .section-title { color: #3a7d44; }
+    .card-b .section-title { color: #2563a8; }
+
+    .section-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: #e5e7eb;
+    }
+
+    /* goal / pain items */
+    .item {
+      background: #f9fafb;
+      border-radius: 10px;
+      padding: 12px 14px;
+      margin-bottom: 8px;
+      border-left: 3px solid transparent;
+    }
+    .item:last-child { margin-bottom: 0; }
+    .card-a .item.goal  { border-left-color: #3a7d44; }
+    .card-b .item.goal  { border-left-color: #2563a8; }
+    .card-a .item.pain  { border-left-color: #e05c2a; }
+    .card-b .item.pain  { border-left-color: #e05c2a; }
+
+    .item-main {
+      font-size: 13.5px;
+      font-weight: 600;
+      color: #111827;
+      margin-bottom: 4px;
+      line-height: 1.45;
+    }
+    .item-desc {
+      font-size: 12px;
+      color: #6b7280;
+      line-height: 1.55;
+      margin-bottom: 6px;
+    }
+    .evidence {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-top: 2px;
+    }
+    .evidence-chip {
+      font-size: 10.5px;
+      color: #9ca3af;
+      background: #f3f4f6;
+      border: 1px solid #e5e7eb;
+      border-radius: 6px;
+      padding: 2px 7px;
+      line-height: 1.4;
+    }
+    .evidence-chip span { color: #6b7280; font-style: italic; }
+
+    /* quote */
+    .quote-block {
+      border-radius: 12px;
+      padding: 16px 18px;
+      position: relative;
+    }
+    .card-a .quote-block { background: #f0f7f1; }
+    .card-b .quote-block { background: #eff4fb; }
+
+    .quote-mark {
+      font-size: 36px;
+      line-height: 1;
+      margin-bottom: 4px;
+      font-family: Georgia, serif;
+    }
+    .card-a .quote-mark { color: #3a7d44; }
+    .card-b .quote-mark { color: #2563a8; }
+
+    .quote-text {
+      font-size: 13.5px;
+      line-height: 1.7;
+      font-style: italic;
+      color: #374151;
+      font-weight: 500;
+    }
+
+    /* strategy tag */
+    .strategy-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 10px;
+    }
+    .strat-tag {
+      font-size: 11px;
+      font-weight: 600;
+      border-radius: 20px;
+      padding: 4px 10px;
+    }
+    .card-a .strat-tag { background: #dcfce7; color: #166534; }
+    .card-b .strat-tag { background: #dbeafe; color: #1e40af; }
+
+    /* footer */
+    .card-footer {
+      border-top: 1px solid #f3f4f6;
+      padding: 12px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .footer-label { font-size: 11px; color: #9ca3af; }
+    .risk-badge {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 20px;
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    @media (max-width: 700px) {
+      .cards-wrapper { flex-direction: column; align-items: center; }
+      .card { width: 100%; max-width: 500px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="page-header">
+    <div class="service-tag">올리브 웰니스</div>
+    <h1>유저 퍼소나 카드 v1</h1>
+    <p>경쟁사 실사용자 8명 인터뷰 + 어피니티 다이어그램 기반 · 2026-04-24</p>
+  </div>
+
+  <div class="cards-wrapper">
+
+    <!-- ══════════ PERSONA A ══════════ -->
+    <div class="card card-a">
+
+      <div class="card-header">
+        <div class="avatar">👩‍💼</div>
+        <div class="profile-info">
+          <div class="persona-label">Persona A</div>
+          <div class="name">이수현 · 29세</div>
+          <div class="meta">마케팅 대행사 2년차 직장인<br>자취 · 서울 합정</div>
+          <div class="tech-badge">
+            기술 친숙도
+            <div class="tech-dots">
+              <div class="dot filled"></div>
+              <div class="dot filled"></div>
+              <div class="dot filled"></div>
+              <div class="dot filled"></div>
+              <div class="dot"></div>
+            </div>
+            4/5
+          </div>
+        </div>
+      </div>
+
+      <div class="card-body">
+
+        <!-- 목표 -->
+        <div class="section">
+          <div class="section-title">목표</div>
+
+          <div class="item goal">
+            <div class="item-main">복용 루틴 만들기</div>
+            <div class="item-desc">영양제를 "어쩌다 먹는 것"이 아니라 아침마다 자동으로 챙기는 습관으로. 3개월 이상 지속한 경험이 아직 없음.</div>
+          </div>
+
+          <div class="item goal">
+            <div class="item-main">내 몸에 맞는 것만 사기</div>
+            <div class="item-desc">유튜브·인스타 추천이 "나한테도 맞는지" 확신이 없어 돈 낭비가 두렵다. 내 상태 분석 후 필요한 것만 알려주길 원함.</div>
+          </div>
+        </div>
+
+        <!-- 페인포인트 -->
+        <div class="section">
+          <div class="section-title">페인포인트</div>
+
+          <div class="item pain">
+            <div class="item-main">정보는 넘치는데 나에게 맞는 정보가 없다</div>
+            <div class="item-desc">유튜브·블로그·쿠팡을 세 곳에서 따로 찾고, 앱 리뷰는 광고 같아서 믿지 않음. 탐색에 에너지를 다 쓰고 구매 결정을 못 내리는 상태 반복.</div>
+            <div class="evidence">
+              <div class="evidence-chip"><span>"광고처럼 다들 똑같은 말을 적어놓음"</span> — U5</div>
+              <div class="evidence-chip"><span>"건강 제품은 유튜브·SNS로 찾고 쿠팡에서 구매"</span> — U4</div>
+            </div>
+          </div>
+
+          <div class="item pain">
+            <div class="item-main">루틴을 만들려 해도 며칠 이상 지속되지 않는다</div>
+            <div class="item-desc">알람은 이미 무시하는 습관이 생겼고, 루틴이 끊기면 재시작이 더 귀찮아 포기하게 됨.</div>
+            <div class="evidence">
+              <div class="evidence-chip"><span>"아침루틴을 만들려 하지만 습관이 길게 가지 못한다"</span> — U5</div>
+              <div class="evidence-chip"><span>"알람만 온다면 귀찮아서 무시할 듯하다"</span> — U5</div>
+              <div class="evidence-chip"><span>"영양제를 먹는걸 까먹음"</span> — U3</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 결정적 한 마디 -->
+        <div class="section">
+          <div class="section-title">결정적 한 마디</div>
+          <div class="quote-block">
+            <div class="quote-mark">"</div>
+            <div class="quote-text">먹어야 한다는 건 알아요. 근데 매일 아침 바쁘면 결국 까먹고, 그러다 보면 이미 산 영양제가 유통기한 지나버리더라고요. 오늘 뭘 챙겨야 하는지 딱 알려줬으면 좋겠어요.</div>
+          </div>
+        </div>
+
+        <!-- 전략 연결 -->
+        <div class="section">
+          <div class="section-title">연결 전략</div>
+          <div class="strategy-row">
+            <div class="strat-tag">전략 #3 — 라이프스타일 연동 미션형 루틴</div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="card-footer">
+        <span class="footer-label">이탈 위험 시점: 루틴이 3일 이상 끊겼을 때</span>
+        <span class="risk-badge">루틴 재진입 UX 필수</span>
+      </div>
+
+    </div>
+    <!-- ══ end card-a ══ -->
+
+
+    <!-- ══════════ PERSONA B ══════════ -->
+    <div class="card card-b">
+
+      <div class="card-header">
+        <div class="avatar">👨‍💻</div>
+        <div class="profile-info">
+          <div class="persona-label">Persona B</div>
+          <div class="name">박진호 · 23세</div>
+          <div class="meta">대학교 4학년 · 취업 준비 중<br>부모님과 거주 · 경기도 수원</div>
+          <div class="tech-badge">
+            기술 친숙도
+            <div class="tech-dots">
+              <div class="dot filled"></div>
+              <div class="dot filled"></div>
+              <div class="dot filled"></div>
+              <div class="dot"></div>
+              <div class="dot"></div>
+            </div>
+            3/5
+          </div>
+        </div>
+      </div>
+
+      <div class="card-body">
+
+        <!-- 목표 -->
+        <div class="section">
+          <div class="section-title">목표</div>
+
+          <div class="item goal">
+            <div class="item-main">입문자로서 나에게 필요한 영양제 1~2가지 파악하기</div>
+            <div class="item-desc">어디서 시작해야 할지 모르는 초보 상태. 복잡한 설명 말고 "너는 이거 하나만 먹으면 돼"처럼 심플하게 알려주길 원함.</div>
+          </div>
+
+          <div class="item goal">
+            <div class="item-main">예산 안에서 과소비 없이 현명하게 구매하기</div>
+            <div class="item-desc">취준생이라 월 지출에 예민함. 좋아 보이는 것을 담았다가 결제 직전 총액 보고 닫는 경험 반복.</div>
+          </div>
+        </div>
+
+        <!-- 페인포인트 -->
+        <div class="section">
+          <div class="section-title">페인포인트</div>
+
+          <div class="item pain">
+            <div class="item-main">AI 추천이 내 건강이 아닌 판매를 위한 것 같다는 의심</div>
+            <div class="item-desc">이유 없이 "당신에게 추천"이라고만 뜨면 광고처럼 느껴짐. 내 데이터를 줬는데 결국 비싼 제품만 추천하는 게 아닐까 하는 불신.</div>
+            <div class="evidence">
+              <div class="evidence-chip"><span>"끊임없이 추천해 과소비를 유발할 것 같다"</span> — U3</div>
+              <div class="evidence-chip"><span>"AI 피드백이 정확하지 않으면 신뢰하기 힘들 것 같다"</span> — U5</div>
+              <div class="evidence-chip"><span>"개인정보에 관한 우려가 있다"</span> — U3</div>
+            </div>
+          </div>
+
+          <div class="item pain">
+            <div class="item-main">리뷰를 봐도 내 상황과 맞는지 알 수 없다</div>
+            <div class="item-desc">리뷰 작성자가 어떤 사람인지 알 수 없어 참고가 안 됨. 나이·건강 상태가 비슷한 사람의 후기인지 확인할 방법이 없음.</div>
+            <div class="evidence">
+              <div class="evidence-chip"><span>"비슷한 유형의 사람 후기가 더 돋보이면 좋겠다"</span> — U1</div>
+              <div class="evidence-chip"><span>"의미없는 리뷰가 필터링 없이 보여져서 불편하다"</span> — U4</div>
+              <div class="evidence-chip"><span>"예산에 맞춰서 추천해줬으면 함"</span> — U4</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 결정적 한 마디 -->
+        <div class="section">
+          <div class="section-title">결정적 한 마디</div>
+          <div class="quote-block">
+            <div class="quote-mark">"</div>
+            <div class="quote-text">추천해주는 건 좋은데, 왜 나한테 이게 필요한지 이유를 모르겠어요. 그냥 비싼 거 팔려는 건지, 진짜 나한테 맞는 건지 구분이 안 돼서요. 근거가 보이면 믿을 수 있을 것 같아요.</div>
+          </div>
+        </div>
+
+        <!-- 전략 연결 -->
+        <div class="section">
+          <div class="section-title">연결 전략</div>
+          <div class="strategy-row">
+            <div class="strat-tag">전략 #1 — 유사 프로파일 신뢰 리뷰</div>
+            <div class="strat-tag">전략 #2 — 설명 가능한 투명 AI 추천</div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="card-footer">
+        <span class="footer-label">이탈 위험 시점: 추천 근거 없이 제품 카드만 노출될 때</span>
+        <span class="risk-badge">추천 근거 노출 필수</span>
+      </div>
+
+    </div>
+    <!-- ══ end card-b ══ -->
+
+  </div><!-- end cards-wrapper -->
+
+</body>
+</html>
