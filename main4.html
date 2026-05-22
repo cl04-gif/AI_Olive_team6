@@ -1,0 +1,4560 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <title>올리브 웰니스</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* ── Theme ── */
+    :root {
+      --primary:      #6B3F18;   /* brown accent */
+      --primary-dark: #3E2008;
+      --primary-deep: #2A1204;
+      --yellow:       #F5C842;
+      --yellow-light: #FFF8E8;
+      --yellow-mid:   #FFE878;
+      --brown:        #8B5A2A;
+      --brown-light:  #FFF8E8;
+      --brown-deep:   #4A2C0A;
+      --accent:       #C0440A;
+      --accent-soft:  #FFF5EE;
+      --purple:       #7C5CFC;
+      --purple-soft:  #F0EEFF;
+      --text-primary: #2C1608;
+      --text-secondary:#6B4020;
+      --text-muted:   #B08A60;
+      --bg:           #F7F4F0;   /* warm off-white */
+      --card:         #FFFFFF;
+      --border:       #EDE0C8;
+      --input-bg:     #FAF8F5;
+      --shadow-sm:    0 2px 14px rgba(107,63,24,0.07);
+      --shadow-md:    0 6px 28px rgba(107,63,24,0.10);
+      --shadow-lg:    0 12px 44px rgba(107,63,24,0.14);
+      --radius-sm:    12px;
+      --radius-md:    18px;
+      --radius-lg:    28px;
+    }
+
+    html { font-size: 16px; -webkit-tap-highlight-color: transparent; }
+    body {
+      font-family: 'Apple SD Gothic Neo', 'Noto Sans KR', -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text-primary);
+      min-height: 100vh;
+      max-width: 430px;
+      margin: 0 auto;
+      overflow-x: hidden;
+    }
+    .app-wrap { padding-bottom: 88px; }
+
+    /* ── Status bar ── */
+    .status-bar {
+      height: 44px;
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 20px;
+      border-bottom: 1px solid rgba(107,63,24,0.06);
+    }
+    .status-bar span { color: var(--text-primary); font-size: 12px; font-weight: 600; }
+
+    /* ── Header ── */
+    .header {
+      background: rgba(255,255,255,0.88);
+      backdrop-filter: blur(22px) saturate(180%);
+      -webkit-backdrop-filter: blur(22px) saturate(180%);
+      border-bottom: 1px solid rgba(245,200,66,0.22);
+      padding: 10px 16px 16px;
+      box-shadow: 0 4px 24px rgba(107,63,24,0.06);
+    }
+    .header-row { display: flex; align-items: center; justify-content: space-between; }
+    .header-logo { display: flex; align-items: center; gap: 8px; }
+    .logo-mark {
+      width: 32px; height: 32px;
+      background: var(--yellow);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 17px;
+      box-shadow: 0 2px 8px rgba(245,200,66,0.40);
+    }
+    .logo-text { color: var(--text-primary); font-size: 19px; font-weight: 900; letter-spacing: -0.5px; }
+    .logo-text em { color: var(--primary); font-style: normal; }
+    .header-actions { display: flex; align-items: center; gap: 6px; }
+    .hbtn {
+      width: 36px; height: 36px;
+      background: rgba(107,63,24,0.06);
+      border-radius: 10px; border: 1px solid rgba(107,63,24,0.08);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; position: relative; font-size: 17px;
+    }
+    .hbtn svg { stroke: var(--primary); fill: none; width: 18px; height: 18px; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .notif-dot {
+      position: absolute; top: 7px; right: 7px;
+      width: 6px; height: 6px;
+      background: var(--accent); border-radius: 50%;
+    }
+
+    /* ── Search bar ── */
+    .search-wrap {
+      margin-top: 10px;
+      background: rgba(255,255,255,0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(107,63,24,0.10);
+      border-radius: 14px;
+      display: flex; align-items: center; gap: 8px;
+      padding: 10px 14px;
+      box-shadow: 0 2px 10px rgba(107,63,24,0.06);
+    }
+    .search-wrap svg { stroke: var(--text-muted); fill: none; width: 16px; height: 16px; stroke-width: 2; stroke-linecap: round; flex-shrink: 0; }
+    .search-wrap span { color: var(--text-muted); font-size: 14px; }
+
+    /* ── Main ── */
+    .main-content { padding: 0 0 0; }
+
+    /* ════════════════════════════════
+       ★  CURATOR BANNER  ★
+       ════════════════════════════════ */
+    .curator-wrap { position: relative; overflow: hidden; }
+    .curator-track {
+      display: flex;
+      transition: transform 0.42s cubic-bezier(0.4,0,0.2,1);
+    }
+    .curator-slide {
+      min-width: 100%; height: 240px;
+      position: relative; overflow: hidden; flex-shrink: 0;
+    }
+    .curator-slide img {
+      width: 100%; height: 100%; object-fit: cover;
+    }
+    /* colored gradient fallback backgrounds */
+    .curator-slide:nth-child(1) .curator-bg {
+      background: linear-gradient(135deg, #3D2008 0%, #7B4F14 40%, #C17F24 75%, #F5C842 100%);
+    }
+    .curator-slide:nth-child(2) .curator-bg {
+      background: linear-gradient(135deg, #1A0E30 0%, #5C3A8A 50%, #9C6FE8 80%, #C8A8FF 100%);
+    }
+    .curator-slide:nth-child(3) .curator-bg {
+      background: linear-gradient(135deg, #2C0808 0%, #8B2020 50%, #D44040 80%, #F0A040 100%);
+    }
+    .curator-slide:nth-child(4) .curator-bg {
+      background: linear-gradient(135deg, #0A1E10 0%, #1E5C30 50%, #38A060 80%, #90D090 100%);
+    }
+    .curator-bg {
+      position: absolute; inset: 0;
+    }
+    .curator-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0.15) 55%, transparent 100%);
+    }
+    .curator-content {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      padding: 16px 52px 18px 52px;
+    }
+    .curator-badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      background: var(--yellow); color: var(--primary-deep);
+      font-size: 10px; font-weight: 900; letter-spacing: 0.5px;
+      padding: 3px 10px; border-radius: 20px;
+      margin-bottom: 8px;
+    }
+    .curator-title {
+      color: #fff; font-size: 21px; font-weight: 900;
+      letter-spacing: -0.5px; line-height: 1.25;
+      margin-bottom: 6px;
+    }
+    .curator-sub { color: rgba(255,255,255,0.75); font-size: 13px; margin-bottom: 12px; }
+    .curator-cta {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(255,255,255,0.2);
+      border: 1px solid rgba(255,255,255,0.4);
+      color: #fff; font-size: 13px; font-weight: 700;
+      padding: 8px 16px; border-radius: 20px;
+      cursor: pointer; backdrop-filter: blur(6px);
+    }
+    .curator-cta svg { width: 14px; height: 14px; stroke: #fff; fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+    /* dots */
+    .curator-dots {
+      position: absolute; bottom: 16px; right: 20px;
+      display: flex; align-items: center; gap: 5px;
+    }
+    .curator-dot {
+      width: 6px; height: 6px; border-radius: 3px;
+      background: rgba(255,255,255,0.4);
+      transition: all 0.3s;
+    }
+    .curator-dot.active {
+      width: 18px; background: var(--yellow);
+    }
+    /* slide counter */
+    .slide-counter {
+      position: absolute; top: 14px; right: 14px;
+      background: rgba(0,0,0,0.45);
+      color: #fff; font-size: 11px; font-weight: 700;
+      padding: 3px 9px; border-radius: 20px;
+      backdrop-filter: blur(4px);
+    }
+    /* nav arrows */
+    .curator-prev, .curator-next {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      width: 32px; height: 32px;
+      background: rgba(0,0,0,0.3);
+      border-radius: 50%; border: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      backdrop-filter: blur(4px); z-index: 10;
+    }
+    .curator-prev { left: 10px; }
+    .curator-next { right: 10px; }
+    .curator-prev svg, .curator-next svg {
+      width: 14px; height: 14px; stroke: #fff; fill: none;
+      stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round;
+    }
+
+    /* ── Section header ── */
+    .section-wrap { padding: 20px 16px 0; }
+    .section-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    .section-title { font-size: 17px; font-weight: 900; color: var(--text-primary); letter-spacing: -0.3px; }
+    .section-link { font-size: 13px; color: var(--primary); font-weight: 700; background: none; border: none; cursor: pointer; }
+
+    /* ── Prescription card ── */
+    .prescription-card {
+      background: linear-gradient(135deg, #3D2008 0%, #7B4F14 45%, #C17F24 80%, #E8A030 100%);
+      border-radius: var(--radius-lg); padding: 20px; margin-bottom: 16px;
+      position: relative; overflow: hidden; box-shadow: var(--shadow-lg);
+    }
+    .prescription-card::before {
+      content: ''; position: absolute; top: -30px; right: -30px;
+      width: 150px; height: 150px; background: rgba(245,200,66,0.12); border-radius: 50%;
+    }
+    .prescription-card::after {
+      content: ''; position: absolute; bottom: -40px; right: 10px;
+      width: 110px; height: 110px; background: rgba(255,255,255,0.05); border-radius: 50%;
+    }
+    .rx-label {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: rgba(245,200,66,0.25); border-radius: 20px;
+      padding: 4px 10px; margin-bottom: 12px;
+    }
+    .rx-label span { color: var(--yellow); font-size: 11px; font-weight: 800; letter-spacing: 0.3px; }
+    .rx-title { color: #fff; font-size: 20px; font-weight: 900; letter-spacing: -0.4px; margin-bottom: 4px; }
+    .rx-sub { color: rgba(255,255,255,0.70); font-size: 13px; margin-bottom: 16px; }
+    .rx-items { display: flex; flex-direction: column; gap: 8px; }
+    .rx-item {
+      background: rgba(255,255,255,0.15); border-radius: var(--radius-sm);
+      padding: 10px 14px; display: flex; align-items: center; gap: 12px;
+      backdrop-filter: blur(4px);
+    }
+    .rx-item-icon {
+      width: 36px; height: 36px; background: rgba(245,200,66,0.25);
+      border-radius: 10px; display: flex; align-items: center; justify-content: center;
+      font-size: 18px; flex-shrink: 0;
+    }
+    .rx-item-info { flex: 1; }
+    .rx-item-name { color: #fff; font-size: 14px; font-weight: 700; margin-bottom: 2px; }
+    .rx-item-reason { color: rgba(255,255,255,0.72); font-size: 12px; }
+    .rx-item-check {
+      width: 24px; height: 24px; background: rgba(255,255,255,0.2);
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; cursor: pointer; transition: background 0.2s;
+    }
+    .rx-item-check.done { background: var(--yellow); }
+    .rx-item-check svg { width: 14px; height: 14px; stroke: rgba(255,255,255,0.8); stroke-width: 2.5; fill: none; }
+    .rx-item-check.done svg { stroke: var(--primary-deep); }
+
+    /* ── Meal logger ── */
+    .meal-card {
+      background: rgba(255,255,255,0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-radius: var(--radius-md); padding: 18px;
+      margin-bottom: 16px; box-shadow: var(--shadow-sm); border: 1px solid rgba(237,224,200,0.7);
+    }
+    .meal-slots { display: flex; gap: 8px; margin-top: 2px; }
+    .meal-slot {
+      flex: 1; border-radius: var(--radius-sm);
+      border: 1.5px dashed var(--border); padding: 12px 8px;
+      text-align: center; cursor: pointer; transition: all 0.2s;
+      background: var(--input-bg);
+    }
+    .meal-slot.logged { border-style: solid; border-color: var(--primary); background: var(--yellow-light); }
+    .meal-slot-icon { font-size: 22px; margin-bottom: 4px; }
+    .meal-slot-label { font-size: 11px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px; }
+    .meal-slot.logged .meal-slot-label { color: var(--primary-dark); }
+    .meal-slot-status { font-size: 10px; color: var(--text-muted); }
+    .meal-slot.logged .meal-slot-status { color: var(--primary); font-weight: 700; }
+    .meal-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 10px; }
+    .meal-tag {
+      font-size: 11px; font-weight: 700;
+      background: var(--yellow-light); color: var(--primary-dark);
+      border-radius: 20px; padding: 3px 10px;
+    }
+    .meal-add-btn {
+      width: 100%; margin-top: 10px;
+      background: var(--yellow-light); color: var(--primary-dark);
+      border: none; border-radius: var(--radius-sm);
+      padding: 10px; font-size: 13px; font-weight: 700; cursor: pointer;
+    }
+
+    /* ── Routine ── */
+    .routine-card {
+      background: rgba(255,255,255,0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-radius: var(--radius-md); padding: 18px;
+      margin-bottom: 16px; box-shadow: var(--shadow-sm); border: 1px solid rgba(237,224,200,0.7);
+    }
+    .routine-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+    .routine-title { font-size: 16px; font-weight: 900; color: var(--text-primary); }
+    .progress-text { font-size: 13px; color: var(--primary); font-weight: 800; }
+    .progress-bar-wrap { height: 6px; background: var(--brown-light); border-radius: 3px; margin-bottom: 14px; overflow: hidden; }
+    .progress-bar {
+      height: 100%; border-radius: 3px;
+      background: linear-gradient(90deg, var(--primary-dark), var(--yellow));
+      transition: width 0.5s ease;
+    }
+    .routine-list { display: flex; flex-direction: column; gap: 8px; }
+    .routine-item {
+      display: flex; align-items: center; gap: 12px;
+      padding: 10px 12px; background: var(--input-bg);
+      border-radius: var(--radius-sm); cursor: pointer; transition: background 0.2s;
+    }
+    .routine-item.done { background: var(--yellow-light); }
+    .check-circle {
+      width: 22px; height: 22px; border-radius: 50%;
+      border: 2px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; transition: all 0.2s;
+    }
+    .routine-item.done .check-circle { background: var(--primary); border-color: var(--primary); }
+    .check-circle svg { width: 12px; height: 12px; stroke: #fff; stroke-width: 3; fill: none; opacity: 0; }
+    .routine-item.done .check-circle svg { opacity: 1; }
+    .routine-text { flex: 1; font-size: 14px; font-weight: 600; color: var(--text-primary); }
+    .routine-item.done .routine-text { color: var(--text-muted); text-decoration: line-through; }
+    .routine-time { font-size: 11px; color: var(--text-muted); font-weight: 500; }
+    .encourage-msg {
+      margin-top: 12px; background: var(--yellow-light);
+      border-radius: var(--radius-sm); padding: 10px 14px;
+      font-size: 13px; color: var(--primary-dark); font-weight: 700; text-align: center;
+    }
+
+    /* ── Weekly ── */
+    .weekly-card {
+      background: rgba(255,255,255,0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-radius: var(--radius-md); padding: 18px;
+      margin-bottom: 16px; box-shadow: var(--shadow-sm); border: 1px solid rgba(237,224,200,0.7);
+    }
+    .week-days { display: flex; justify-content: space-between; margin-top: 14px; }
+    .day-item { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+    .day-label { font-size: 11px; color: var(--text-muted); font-weight: 700; }
+    .day-dot {
+      width: 32px; height: 32px; border-radius: 50%;
+      border: 2px solid var(--border);
+      display: flex; align-items: center; justify-content: center; font-size: 12px;
+    }
+    .day-dot.done { background: var(--primary); border-color: var(--primary); color: #fff; }
+    .day-dot.partial { background: var(--yellow-light); border-color: var(--yellow); color: var(--primary-dark); }
+    .day-dot.today { border-color: var(--primary); color: var(--primary); font-weight: 900; }
+    .day-dot.empty { color: var(--text-muted); }
+    .weekly-summary {
+      margin-top: 14px; padding: 12px 14px;
+      background: var(--purple-soft); border-radius: var(--radius-sm);
+      font-size: 13px; color: var(--purple); font-weight: 700;
+    }
+
+    /* ── 4-week predict ── */
+    .predict-card {
+      background: rgba(255,255,255,0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-radius: var(--radius-md); padding: 18px;
+      margin-bottom: 16px; box-shadow: var(--shadow-sm); border: 1px solid rgba(237,224,200,0.7);
+      overflow: hidden; position: relative;
+    }
+    .predict-card::before {
+      content: ''; position: absolute; top: -20px; right: -20px;
+      width: 100px; height: 100px;
+      background: var(--yellow-light); border-radius: 50%; opacity: 0.8;
+    }
+    .predict-badge {
+      background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+      color: #fff; font-size: 10px; font-weight: 900;
+      padding: 3px 10px; border-radius: 20px; letter-spacing: 0.3px;
+      display: inline-block; margin-bottom: 6px;
+    }
+    .predict-title { font-size: 16px; font-weight: 900; color: var(--text-primary); margin-bottom: 2px; }
+    .predict-sub { font-size: 12px; color: var(--text-muted); margin-bottom: 16px; }
+    .predict-metrics { display: flex; flex-direction: column; gap: 10px; }
+    .predict-metric-header {
+      display: flex; align-items: center; justify-content: space-between; margin-bottom: 5px;
+    }
+    .predict-metric-label { display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 700; color: var(--text-primary); }
+    .predict-metric-change { font-size: 12px; font-weight: 900; color: var(--primary); }
+    .predict-bar-wrap { height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
+    .predict-bar-fill { height: 100%; border-radius: 4px; width: 0; transition: width 1.2s cubic-bezier(0.4,0,0.2,1); }
+    .predict-bar-fill.sleep  { background: linear-gradient(90deg, #7C5CFC, #B898FF); }
+    .predict-bar-fill.energy { background: linear-gradient(90deg, var(--primary-dark), var(--yellow)); }
+    .predict-bar-fill.focus  { background: linear-gradient(90deg, #E05C2A, #F5A060); }
+    .predict-bar-fill.immune { background: linear-gradient(90deg, #1E8A5C, #60D0A0); }
+    .predict-card.visible .predict-bar-fill.sleep  { width: 78%; }
+    .predict-card.visible .predict-bar-fill.energy { width: 85%; }
+    .predict-card.visible .predict-bar-fill.focus  { width: 70%; }
+    .predict-card.visible .predict-bar-fill.immune { width: 65%; }
+    .predict-footer {
+      margin-top: 14px; padding: 10px 12px;
+      background: var(--yellow-light); border-radius: var(--radius-sm);
+      font-size: 12px; color: var(--primary-dark); font-weight: 700; text-align: center;
+    }
+
+    /* ── Nudge ── */
+    .nudge-banner {
+      background: rgba(255,245,238,0.92);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1.5px solid rgba(192,68,10,0.15);
+      border-radius: var(--radius-md); padding: 16px; margin-bottom: 20px;
+      display: flex; align-items: center; gap: 12px;
+      box-shadow: 0 4px 20px rgba(192,68,10,0.08);
+    }
+    .nudge-icon { font-size: 28px; flex-shrink: 0; }
+    .nudge-text { flex: 1; }
+    .nudge-title { font-size: 14px; font-weight: 900; color: var(--accent); margin-bottom: 2px; }
+    .nudge-sub { font-size: 12px; color: var(--text-secondary); }
+    .nudge-btn {
+      background: var(--accent); color: #fff; border: none;
+      border-radius: 10px; padding: 8px 14px;
+      font-size: 12px; font-weight: 800; cursor: pointer; white-space: nowrap;
+    }
+
+    /* ── Reco scroll ── */
+    .reco-scroll {
+      display: flex; gap: 12px; overflow-x: auto;
+      padding-bottom: 4px; margin-bottom: 16px; scrollbar-width: none;
+    }
+    .reco-scroll::-webkit-scrollbar { display: none; }
+    .reco-card {
+      background: rgba(255,255,255,0.88);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-radius: var(--radius-md); padding: 16px;
+      min-width: 158px; box-shadow: var(--shadow-sm); border: 1px solid rgba(237,224,200,0.7);
+      flex-shrink: 0; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .reco-card:hover { box-shadow: var(--shadow-md); }
+    .reco-card:active { transform: scale(0.97); }
+    .reco-emoji { font-size: 32px; margin-bottom: 10px; display: block; }
+    .reco-type {
+      font-size: 10px; font-weight: 800; color: var(--primary);
+      background: var(--yellow-light); padding: 2px 8px; border-radius: 10px;
+      display: inline-block; margin-bottom: 6px;
+    }
+    .reco-name { font-size: 14px; font-weight: 900; color: var(--text-primary); margin-bottom: 4px; line-height: 1.3; }
+    .reco-reason { font-size: 12px; color: var(--text-secondary); line-height: 1.4; margin-bottom: 10px; }
+    .reco-price { font-size: 14px; font-weight: 900; color: var(--primary-dark); }
+    .reco-rating { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+
+    /* ── Reviews ── */
+    .review-card {
+      background: rgba(255,255,255,0.88);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-radius: var(--radius-md); padding: 16px;
+      margin-bottom: 10px; box-shadow: var(--shadow-sm); border: 1px solid rgba(237,224,200,0.7);
+    }
+    .review-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+    .review-avatar { width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+    .review-meta { flex: 1; }
+    .review-name { font-size: 14px; font-weight: 800; color: var(--text-primary); }
+    .review-profile { font-size: 12px; color: var(--text-muted); }
+    .review-stars { font-size: 12px; margin-bottom: 6px; }
+    .review-text { font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
+    .review-badge {
+      margin-top: 10px; display: inline-flex; align-items: center; gap: 4px;
+      background: var(--yellow-light); border-radius: 20px; padding: 3px 10px;
+    }
+    .review-badge span { font-size: 11px; color: var(--primary-dark); font-weight: 700; }
+    .similar-tag {
+      display: inline-flex; align-items: center; gap: 4px;
+      background: var(--purple-soft); border-radius: 10px;
+      padding: 3px 8px; margin-bottom: 10px;
+    }
+    .similar-tag span { font-size: 11px; color: var(--purple); font-weight: 700; }
+
+    /* ── Quick check-in ── */
+    .quick-check {
+      background: rgba(255,255,255,0.88);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(245,200,66,0.25);
+      border-radius: var(--radius-lg); padding: 14px 16px; margin-bottom: 20px;
+      display: flex; align-items: center; gap: 10px; box-shadow: var(--shadow-sm);
+    }
+    .quick-check-icon { font-size: 20px; }
+    .quick-check-text { flex: 1; }
+    .quick-check-title { font-size: 14px; font-weight: 800; color: var(--text-primary); }
+    .quick-check-sub { font-size: 12px; color: var(--text-muted); }
+    .quick-check-btn {
+      background: var(--yellow-light); color: var(--primary-dark); border: none;
+      border-radius: 10px; padding: 8px 14px; font-size: 12px; font-weight: 800; cursor: pointer;
+    }
+
+    /* ── Bottom nav ── */
+    .bottom-nav {
+      position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+      width: 100%; max-width: 430px;
+      background: rgba(255,255,255,0.88); border-top: 1px solid rgba(245,200,66,0.20);
+      display: flex; align-items: center; justify-content: space-around;
+      padding: 6px 0 18px; z-index: 100;
+      box-shadow: 0 -4px 28px rgba(107,63,24,0.08);
+      transition: background 0.3s, border-color 0.3s;
+    }
+    .nav-item {
+      display: flex; flex-direction: column; align-items: center; gap: 3px;
+      cursor: pointer; padding: 4px 10px; border-radius: 12px;
+      background: none; border: none; min-width: 0;
+    }
+    .nav-icon { width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; }
+    .nav-icon svg { width: 22px; height: 22px; stroke: var(--text-muted); stroke-width: 1.8; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+    .nav-label { font-size: 9.5px; font-weight: 700; color: var(--text-muted); white-space: nowrap; }
+    .nav-item.active .nav-icon svg { stroke: var(--primary); }
+    .nav-item.active .nav-label { color: var(--primary); }
+    .nav-item.active .nav-dot { width: 4px; height: 4px; background: var(--primary); border-radius: 50%; margin-top: 1px; }
+
+    /* ── Meal modal ── */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0.55); z-index: 200;
+      align-items: flex-end; justify-content: center;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal-sheet {
+      background: rgba(255,255,255,0.96);
+      backdrop-filter: blur(24px) saturate(180%);
+      -webkit-backdrop-filter: blur(24px) saturate(180%);
+      border-radius: 28px 28px 0 0;
+      border-top: 1px solid rgba(245,200,66,0.20);
+      padding: 24px 20px 40px; width: 100%; max-width: 430px;
+      animation: slideUp 0.3s ease;
+      box-shadow: 0 -8px 40px rgba(107,63,24,0.12);
+    }
+    @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+    .modal-handle { width: 36px; height: 4px; background: var(--border); border-radius: 2px; margin: 0 auto 20px; }
+    .modal-title { font-size: 18px; font-weight: 900; color: var(--text-primary); margin-bottom: 16px; }
+    .food-option-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; margin-bottom: 16px; }
+    .food-option {
+      background: var(--input-bg); border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm); padding: 10px 6px;
+      text-align: center; cursor: pointer; transition: all 0.15s;
+    }
+    .food-option.selected { border-color: var(--primary); background: var(--yellow-light); }
+    .food-option-emoji { font-size: 20px; display: block; margin-bottom: 4px; }
+    .food-option-name { font-size: 11px; font-weight: 700; color: var(--text-secondary); }
+    .food-option.selected .food-option-name { color: var(--primary-dark); }
+    .modal-confirm {
+      width: 100%; background: linear-gradient(90deg, var(--primary-dark), var(--primary));
+      color: #fff; border: none; border-radius: var(--radius-sm);
+      padding: 14px; font-size: 15px; font-weight: 900; cursor: pointer;
+    }
+
+    /* ── Animations ── */
+    @keyframes fadeUp { from { opacity:0; transform:translateY(14px); } to { opacity:1; transform:translateY(0); } }
+    .section-wrap { animation: fadeUp 0.35s ease both; }
+    .section-wrap:nth-child(1) { animation-delay: 0.05s; }
+    .section-wrap:nth-child(2) { animation-delay: 0.10s; }
+    .section-wrap:nth-child(3) { animation-delay: 0.15s; }
+    .section-wrap:nth-child(4) { animation-delay: 0.20s; }
+    .section-wrap:nth-child(5) { animation-delay: 0.25s; }
+    .section-wrap:nth-child(6) { animation-delay: 0.30s; }
+    .section-wrap:nth-child(7) { animation-delay: 0.35s; }
+    .section-wrap:nth-child(8) { animation-delay: 0.40s; }
+
+    @media (min-width: 430px) { body { box-shadow: 0 0 60px rgba(0,0,0,0.18); } }
+
+  /* ══════════════════════════════════════
+     ★  GNB GLASSMORPHISM UPGRADE  ★
+  ══════════════════════════════════════ */
+  .bottom-nav {
+    background: rgba(255, 255, 255, 0.88) !important;
+    backdrop-filter: blur(28px) saturate(200%) !important;
+    -webkit-backdrop-filter: blur(28px) saturate(200%) !important;
+    border-top: 1px solid rgba(245,200,66,0.20) !important;
+    box-shadow: 0 -4px 32px rgba(107,63,24,0.08), 0 1px 0 rgba(255,255,255,0.95) inset !important;
+  }
+
+  /* ══════════════════════════════════════
+     ★  ONBOARDING OVERLAY  ★
+  ══════════════════════════════════════ */
+  #ob-overlay {
+    position: fixed; inset: 0; z-index: 999;
+    display: flex; flex-direction: column; overflow-y: auto;
+    background: linear-gradient(160deg, var(--primary-deep) 0%, var(--primary) 45%, var(--brown) 100%);
+    transition: opacity 0.55s ease, transform 0.55s ease;
+  }
+  #ob-overlay.ob-hide {
+    opacity: 0; transform: translateY(-20px); pointer-events: none;
+  }
+  .ob-inner {
+    max-width: 430px; width: 100%; margin: 0 auto;
+    padding: 52px 22px 40px;
+    display: flex; flex-direction: column; gap: 24px;
+  }
+  .ob-logo-row { display: flex; align-items: center; gap: 10px; }
+  .ob-logo-mark {
+    width: 38px; height: 38px; background: var(--yellow);
+    border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 19px;
+  }
+  .ob-logo-text { color: #fff; font-size: 18px; font-weight: 900; letter-spacing: -0.3px; }
+  .ob-logo-text em { color: var(--yellow); font-style: normal; }
+  .ob-headline h1 {
+    font-size: 25px; font-weight: 900; color: #fff;
+    line-height: 1.35; letter-spacing: -0.5px; margin-bottom: 9px;
+  }
+  .ob-headline h1 em { color: var(--yellow); font-style: normal; }
+  .ob-headline p { font-size: 13px; color: rgba(255,255,255,0.62); line-height: 1.65; }
+  .ob-progress-dots { display: flex; gap: 6px; }
+  .ob-dot {
+    width: 6px; height: 6px; border-radius: 3px;
+    background: rgba(255,255,255,0.25); transition: all 0.3s;
+  }
+  .ob-dot.active { width: 20px; background: var(--yellow); }
+  .ob-step {
+    background: rgba(255,255,255,0.09);
+    backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: var(--radius-lg); padding: 20px 18px;
+  }
+  .ob-step-label {
+    font-size: 10px; font-weight: 800; letter-spacing: 1.2px;
+    text-transform: uppercase; color: var(--yellow); margin-bottom: 7px;
+  }
+  .ob-step-q { font-size: 15px; font-weight: 800; color: #fff; margin-bottom: 14px; line-height: 1.45; }
+  .ob-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .ob-chip {
+    padding: 9px 15px; border-radius: 100px;
+    border: 1.5px solid rgba(255,255,255,0.22);
+    background: rgba(255,255,255,0.08);
+    color: rgba(255,255,255,0.80); font-size: 13px; font-weight: 600;
+    cursor: pointer; transition: all 0.18s; user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .ob-chip.active { background: var(--yellow); border-color: var(--yellow); color: var(--primary-deep); }
+  .ob-cta-btn {
+    width: 100%; padding: 16px;
+    background: var(--yellow); border: none; border-radius: var(--radius-md);
+    font-size: 16px; font-weight: 900; color: var(--primary-deep); cursor: pointer;
+    letter-spacing: -0.2px; box-shadow: 0 6px 22px rgba(245,200,66,0.38);
+    transition: all 0.18s;
+  }
+  .ob-cta-btn:active { transform: scale(0.97); }
+  .ob-cta-btn:disabled {
+    background: rgba(255,255,255,0.14); color: rgba(255,255,255,0.32);
+    box-shadow: none; cursor: not-allowed;
+  }
+  .ob-notice { text-align: center; font-size: 11px; color: rgba(255,255,255,0.35); line-height: 1.6; }
+
+  /* ══════════════════════════════════════
+     ★  AI 피드백 섹션  ★
+  ══════════════════════════════════════ */
+  .ai-feedback-card {
+    background: linear-gradient(135deg, var(--primary-deep) 0%, var(--primary) 50%, #A0611A 100%);
+    border-radius: var(--radius-lg); padding: 20px; margin-bottom: 0;
+    position: relative; overflow: hidden; box-shadow: var(--shadow-lg);
+  }
+  .ai-feedback-card::before {
+    content: ''; position: absolute; top: -35px; right: -35px;
+    width: 145px; height: 145px;
+    background: radial-gradient(circle, rgba(245,200,66,0.16) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .ai-fb-top { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; }
+  .ai-fb-badge {
+    background: rgba(245,200,66,0.20); border: 1px solid rgba(245,200,66,0.38);
+    border-radius: 100px; padding: 4px 11px;
+    font-size: 10px; font-weight: 800; color: var(--yellow); letter-spacing: 0.4px;
+  }
+  .ai-fb-time { font-size: 11px; color: rgba(255,255,255,0.40); }
+  .ai-fb-greeting { font-size: 12px; color: rgba(255,255,255,0.58); margin-bottom: 5px; }
+  .ai-fb-msg { font-size: 15px; font-weight: 800; color: #fff; line-height: 1.55; margin-bottom: 14px; }
+  .ai-fb-msg em { color: var(--yellow); font-style: normal; }
+  .ai-fb-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
+  .ai-fb-tag {
+    background: rgba(255,255,255,0.10); border: 1px solid rgba(255,255,255,0.14);
+    border-radius: 100px; padding: 5px 11px; font-size: 11px; color: rgba(255,255,255,0.72);
+  }
+  .ai-fb-scores { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; }
+  .ai-fb-score-item {
+    background: rgba(255,255,255,0.08);
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255,255,255,0.10);
+    border-radius: var(--radius-sm); padding: 11px 8px; text-align: center;
+  }
+  .ai-fb-score-val { font-size: 22px; font-weight: 900; color: var(--yellow); letter-spacing: -0.5px; }
+  .ai-fb-score-label { font-size: 10px; color: rgba(255,255,255,0.52); margin-top: 2px; }
+  .ai-fb-bar-wrap { width: 100%; height: 3px; background: rgba(255,255,255,0.12); border-radius: 2px; margin-top: 5px; overflow: hidden; }
+  .ai-fb-bar-fill { height: 100%; background: var(--yellow); border-radius: 2px; width: 0; transition: width 1.2s ease; }
+
+  /* ══════════════════════════════════════
+     ★  SEAMLESS 상품 연계 섹션  ★
+  ══════════════════════════════════════ */
+  .seamless-reason-banner {
+    background: rgba(255,248,232,0.90);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(245,200,66,0.28);
+    border-radius: var(--radius-md); padding: 14px 16px; margin-bottom: 12px;
+    display: flex; align-items: flex-start; gap: 11px;
+    box-shadow: 0 2px 14px rgba(107,63,24,0.06);
+  }
+  .seamless-reason-icon {
+    width: 38px; height: 38px; background: var(--yellow);
+    border-radius: 11px; display: flex; align-items: center; justify-content: center;
+    font-size: 19px; flex-shrink: 0;
+  }
+  .seamless-reason-text b { display: block; font-size: 14px; font-weight: 900; color: var(--text-primary); margin-bottom: 3px; }
+  .seamless-reason-text p { font-size: 12px; color: var(--text-secondary); line-height: 1.55; }
+  .seamless-reason-text p em { color: var(--primary); font-style: normal; font-weight: 800; }
+  .seamless-scroll {
+    display: flex; gap: 12px; overflow-x: auto;
+    padding-bottom: 4px; scrollbar-width: none;
+  }
+  .seamless-scroll::-webkit-scrollbar { display: none; }
+  .seamless-pcard {
+    min-width: 155px;
+    background: rgba(255,255,255,0.88);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: var(--radius-md); border: 1px solid rgba(237,224,200,0.7);
+    box-shadow: var(--shadow-sm); overflow: hidden; flex-shrink: 0;
+    cursor: pointer; transition: transform 0.18s, box-shadow 0.18s;
+  }
+  .seamless-pcard:active { transform: scale(0.97); }
+  .seamless-pcard-thumb {
+    height: 110px; display: flex; align-items: center; justify-content: center;
+    font-size: 44px; position: relative;
+  }
+  .seamless-pcard-tag {
+    position: absolute; top: 8px; left: 8px;
+    background: var(--primary-deep); color: var(--yellow);
+    font-size: 10px; font-weight: 800; padding: 3px 8px; border-radius: 100px;
+  }
+  .seamless-pcard-body { padding: 10px 12px 12px; }
+  .seamless-pcard-reason {
+    font-size: 10px; font-weight: 800; color: var(--primary);
+    background: var(--yellow-light); border-radius: 6px;
+    padding: 2px 7px; margin-bottom: 6px; display: inline-block;
+  }
+  .seamless-pcard-name { font-size: 13px; font-weight: 800; color: var(--text-primary); line-height: 1.35; margin-bottom: 4px; }
+  .seamless-pcard-brand { font-size: 11px; color: var(--text-muted); margin-bottom: 8px; }
+  .seamless-pcard-foot { display: flex; align-items: center; justify-content: space-between; }
+  .seamless-pcard-price { font-size: 14px; font-weight: 900; color: var(--primary-dark); }
+  .seamless-pcard-discount { font-size: 10px; font-weight: 800; color: var(--accent); }
+  .seamless-cart-btn {
+    width: 28px; height: 28px; background: var(--primary-deep);
+    border-radius: 8px; border: none; color: var(--yellow);
+    font-size: 16px; font-weight: 900; cursor: pointer; display: flex;
+    align-items: center; justify-content: center; transition: all 0.2s;
+  }
+
+  /* app-wrap 초기 숨김 */
+  #app-main { opacity: 0; transition: opacity 0.6s ease 0.15s; pointer-events: none; }
+  #app-main.app-visible { opacity: 1; pointer-events: auto; }
+
+  /* ══ 카테고리 탭 5등분 ══ */
+  .cat-tabs {
+    overflow-x: visible !important;
+    padding: 0 !important;
+    flex-wrap: nowrap;
+  }
+  .cat-tab {
+    flex: 1 1 0 !important;
+    flex-shrink: 1 !important;
+    min-width: 0 !important;
+    padding: 13px 2px !important;
+    font-size: 12.5px !important;
+    letter-spacing: -0.3px;
+    text-align: center !important;
+    white-space: nowrap !important;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* ══ 좋아요 한 페이지 ══ */
+  .likes-segment { display: none !important; }
+  #ltab-recent,
+  #ltab-liked,
+  #ltab-frequent { display: block !important; }
+  .likes-section-title {
+    padding: 20px 16px 10px;
+    font-size: 16px; font-weight: 900; color: var(--text-primary);
+    letter-spacing: -0.3px;
+    display: flex; align-items: center; gap: 7px;
+  }
+  .likes-section-title span {
+    font-size: 12px; font-weight: 600; color: var(--text-muted);
+  }
+  .likes-section-divider {
+    height: 6px; background: var(--bg);
+    border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+  }
+
+    /* ══════════════════════════════════
+       ★  DISCOVER PAGE  ★
+       ══════════════════════════════════ */
+
+    /* ── Topic filter chips ── */
+    .topic-scroll {
+      display: flex; gap: 8px; overflow-x: auto;
+      padding: 14px 16px 0; scrollbar-width: none; background: var(--card);
+      border-bottom: 1.5px solid var(--border);
+    }
+    .topic-scroll::-webkit-scrollbar { display: none; }
+    .topic-pill {
+      flex-shrink: 0; padding: 7px 16px;
+      background: var(--input-bg); border: 1.5px solid var(--border);
+      border-radius: 20px; font-size: 13px; font-weight: 700; color: var(--text-muted);
+      cursor: pointer; transition: all 0.18s; white-space: nowrap; margin-bottom: 14px;
+    }
+    .topic-pill.active {
+      background: var(--primary-deep); border-color: var(--primary-deep);
+      color: var(--yellow);
+    }
+
+    /* ── Feature article (대형 카드) ── */
+    .feature-article {
+      margin: 0 16px 16px;
+      border-radius: var(--radius-lg); overflow: hidden;
+      box-shadow: var(--shadow-md); cursor: pointer; position: relative;
+    }
+    .feature-article-bg {
+      height: 200px;
+      background: linear-gradient(135deg, #0A2010 0%, #1E5C30 40%, #38A060 80%, #90D090 100%);
+      position: relative;
+    }
+    .feature-article-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.70) 0%, transparent 55%);
+    }
+    .feature-article-content {
+      position: absolute; bottom: 0; left: 0; right: 0; padding: 16px;
+    }
+    .feature-tag {
+      display: inline-block; background: var(--yellow);
+      color: var(--primary-deep); font-size: 10px; font-weight: 900;
+      padding: 3px 10px; border-radius: 20px; margin-bottom: 8px;
+    }
+    .feature-title {
+      color: #fff; font-size: 18px; font-weight: 900;
+      letter-spacing: -0.4px; line-height: 1.3; margin-bottom: 5px;
+    }
+    .feature-meta { color: rgba(255,255,255,0.65); font-size: 12px; }
+
+    /* ── Curation card scroll ── */
+    .curation-scroll {
+      display: flex; gap: 12px; overflow-x: auto;
+      padding-bottom: 4px; scrollbar-width: none;
+    }
+    .curation-scroll::-webkit-scrollbar { display: none; }
+    .curation-card {
+      min-width: 200px; flex-shrink: 0;
+      background: rgba(255,255,255,0.88);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(237,224,200,0.7); box-shadow: var(--shadow-sm);
+      overflow: hidden; cursor: pointer; transition: transform 0.18s, box-shadow 0.18s;
+    }
+    .curation-card:active { transform: scale(0.97); }
+    .curation-thumb {
+      height: 110px; display: flex; align-items: center; justify-content: center;
+      font-size: 48px; position: relative; overflow: hidden;
+    }
+    .curation-body { padding: 12px; }
+    .curation-tag {
+      font-size: 10px; font-weight: 800; color: var(--primary);
+      background: var(--yellow-light); padding: 2px 8px; border-radius: 10px;
+      display: inline-block; margin-bottom: 6px;
+    }
+    .curation-title { font-size: 13px; font-weight: 900; color: var(--text-primary); line-height: 1.35; margin-bottom: 4px; }
+    .curation-meta { font-size: 11px; color: var(--text-muted); }
+
+    /* ── Expert column card ── */
+    .expert-card {
+      background: rgba(255,255,255,0.88);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(237,224,200,0.7); box-shadow: var(--shadow-sm);
+      padding: 16px; margin-bottom: 10px; cursor: pointer; display: flex; gap: 14px;
+    }
+    .expert-thumb {
+      width: 80px; height: 80px; border-radius: var(--radius-sm);
+      flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+      font-size: 36px;
+    }
+    .expert-body { flex: 1; }
+    .expert-label {
+      font-size: 10px; font-weight: 800; color: var(--purple);
+      background: var(--purple-soft); padding: 2px 8px; border-radius: 10px;
+      display: inline-block; margin-bottom: 6px;
+    }
+    .expert-title { font-size: 14px; font-weight: 900; color: var(--text-primary); line-height: 1.35; margin-bottom: 5px; }
+    .expert-author { font-size: 12px; color: var(--text-muted); }
+    .expert-read { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+
+    /* ── Community routine card ── */
+    .routine-share-card {
+      background: rgba(255,255,255,0.88);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(237,224,200,0.7); box-shadow: var(--shadow-sm);
+      padding: 14px 16px; margin-bottom: 10px; cursor: pointer;
+    }
+    .routine-share-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+    .routine-share-avatar {
+      width: 36px; height: 36px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0;
+    }
+    .routine-share-meta { flex: 1; }
+    .routine-share-name { font-size: 13px; font-weight: 800; color: var(--text-primary); }
+    .routine-share-profile { font-size: 11px; color: var(--text-muted); }
+    .routine-share-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 8px; }
+    .routine-share-tag {
+      font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 20px;
+      background: var(--yellow-light); color: var(--primary-dark);
+    }
+    .routine-share-result {
+      font-size: 13px; color: var(--text-secondary); line-height: 1.5;
+    }
+    .routine-share-result strong { color: var(--primary-dark); font-weight: 800; }
+    .routine-share-footer { margin-top: 10px; display: flex; align-items: center; gap: 12px; }
+    .routine-share-like { font-size: 12px; color: var(--text-muted); font-weight: 700; }
+    .routine-share-save {
+      margin-left: auto; background: var(--yellow-light); color: var(--primary-dark);
+      border: none; border-radius: 10px; padding: 6px 14px;
+      font-size: 12px; font-weight: 800; cursor: pointer;
+    }
+
+    /* ══════════════════════════════════
+       ★  STORE PAGE  ★
+       ══════════════════════════════════ */
+
+    /* ── Store segment control ── */
+    .store-segment {
+      display: flex; margin: 14px 16px;
+      background: rgba(255,255,255,0.80);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-radius: 14px; padding: 4px;
+      border: 1px solid rgba(237,224,200,0.7);
+      box-shadow: var(--shadow-sm);
+    }
+    .store-seg-btn {
+      flex: 1; padding: 10px 0;
+      background: none; border: none; border-radius: 9px;
+      font-size: 13px; font-weight: 800; color: var(--text-muted);
+      cursor: pointer; transition: all 0.2s; text-align: center;
+    }
+    .store-seg-btn.active {
+      background: var(--primary-deep); color: var(--yellow);
+      box-shadow: var(--shadow-sm);
+    }
+
+    /* ── Location banner ── */
+    .location-banner {
+      margin: 0 16px 16px;
+      background: rgba(255,255,255,0.88);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(237,224,200,0.7);
+      border-radius: var(--radius-md); padding: 12px 14px;
+      display: flex; align-items: center; gap: 10px; box-shadow: var(--shadow-sm);
+    }
+    .location-icon { font-size: 20px; flex-shrink: 0; }
+    .location-text { flex: 1; }
+    .location-title { font-size: 13px; font-weight: 800; color: var(--text-primary); }
+    .location-sub { font-size: 11px; color: var(--text-muted); margin-top: 1px; }
+    .location-btn {
+      background: var(--yellow-light); color: var(--primary-dark);
+      border: none; border-radius: 10px; padding: 7px 13px;
+      font-size: 12px; font-weight: 800; cursor: pointer; white-space: nowrap;
+    }
+
+    /* ── Store card ── */
+    .store-list { padding: 0 16px; display: flex; flex-direction: column; gap: 10px; }
+    .store-card {
+      background: rgba(255,255,255,0.88);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(237,224,200,0.7); box-shadow: var(--shadow-sm);
+      padding: 16px; cursor: pointer; transition: box-shadow 0.18s;
+    }
+    .store-card:active { box-shadow: var(--shadow-md); }
+    .store-card-header { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 10px; }
+    .store-card-icon {
+      width: 44px; height: 44px; border-radius: var(--radius-sm);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px; flex-shrink: 0;
+    }
+    .store-card-info { flex: 1; }
+    .store-card-name { font-size: 15px; font-weight: 900; color: var(--text-primary); margin-bottom: 2px; }
+    .store-card-addr { font-size: 12px; color: var(--text-muted); line-height: 1.4; }
+    .store-card-right { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
+    .store-dist { font-size: 12px; font-weight: 800; color: var(--primary); }
+    .store-open { font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 20px; }
+    .store-open.open { background: #E8F5E0; color: #2E7D32; }
+    .store-open.closed { background: #FFF0F0; color: #C0392B; }
+    .store-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 10px; }
+    .store-tag {
+      font-size: 11px; font-weight: 700; padding: 3px 9px; border-radius: 20px;
+      background: var(--yellow-light); color: var(--primary-dark);
+    }
+    .store-card-footer { display: flex; gap: 8px; }
+    .store-action-btn {
+      flex: 1; padding: 9px 0; border-radius: var(--radius-sm);
+      font-size: 12px; font-weight: 800; cursor: pointer; border: none; text-align: center;
+    }
+    .store-action-btn.primary { background: var(--primary-deep); color: #fff; }
+    .store-action-btn.secondary { background: var(--yellow-light); color: var(--primary-dark); }
+
+    /* ── Olive Better premium store card ── */
+    .better-card {
+      background: linear-gradient(135deg, #1A0E30 0%, #4A2C8A 60%, #7B5CCA 100%);
+      border-radius: var(--radius-lg); padding: 18px;
+      box-shadow: var(--shadow-lg); cursor: pointer; margin-bottom: 10px;
+      position: relative; overflow: hidden;
+    }
+    .better-card::before {
+      content: ''; position: absolute; top: -20px; right: -20px;
+      width: 100px; height: 100px;
+      background: rgba(200,168,255,0.15); border-radius: 50%;
+    }
+    .better-card-badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      background: rgba(200,168,255,0.25); border-radius: 20px;
+      padding: 4px 10px; margin-bottom: 10px;
+    }
+    .better-card-badge span { color: #D4AAFF; font-size: 11px; font-weight: 800; }
+    .better-card-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 8px; }
+    .better-card-name { color: #fff; font-size: 16px; font-weight: 900; }
+    .better-card-dist { color: rgba(255,255,255,0.65); font-size: 12px; font-weight: 700; }
+    .better-card-addr { color: rgba(255,255,255,0.65); font-size: 12px; margin-bottom: 10px; line-height: 1.4; }
+    .better-card-features { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+    .better-feature-tag {
+      background: rgba(255,255,255,0.15); color: #fff;
+      font-size: 11px; font-weight: 700; border-radius: 20px;
+      padding: 4px 11px; backdrop-filter: blur(4px);
+    }
+    .better-card-footer { display: flex; gap: 8px; }
+    .better-action-btn {
+      flex: 1; padding: 9px 0; border-radius: var(--radius-sm);
+      font-size: 12px; font-weight: 800; cursor: pointer; border: none; text-align: center;
+    }
+    .better-action-btn.primary {
+      background: rgba(255,255,255,0.9); color: var(--primary-deep);
+    }
+    .better-action-btn.secondary {
+      background: rgba(255,255,255,0.15); color: #fff; backdrop-filter: blur(4px);
+    }
+
+    /* ── Store page section label ── */
+    .store-section-label {
+      padding: 20px 16px 10px;
+      font-size: 17px; font-weight: 900; color: var(--text-primary); letter-spacing: -0.3px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .store-count { font-size: 13px; color: var(--text-muted); font-weight: 600; }
+
+    /* ══════════════════════════════════
+       ★  LIKES PAGE  ★
+       ══════════════════════════════════ */
+
+    /* ── Likes segment ── */
+    .likes-segment {
+      display: flex; background: var(--card);
+      border-bottom: 1.5px solid var(--border);
+    }
+    .likes-seg-btn {
+      flex: 1; padding: 13px 0;
+      background: none; border: none;
+      font-size: 13px; font-weight: 700; color: var(--text-muted);
+      cursor: pointer; border-bottom: 2.5px solid transparent;
+      margin-bottom: -1.5px; transition: all 0.2s;
+    }
+    .likes-seg-btn.active { color: var(--primary); border-bottom-color: var(--primary); }
+
+    /* ── Product grid ── */
+    .product-grid {
+      display: grid; grid-template-columns: repeat(2, 1fr);
+      gap: 12px; padding: 16px;
+    }
+    .product-card {
+      background: rgba(255,255,255,0.88);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(237,224,200,0.7); box-shadow: var(--shadow-sm);
+      overflow: hidden; cursor: pointer; position: relative;
+      transition: transform 0.18s, box-shadow 0.18s;
+    }
+    .product-card:active { transform: scale(0.97); }
+    .product-thumb {
+      height: 120px; display: flex; align-items: center; justify-content: center;
+      font-size: 52px; background: var(--input-bg);
+      position: relative;
+    }
+    .product-heart {
+      position: absolute; top: 8px; right: 8px;
+      width: 28px; height: 28px; background: var(--card);
+      border-radius: 50%; border: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; box-shadow: var(--shadow-sm);
+    }
+    .product-body { padding: 10px 12px 12px; }
+    .product-brand { font-size: 10px; color: var(--text-muted); font-weight: 700; margin-bottom: 3px; }
+    .product-name { font-size: 13px; font-weight: 900; color: var(--text-primary); line-height: 1.3; margin-bottom: 4px; }
+    .product-desc { font-size: 11px; color: var(--text-secondary); line-height: 1.4; margin-bottom: 8px; }
+    .product-price-row { display: flex; align-items: center; justify-content: space-between; }
+    .product-price { font-size: 14px; font-weight: 900; color: var(--primary-dark); }
+    .product-rating { font-size: 10px; color: var(--text-muted); }
+    .product-cart-btn {
+      width: 100%; margin-top: 8px; background: var(--primary-deep);
+      color: #fff; border: none; border-radius: var(--radius-sm);
+      padding: 8px 0; font-size: 12px; font-weight: 800; cursor: pointer;
+    }
+
+    /* ── Recently viewed — horizontal scroll ── */
+    .recent-scroll {
+      display: flex; gap: 12px; overflow-x: auto;
+      padding: 16px 16px 4px; scrollbar-width: none;
+    }
+    .recent-scroll::-webkit-scrollbar { display: none; }
+    .recent-card {
+      min-width: 130px; flex-shrink: 0;
+      background: rgba(255,255,255,0.88);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(237,224,200,0.7); box-shadow: var(--shadow-sm);
+      overflow: hidden; cursor: pointer;
+    }
+    .recent-thumb {
+      height: 90px; background: var(--input-bg);
+      display: flex; align-items: center; justify-content: center; font-size: 38px;
+    }
+    .recent-body { padding: 8px 10px 10px; }
+    .recent-name { font-size: 12px; font-weight: 800; color: var(--text-primary); margin-bottom: 3px; line-height: 1.3; }
+    .recent-price { font-size: 12px; font-weight: 900; color: var(--primary-dark); }
+
+    /* ── Recommend strip (하단 추천) ── */
+    .likes-reco-section { padding: 20px 16px 0; }
+    .likes-reco-header {
+      display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;
+    }
+    .likes-reco-scroll {
+      display: flex; gap: 10px; overflow-x: auto;
+      padding-bottom: 20px; scrollbar-width: none;
+    }
+    .likes-reco-scroll::-webkit-scrollbar { display: none; }
+    .likes-reco-card {
+      min-width: 140px; flex-shrink: 0;
+      background: var(--card); border-radius: var(--radius-md);
+      border: 1px solid var(--border); box-shadow: var(--shadow-sm);
+      overflow: hidden; cursor: pointer;
+    }
+    .likes-reco-thumb {
+      height: 100px; background: var(--input-bg);
+      display: flex; align-items: center; justify-content: center; font-size: 42px;
+    }
+    .likes-reco-body { padding: 10px; }
+    .likes-reco-tag {
+      font-size: 10px; font-weight: 800; color: var(--primary);
+      background: var(--yellow-light); padding: 2px 7px; border-radius: 10px;
+      display: inline-block; margin-bottom: 5px;
+    }
+    .likes-reco-name { font-size: 12px; font-weight: 900; color: var(--text-primary); margin-bottom: 3px; line-height: 1.3; }
+    .likes-reco-price { font-size: 12px; font-weight: 900; color: var(--primary-dark); }
+
+    /* ══════════════════════════════════
+       ★  MY PAGE  ★
+       ══════════════════════════════════ */
+
+    /* ── Profile card ── */
+    .my-profile-card {
+      background: linear-gradient(135deg, #2A1204 0%, #6B3F18 50%, #C17F24 100%);
+      padding: 24px 20px 20px; position: relative; overflow: hidden;
+    }
+    .my-profile-card::before {
+      content: ''; position: absolute; top: -40px; right: -40px;
+      width: 160px; height: 160px;
+      background: rgba(245,200,66,0.12); border-radius: 50%;
+    }
+    .my-profile-row { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
+    .my-avatar {
+      width: 64px; height: 64px; border-radius: 50%;
+      background: var(--yellow); display: flex; align-items: center;
+      justify-content: center; font-size: 30px; flex-shrink: 0;
+      border: 3px solid rgba(255,255,255,0.3);
+    }
+    .my-info { flex: 1; }
+    .my-name { color: #fff; font-size: 20px; font-weight: 900; letter-spacing: -0.4px; margin-bottom: 4px; }
+    .my-level {
+      display: inline-flex; align-items: center; gap: 4px;
+      background: rgba(245,200,66,0.25); border-radius: 20px;
+      padding: 3px 10px;
+    }
+    .my-level span { color: var(--yellow); font-size: 11px; font-weight: 800; }
+    .my-edit-btn {
+      background: rgba(255,255,255,0.15); color: #fff;
+      border: 1px solid rgba(255,255,255,0.3); border-radius: 10px;
+      padding: 7px 14px; font-size: 12px; font-weight: 700; cursor: pointer;
+      white-space: nowrap; backdrop-filter: blur(4px);
+    }
+    .my-stats { display: flex; gap: 0; }
+    .my-stat {
+      flex: 1; text-align: center; padding: 10px 0;
+      background: rgba(255,255,255,0.12); border-radius: var(--radius-sm);
+      backdrop-filter: blur(4px);
+    }
+    .my-stat + .my-stat { margin-left: 8px; }
+    .my-stat-val { color: var(--yellow); font-size: 20px; font-weight: 900; }
+    .my-stat-label { color: rgba(255,255,255,0.70); font-size: 10px; font-weight: 700; margin-top: 2px; }
+
+    /* ── Goal tags ── */
+    .my-goals-row {
+      display: flex; flex-wrap: wrap; gap: 7px;
+      padding: 16px 16px 0;
+    }
+    .my-goal-tag {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: var(--yellow-light); border: 1.5px solid var(--border);
+      border-radius: 20px; padding: 6px 14px;
+      font-size: 12px; font-weight: 800; color: var(--primary-dark);
+    }
+
+    /* ── Routine setup ── */
+    .my-section { padding: 20px 16px 0; }
+    .my-section-header {
+      display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;
+    }
+    .my-section-title { font-size: 17px; font-weight: 900; color: var(--text-primary); letter-spacing: -0.3px; }
+    .my-section-link { font-size: 13px; color: var(--primary); font-weight: 700; background: none; border: none; cursor: pointer; }
+
+    .routine-setup-card {
+      background: rgba(255,255,255,0.88);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(237,224,200,0.7); box-shadow: var(--shadow-sm);
+      overflow: hidden;
+    }
+    .routine-slot {
+      display: flex; align-items: center; gap: 12px;
+      padding: 14px 16px; border-bottom: 1px solid var(--border);
+    }
+    .routine-slot:last-child { border-bottom: none; }
+    .routine-slot-time-col { flex-shrink: 0; width: 56px; }
+    .routine-slot-time-label {
+      font-size: 10px; font-weight: 800; color: var(--text-muted); margin-bottom: 2px;
+    }
+    .routine-slot-time { font-size: 13px; font-weight: 900; color: var(--primary-dark); }
+    .routine-slot-pills { display: flex; flex-wrap: wrap; gap: 5px; flex: 1; }
+    .routine-pill-tag {
+      display: inline-flex; align-items: center; gap: 4px;
+      background: var(--yellow-light); border-radius: 20px;
+      padding: 4px 10px; font-size: 11px; font-weight: 800; color: var(--primary-dark);
+    }
+    .routine-slot-add {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: var(--input-bg); border: 1.5px dashed var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px; color: var(--text-muted); cursor: pointer; flex-shrink: 0;
+    }
+    .routine-add-full {
+      width: 100%; padding: 12px; margin-top: 10px;
+      background: var(--input-bg); border: 1.5px dashed var(--border);
+      border-radius: var(--radius-sm); font-size: 13px; font-weight: 700;
+      color: var(--text-muted); cursor: pointer; text-align: center;
+    }
+
+    /* ── My menu list ── */
+    .my-menu-card {
+      background: rgba(255,255,255,0.88);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(237,224,200,0.7); box-shadow: var(--shadow-sm); overflow: hidden;
+    }
+    .my-menu-item {
+      display: flex; align-items: center; gap: 12px;
+      padding: 15px 16px; border-bottom: 1px solid var(--border); cursor: pointer;
+    }
+    .my-menu-item:last-child { border-bottom: none; }
+    .my-menu-icon {
+      width: 36px; height: 36px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center; font-size: 17px; flex-shrink: 0;
+    }
+    .my-menu-text { flex: 1; }
+    .my-menu-label { font-size: 14px; font-weight: 800; color: var(--text-primary); }
+    .my-menu-sub { font-size: 12px; color: var(--text-muted); margin-top: 1px; }
+    .my-menu-arrow { color: var(--text-muted); font-size: 16px; }
+    .my-menu-badge {
+      font-size: 11px; font-weight: 800; background: var(--accent);
+      color: #fff; border-radius: 20px; padding: 2px 8px;
+    }
+
+    /* ── Health data section ── */
+    .health-data-row {
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;
+    }
+    .health-data-card {
+      background: rgba(255,255,255,0.88);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(237,224,200,0.7); box-shadow: var(--shadow-sm);
+      padding: 14px 16px; cursor: pointer;
+    }
+    .health-data-icon { font-size: 22px; margin-bottom: 8px; display: block; }
+    .health-data-label { font-size: 11px; color: var(--text-muted); font-weight: 700; margin-bottom: 4px; }
+    .health-data-val { font-size: 18px; font-weight: 900; color: var(--text-primary); }
+    .health-data-unit { font-size: 11px; color: var(--text-muted); font-weight: 600; }
+    .health-data-trend { font-size: 11px; font-weight: 800; color: var(--primary); margin-top: 4px; }
+
+    /* ══════════════════════════════════
+       ★  CATEGORY PAGE  ★
+       ══════════════════════════════════ */
+    .page { display: none; }
+    .page.active { display: block; }
+
+    /* ── Category tab bar ── */
+    .cat-tabs {
+      display: flex; gap: 0;
+      background: var(--card);
+      border-bottom: 1.5px solid var(--border);
+      overflow-x: auto; scrollbar-width: none;
+      padding: 0 4px;
+      position: sticky; top: 0; z-index: 50;
+    }
+    .cat-tabs::-webkit-scrollbar { display: none; }
+    .cat-tab {
+      flex-shrink: 0; padding: 13px 16px;
+      font-size: 13px; font-weight: 700; color: var(--text-muted);
+      background: none; border: none; cursor: pointer;
+      border-bottom: 2.5px solid transparent; margin-bottom: -1.5px;
+      transition: all 0.2s; white-space: nowrap;
+    }
+    .cat-tab.active { color: var(--primary); border-bottom-color: var(--primary); }
+
+    /* ── Goal grid ── */
+    .goal-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 10px; padding: 0;
+    }
+    .goal-card {
+      background: rgba(255,255,255,0.88);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border-radius: var(--radius-md);
+      border: 1.5px solid rgba(237,224,200,0.7); padding: 14px 8px 12px;
+      text-align: center; cursor: pointer; transition: all 0.18s;
+      box-shadow: var(--shadow-sm);
+    }
+    .goal-card:active { transform: scale(0.95); border-color: var(--primary); background: var(--yellow-light); }
+    .goal-icon { font-size: 26px; display: block; margin-bottom: 6px; }
+    .goal-name { font-size: 11px; font-weight: 800; color: var(--text-primary); line-height: 1.3; }
+    .goal-count { font-size: 10px; color: var(--text-muted); margin-top: 2px; }
+
+    /* ── Type scroll (영양제 종류) ── */
+    .type-scroll {
+      display: flex; gap: 10px; overflow-x: auto;
+      padding-bottom: 4px; scrollbar-width: none;
+    }
+    .type-scroll::-webkit-scrollbar { display: none; }
+    .type-chip {
+      flex-shrink: 0; display: flex; flex-direction: column; align-items: center; gap: 6px;
+      background: rgba(255,255,255,0.88);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1.5px solid rgba(237,224,200,0.7);
+      border-radius: var(--radius-md); padding: 14px 14px 10px;
+      cursor: pointer; transition: all 0.18s; min-width: 72px;
+      box-shadow: var(--shadow-sm);
+    }
+    .type-chip:active { border-color: var(--primary); background: var(--yellow-light); }
+    .type-emoji { font-size: 24px; }
+    .type-name { font-size: 11px; font-weight: 800; color: var(--text-primary); white-space: nowrap; }
+
+    /* ── Rank list ── */
+    .rank-list { display: flex; flex-direction: column; gap: 0; }
+    .rank-item {
+      display: flex; align-items: center; gap: 12px;
+      padding: 13px 0; border-bottom: 1px solid var(--border);
+      cursor: pointer;
+    }
+    .rank-item:last-child { border-bottom: none; }
+    .rank-num {
+      width: 22px; text-align: center;
+      font-size: 15px; font-weight: 900; color: var(--primary-dark);
+      flex-shrink: 0;
+    }
+    .rank-num.top { color: var(--accent); }
+    .rank-icon {
+      width: 42px; height: 42px; border-radius: var(--radius-sm);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px; flex-shrink: 0;
+    }
+    .rank-info { flex: 1; }
+    .rank-name { font-size: 14px; font-weight: 800; color: var(--text-primary); margin-bottom: 2px; }
+    .rank-sub { font-size: 12px; color: var(--text-muted); }
+    .rank-arrow { color: var(--text-muted); font-size: 16px; }
+    .rank-badge {
+      font-size: 10px; font-weight: 800; padding: 2px 7px;
+      border-radius: 20px; white-space: nowrap;
+    }
+    .rank-badge.hot { background: #FFF0EE; color: var(--accent); }
+    .rank-badge.new { background: var(--purple-soft); color: var(--purple); }
+
+    /* ── AI Package card ── */
+    .pkg-card {
+      background: linear-gradient(135deg, #1A0E30 0%, #5C3A8A 50%, #9B6FE0 100%);
+      border-radius: var(--radius-lg); padding: 20px;
+      position: relative; overflow: hidden; box-shadow: var(--shadow-lg); cursor: pointer;
+    }
+    .pkg-card::before {
+      content: ''; position: absolute; top: -30px; right: -30px;
+      width: 130px; height: 130px;
+      background: rgba(200,168,255,0.15); border-radius: 50%;
+    }
+    .pkg-badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      background: rgba(200,168,255,0.25); border-radius: 20px;
+      padding: 4px 10px; margin-bottom: 10px;
+    }
+    .pkg-badge span { color: #D4AAFF; font-size: 11px; font-weight: 800; }
+    .pkg-title { color: #fff; font-size: 18px; font-weight: 900; letter-spacing: -0.4px; margin-bottom: 4px; }
+    .pkg-sub { color: rgba(255,255,255,0.70); font-size: 13px; margin-bottom: 14px; }
+    .pkg-items { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+    .pkg-item-tag {
+      background: rgba(255,255,255,0.15); color: #fff;
+      font-size: 12px; font-weight: 700; border-radius: 20px;
+      padding: 4px 11px; backdrop-filter: blur(4px);
+    }
+    .pkg-cta {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.4);
+      color: #fff; font-size: 13px; font-weight: 700;
+      padding: 8px 16px; border-radius: 20px; backdrop-filter: blur(6px);
+    }
+    .pkg-cta svg { width: 13px; height: 13px; stroke: #fff; fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+
+    /* ── Brand scroll ── */
+    .brand-scroll {
+      display: flex; gap: 10px; overflow-x: auto;
+      padding-bottom: 4px; scrollbar-width: none;
+    }
+    .brand-scroll::-webkit-scrollbar { display: none; }
+    .brand-chip {
+      flex-shrink: 0;
+      background: rgba(255,255,255,0.88);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1.5px solid rgba(237,224,200,0.7);
+      border-radius: 20px; padding: 8px 16px;
+      font-size: 12px; font-weight: 800; color: var(--text-primary);
+      cursor: pointer; transition: all 0.18s; white-space: nowrap;
+      box-shadow: var(--shadow-sm);
+    }
+    .brand-chip:active { background: var(--yellow-light); border-color: var(--primary); color: var(--primary-dark); }
+
+    /* ── Category section header ── */
+    .cat-section { padding: 20px 16px 0; }
+    .cat-section-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 14px;
+    }
+    .cat-section-title { font-size: 17px; font-weight: 900; color: var(--text-primary); letter-spacing: -0.3px; }
+    .cat-section-link { font-size: 13px; color: var(--primary); font-weight: 700; background: none; border: none; cursor: pointer; }
+
+  /* ══════════════════════════════════════
+     ★  FINAL POLISH – Soft UI + Glass  ★
+  ══════════════════════════════════════ */
+
+  /* Body warm off-white base */
+  body { background: var(--bg); }
+
+  /* Cat-tabs & topic-scroll glass */
+  .cat-tabs {
+    background: rgba(255,255,255,0.88) !important;
+    backdrop-filter: blur(16px) !important;
+    -webkit-backdrop-filter: blur(16px) !important;
+    border-bottom: 1.5px solid rgba(237,224,200,0.6) !important;
+  }
+  .topic-scroll {
+    background: rgba(255,255,255,0.88) !important;
+    backdrop-filter: blur(16px) !important;
+    -webkit-backdrop-filter: blur(16px) !important;
+    border-bottom: 1.5px solid rgba(237,224,200,0.6) !important;
+  }
+
+  /* Likes-reco & seamless scroll cards */
+  .likes-reco-card {
+    background: rgba(255,255,255,0.88) !important;
+    backdrop-filter: blur(10px) !important;
+    -webkit-backdrop-filter: blur(10px) !important;
+    border: 1px solid rgba(237,224,200,0.7) !important;
+    box-shadow: var(--shadow-sm) !important;
+  }
+
+  /* Prescription card: subtle glass overlay for items */
+  .rx-item {
+    background: rgba(255,255,255,0.18) !important;
+    backdrop-filter: blur(8px) !important;
+    -webkit-backdrop-filter: blur(8px) !important;
+    border-radius: var(--radius-sm) !important;
+  }
+
+  /* Prescription card: keep warm gradient, refine corners */
+  .prescription-card {
+    border-radius: var(--radius-lg) !important;
+    box-shadow: 0 14px 48px rgba(107,63,24,0.22) !important;
+  }
+
+  /* Buttons – Soft UI */
+  .ob-cta-btn, .modal-confirm {
+    border-radius: var(--radius-md) !important;
+    box-shadow: 0 6px 24px rgba(245,200,66,0.38) !important;
+  }
+  .product-cart-btn, .store-action-btn.primary, .seamless-cart-btn {
+    border-radius: var(--radius-sm) !important;
+    box-shadow: 0 3px 10px rgba(42,18,4,0.18) !important;
+  }
+  .quick-check-btn, .meal-add-btn, .location-btn, .routine-share-save, .nudge-btn {
+    border-radius: 12px !important;
+    box-shadow: 0 2px 8px rgba(107,63,24,0.12) !important;
+  }
+
+  /* Section wrap subtle depth */
+  .section-wrap { padding-left: 16px; padding-right: 16px; }
+
+  /* Slide counter glass */
+  .slide-counter {
+    background: rgba(255,255,255,0.22) !important;
+    backdrop-filter: blur(8px) !important;
+    -webkit-backdrop-filter: blur(8px) !important;
+  }
+
+  /* Weekly summary soft */
+  .weekly-summary {
+    background: rgba(240,238,255,0.85) !important;
+    backdrop-filter: blur(8px) !important;
+    -webkit-backdrop-filter: blur(8px) !important;
+    border-radius: var(--radius-sm) !important;
+  }
+
+  /* Encourage msg soft */
+  .encourage-msg {
+    background: rgba(255,248,232,0.90) !important;
+    backdrop-filter: blur(8px) !important;
+    -webkit-backdrop-filter: blur(8px) !important;
+    border-radius: var(--radius-sm) !important;
+  }
+
+  /* My profile card refined */
+  .my-profile-card {
+    background: linear-gradient(135deg, #2A1204 0%, #6B3F18 50%, #C17F24 100%) !important;
+    border-radius: 0 0 var(--radius-lg) var(--radius-lg) !important;
+  }
+
+  /* Food option cards */
+  .food-option {
+    background: var(--input-bg) !important;
+    border-radius: var(--radius-sm) !important;
+    box-shadow: 0 2px 8px rgba(107,63,24,0.06) !important;
+  }
+  .food-option.selected {
+    background: var(--yellow-light) !important;
+    box-shadow: 0 2px 12px rgba(245,200,66,0.25) !important;
+  }
+
+  /* Seamless reason icon soft glow */
+  .seamless-reason-icon {
+    box-shadow: 0 3px 12px rgba(245,200,66,0.30) !important;
+    border-radius: 12px !important;
+  }
+
+  /* Transition on all interactive cards */
+  .meal-card, .routine-card, .weekly-card, .predict-card,
+  .reco-card, .review-card, .expert-card, .curation-card,
+  .routine-share-card, .store-card, .product-card,
+  .health-data-card, .goal-card, .type-chip {
+    transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+  }
+  .meal-card:hover, .routine-card:hover, .weekly-card:hover,
+  .expert-card:hover, .routine-share-card:hover {
+    box-shadow: var(--shadow-md) !important;
+    transform: translateY(-1px) !important;
+  }
+
+  @media (min-width: 430px) {
+    body { box-shadow: 0 0 80px rgba(0,0,0,0.12); }
+  }
+
+  /* ══════════════════════════════════════
+     ★  HEADER NAV TABS  ★
+  ══════════════════════════════════════ */
+  .header-nav-tabs {
+    display: flex;
+    gap: 2px;
+    margin-top: 10px;
+    background: rgba(107,63,24,0.06);
+    border-radius: 12px;
+    padding: 3px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .header-nav-tabs::-webkit-scrollbar { display: none; }
+  .header-nav-tab {
+    flex: 1;
+    min-width: 0;
+    padding: 7px 6px;
+    border: none;
+    background: transparent;
+    border-radius: 9px;
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.22s cubic-bezier(0.4,0,0.2,1);
+    white-space: nowrap;
+    text-align: center;
+    letter-spacing: -0.2px;
+    font-family: inherit;
+  }
+  .header-nav-tab:active { transform: scale(0.95); }
+  .header-nav-tab.active {
+    background: var(--yellow);
+    color: var(--primary-deep);
+    box-shadow: 0 2px 10px rgba(245,200,66,0.45);
+  }
+  .header-nav-tab.hn-ai.active {
+    background: linear-gradient(135deg, var(--primary-deep) 0%, var(--primary) 100%);
+    color: var(--yellow);
+    box-shadow: 0 2px 10px rgba(42,18,4,0.22);
+  }
+  .header-nav-tab.hn-ai::after {
+    content: ' ✦';
+    font-size: 8px;
+    vertical-align: super;
+    opacity: 0.7;
+  }
+
+  /* ══════════════════════════════════════
+     ★  WELLNESS CATEGORY HOME  ★
+  ══════════════════════════════════════ */
+  .wellness-cat-strip {
+    display: flex; gap: 10px; overflow-x: auto;
+    padding: 4px 16px 16px; scrollbar-width: none;
+  }
+  .wellness-cat-strip::-webkit-scrollbar { display: none; }
+  .wellness-cat-pill {
+    flex-shrink: 0;
+    display: flex; flex-direction: column; align-items: center; gap: 6px;
+    padding: 14px 14px 10px;
+    background: rgba(255,255,255,0.88);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 2px solid rgba(237,224,200,0.8);
+    border-radius: var(--radius-md);
+    cursor: pointer; transition: all 0.22s cubic-bezier(0.4,0,0.2,1);
+    min-width: 74px; text-align: center;
+    box-shadow: var(--shadow-sm);
+    font-family: inherit;
+  }
+  .wellness-cat-pill:active { transform: scale(0.95); }
+  .wellness-cat-pill.active {
+    background: var(--yellow);
+    border-color: var(--yellow);
+    box-shadow: 0 4px 16px rgba(245,200,66,0.45);
+  }
+  .wellness-cat-pill-icon { font-size: 26px; display: block; }
+  .wellness-cat-pill-label {
+    font-size: 11px; font-weight: 800; color: var(--text-secondary);
+    white-space: nowrap; letter-spacing: -0.2px;
+  }
+  .wellness-cat-pill.active .wellness-cat-pill-label { color: var(--primary-deep); }
+
+  /* Wellness section toggle */
+  .wellness-section { display: none; }
+  .wellness-section.active { display: block; }
+
+  /* Category description */
+  .wellness-cat-desc {
+    font-size: 12px; color: var(--text-muted); margin-bottom: 12px; line-height: 1.5;
+  }
+
+  /* Product cards */
+  .wellness-prod-scroll {
+    display: flex; gap: 12px; overflow-x: auto;
+    padding-bottom: 4px; scrollbar-width: none;
+  }
+  .wellness-prod-scroll::-webkit-scrollbar { display: none; }
+  .wellness-prod-card {
+    min-width: 148px; flex-shrink: 0;
+    background: rgba(255,255,255,0.90);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: var(--radius-md);
+    border: 1px solid rgba(237,224,200,0.7);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden; cursor: pointer;
+    transition: transform 0.18s, box-shadow 0.18s;
+  }
+  .wellness-prod-card:active { transform: scale(0.97); }
+  .wellness-prod-card:hover { box-shadow: var(--shadow-md); transform: translateY(-1px); }
+  .wellness-prod-thumb {
+    height: 104px; display: flex; align-items: center; justify-content: center;
+    font-size: 44px; background: var(--input-bg); position: relative;
+  }
+  .wellness-prod-tag {
+    position: absolute; top: 7px; left: 7px;
+    font-size: 9px; font-weight: 900; padding: 3px 7px; border-radius: 10px;
+    background: var(--primary-deep); color: var(--yellow); white-space: nowrap;
+  }
+  .wellness-prod-body { padding: 10px 12px 12px; }
+  .wellness-prod-brand {
+    font-size: 10px; color: var(--text-muted); font-weight: 700; margin-bottom: 3px;
+  }
+  .wellness-prod-name {
+    font-size: 12.5px; font-weight: 900; color: var(--text-primary);
+    line-height: 1.3; margin-bottom: 8px;
+  }
+  .wellness-prod-foot { display: flex; align-items: flex-end; justify-content: space-between; }
+  .wellness-prod-price { font-size: 13px; font-weight: 900; color: var(--primary-dark); }
+  .wellness-prod-rating { font-size: 10px; color: var(--text-muted); margin-top: 2px; }
+  .wellness-prod-cart {
+    width: 28px; height: 28px;
+    background: var(--primary-deep); border-radius: 9px; border: none;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; font-weight: 900; color: var(--yellow); cursor: pointer;
+    box-shadow: 0 2px 8px rgba(42,18,4,0.20); transition: all 0.2s; flex-shrink: 0;
+  }
+  .wellness-prod-cart:active { transform: scale(0.90); }
+
+  /* ══════════════════════════════════════
+     ★  CART OVERLAY  ★
+  ══════════════════════════════════════ */
+  #cart-overlay {
+    display: none;
+    position: fixed; inset: 0; z-index: 300;
+    background: rgba(0,0,0,0.55);
+    align-items: flex-end; justify-content: center;
+  }
+  #cart-overlay.open { display: flex; }
+  #cart-sheet {
+    background: rgba(255,255,255,0.97);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    border-radius: 28px 28px 0 0;
+    border-top: 1px solid rgba(245,200,66,0.20);
+    width: 100%; max-width: 430px;
+    max-height: 85vh;
+    display: flex; flex-direction: column;
+    animation: slideUp 0.3s ease;
+    box-shadow: 0 -8px 40px rgba(107,63,24,0.12);
+  }
+  .cart-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 20px 20px 14px;
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+  .cart-title { font-size: 18px; font-weight: 900; color: var(--text-primary); }
+  .cart-close-btn {
+    width: 32px; height: 32px;
+    background: var(--input-bg); border: none; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; cursor: pointer; color: var(--text-muted);
+  }
+  .cart-body { overflow-y: auto; flex: 1; padding: 0 0 8px; }
+  .cart-empty {
+    text-align: center; padding: 52px 20px;
+    color: var(--text-muted);
+  }
+  .cart-empty-icon { font-size: 48px; display: block; margin-bottom: 12px; }
+  .cart-empty-text { font-size: 15px; font-weight: 700; margin-bottom: 6px; color: var(--text-secondary); }
+  .cart-empty-sub { font-size: 13px; color: var(--text-muted); }
+  .cart-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 14px 20px; border-bottom: 1px solid var(--border);
+  }
+  .cart-item-thumb {
+    width: 52px; height: 52px; border-radius: var(--radius-sm);
+    background: var(--input-bg);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 26px; flex-shrink: 0;
+  }
+  .cart-item-info { flex: 1; min-width: 0; }
+  .cart-item-brand { font-size: 10px; color: var(--text-muted); font-weight: 700; margin-bottom: 2px; }
+  .cart-item-name { font-size: 13px; font-weight: 800; color: var(--text-primary); line-height: 1.3; margin-bottom: 4px; }
+  .cart-item-price { font-size: 13px; font-weight: 900; color: var(--primary-dark); }
+  .cart-item-qty {
+    display: flex; align-items: center; gap: 6px; flex-shrink: 0;
+  }
+  .qty-btn {
+    width: 26px; height: 26px; border-radius: 8px;
+    border: 1.5px solid var(--border); background: var(--input-bg);
+    font-size: 16px; font-weight: 800; color: var(--text-primary);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; transition: all 0.15s;
+  }
+  .qty-btn:active { background: var(--yellow-light); border-color: var(--primary); }
+  .qty-num { font-size: 14px; font-weight: 900; color: var(--text-primary); min-width: 18px; text-align: center; }
+  .cart-footer {
+    padding: 16px 20px 28px; flex-shrink: 0;
+    border-top: 1px solid var(--border);
+    background: rgba(255,255,255,0.97);
+  }
+  .cart-total-row {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 14px;
+  }
+  .cart-total-label { font-size: 14px; font-weight: 700; color: var(--text-secondary); }
+  .cart-total-price { font-size: 20px; font-weight: 900; color: var(--primary-dark); }
+  .cart-order-btn {
+    width: 100%;
+    background: linear-gradient(90deg, var(--primary-dark), var(--primary));
+    color: #fff; border: none; border-radius: var(--radius-md);
+    padding: 15px; font-size: 16px; font-weight: 900; cursor: pointer;
+    box-shadow: 0 4px 16px rgba(107,63,24,0.22);
+  }
+
+  /* cart badge on header button */
+  .hbtn-cart { position: relative; }
+  .cart-badge {
+    display: none;
+    position: absolute; top: 4px; right: 4px;
+    min-width: 16px; height: 16px;
+    background: var(--accent); color: #fff;
+    font-size: 9px; font-weight: 900; border-radius: 8px;
+    align-items: center; justify-content: center;
+    padding: 0 4px;
+  }
+  .cart-badge.show { display: flex; }
+  </style>
+</head>
+<body>
+<!-- ★ ONBOARDING OVERLAY ★ -->
+<div id="ob-overlay">
+  <div class="ob-inner">
+
+    <div class="ob-logo-row">
+      <div class="ob-logo-mark">🫒</div>
+      <div class="ob-logo-text">olive <em>better</em></div>
+    </div>
+
+    <div class="ob-headline">
+      <h1>나에게 꼭 맞는<br><em>웰니스 루틴</em>을<br>시작해볼까요?</h1>
+      <p>3가지 질문으로 AI가 맞춤형<br>건강 솔루션을 분석해드릴게요.</p>
+    </div>
+
+    <div class="ob-progress-dots">
+      <div class="ob-dot active" id="ob-dot0"></div>
+      <div class="ob-dot" id="ob-dot1"></div>
+      <div class="ob-dot" id="ob-dot2"></div>
+    </div>
+
+    <!-- Q1: 수면 -->
+    <div class="ob-step">
+      <div class="ob-step-label">Step 1 · 수면</div>
+      <div class="ob-step-q">어젯밤 평균 수면 시간은<br>얼마나 됐나요?</div>
+      <div class="ob-chips" id="ob-sleep-chips">
+        <div class="ob-chip" data-val="4시간 미만">4시간 미만</div>
+        <div class="ob-chip" data-val="4–5시간">4–5시간</div>
+        <div class="ob-chip" data-val="6–7시간">6–7시간</div>
+        <div class="ob-chip" data-val="7시간 이상">7시간 이상</div>
+      </div>
+    </div>
+
+    <!-- Q2: 스트레스 -->
+    <div class="ob-step">
+      <div class="ob-step-label">Step 2 · 스트레스</div>
+      <div class="ob-step-q">요즘 스트레스 수준은<br>어느 정도인가요?</div>
+      <div class="ob-chips" id="ob-stress-chips">
+        <div class="ob-chip" data-val="매우 낮음">😌 매우 낮음</div>
+        <div class="ob-chip" data-val="보통">🙂 보통</div>
+        <div class="ob-chip" data-val="높음">😰 높음</div>
+        <div class="ob-chip" data-val="매우 높음">😩 매우 높음</div>
+      </div>
+    </div>
+
+    <!-- Q3: 식습관 -->
+    <div class="ob-step">
+      <div class="ob-step-label">Step 3 · 식습관</div>
+      <div class="ob-step-q">현재 식습관은 어떻게<br>이루어져 있나요?</div>
+      <div class="ob-chips" id="ob-diet-chips">
+        <div class="ob-chip" data-val="규칙적인 3끼">🥗 규칙적인 3끼</div>
+        <div class="ob-chip" data-val="불규칙한 식사">⏱ 불규칙한 식사</div>
+        <div class="ob-chip" data-val="채식 위주">🥦 채식 위주</div>
+        <div class="ob-chip" data-val="야식이 잦음">🌙 야식이 잦음</div>
+      </div>
+    </div>
+
+    <button class="ob-cta-btn" id="ob-start-btn" disabled>분석 시작하기 →</button>
+    <p class="ob-notice">입력하신 정보는 맞춤 분석에만 사용되며 안전하게 보호됩니다.</p>
+
+  </div>
+</div>
+
+<div class="app-wrap" id="app-main">
+
+  <!-- Status Bar -->
+  <div class="status-bar">
+    <span>9:41</span>
+    <span>●●● WiFi 🔋</span>
+  </div>
+
+  <!-- Header (홈) -->
+  <div class="header" id="header-home">
+    <div class="header-row">
+      <div class="header-logo">
+        <div class="logo-mark">🫒</div>
+        <span class="logo-text">olive better</span>
+      </div>
+      <div class="header-actions">
+        <button class="hbtn" aria-label="검색">
+          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </button>
+        <button class="hbtn" aria-label="알림">
+          <div class="notif-dot"></div>
+          <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+        </button>
+        <button class="hbtn hbtn-cart" aria-label="장바구니" id="cartHeaderBtn">
+          <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+          <span class="cart-badge" id="cartBadge">0</span>
+        </button>
+      </div>
+    </div>
+    <div class="search-wrap">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <span>건강·뷰티 상품, 브랜드 검색</span>
+    </div>
+    <div class="header-nav-tabs" id="headerNavTabs">
+      <button class="header-nav-tab active" data-htab="home">홈</button>
+      <button class="header-nav-tab" data-htab="special">오특</button>
+      <button class="header-nav-tab" data-htab="ranking">랭킹</button>
+      <button class="header-nav-tab" data-htab="event">기획전</button>
+      <button class="header-nav-tab hn-ai" data-htab="ai">AI맞춤</button>
+    </div>
+  </div>
+
+  <!-- ── Page: 홈 ── -->
+  <div id="page-home" class="page active">
+
+  <!-- Main Content -->
+  <div class="main-content">
+
+    <!-- ★ 큐레이터 배너 ★ -->
+    <div class="curator-wrap">
+      <div class="curator-track" id="curatorTrack">
+
+        <!-- Slide 1: 피로 회복 루틴 -->
+        <div class="curator-slide">
+          <div class="curator-bg" style="background:none;">
+            <img src="https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?w=860&h=480&fit=crop&auto=format" alt="웰니스 루틴" style="width:100%;height:100%;object-fit:cover;object-position:center top;" />
+          </div>
+          <div class="curator-overlay"></div>
+          <div class="curator-content">
+            <div class="curator-badge">✦ 이번 주 큐레이션</div>
+            <p class="curator-title">지수님을 위한<br>5월 피로 회복 루틴</p>
+            <p class="curator-sub">수면 + 영양제 조합으로 에너지를 되찾아요</p>
+            <button class="curator-cta">
+              루틴 보러가기
+              <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Slide 2: 보타닉 컬렉션 -->
+        <div class="curator-slide">
+          <div class="curator-bg" style="background:none;">
+            <img src="https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=860&h=480&fit=crop&auto=format" alt="보타닉 웰니스" style="width:100%;height:100%;object-fit:cover;object-position:center;" />
+          </div>
+          <div class="curator-overlay"></div>
+          <div class="curator-content">
+            <div class="curator-badge">🌿 신상 입고</div>
+            <p class="curator-title">봄 시즌 한정<br>보타닉 웰니스 컬렉션</p>
+            <p class="curator-sub">자연 유래 성분으로 만든 프리미엄 라인</p>
+            <button class="curator-cta">
+              지금 구경하기
+              <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Slide 3: 영양제 특가 -->
+        <div class="curator-slide">
+          <div class="curator-bg" style="background:none;">
+            <img src="https://images.unsplash.com/photo-1550572017-4fcdbb59cc32?w=860&h=480&fit=crop&auto=format" alt="영양제 특가" style="width:100%;height:100%;object-fit:cover;object-position:center;" />
+          </div>
+          <div class="curator-overlay"></div>
+          <div class="curator-content">
+            <div class="curator-badge">🔥 지금 인기</div>
+            <p class="curator-title">나와 유사한 28세<br>직장인이 많이 찾아요</p>
+            <p class="curator-sub">오메가-3 · 마그네슘 · 루테인 세트 특가</p>
+            <button class="curator-cta">
+              특가 보러가기
+              <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Slide 4: 장 건강 패키지 -->
+        <div class="curator-slide">
+          <div class="curator-bg" style="background:none;">
+            <img src="https://images.unsplash.com/photo-1498837167922-ddd27525d352?w=860&h=480&fit=crop&auto=format" alt="건강 식단" style="width:100%;height:100%;object-fit:cover;object-position:center;" />
+          </div>
+          <div class="curator-overlay"></div>
+          <div class="curator-content">
+            <div class="curator-badge">💚 전문가 추천</div>
+            <p class="curator-title">영양사가 직접 고른<br>장 건강 케어 패키지</p>
+            <p class="curator-sub">프로바이오틱스부터 식이섬유까지 한번에</p>
+            <button class="curator-cta">
+              패키지 보기
+              <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+            </button>
+          </div>
+        </div>
+
+      </div><!-- /track -->
+
+      <!-- Arrows -->
+      <button class="curator-prev" onclick="moveCurator(-1)">
+        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <button class="curator-next" onclick="moveCurator(1)">
+        <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+
+      <!-- Counter -->
+      <div class="slide-counter" id="slideCounter">1 / 4</div>
+
+      <!-- Dots -->
+      <div class="curator-dots" id="curatorDots">
+        <div class="curator-dot active"></div>
+        <div class="curator-dot"></div>
+        <div class="curator-dot"></div>
+        <div class="curator-dot"></div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════
+         ★  HOME TAB CONTENT  ★
+         (카테고리 웰니스 쇼핑)
+    ══════════════════════════════════ -->
+    <div id="home-tab-content">
+
+      <!-- 섹션 타이틀 -->
+      <div class="section-wrap" style="padding-top:18px;padding-bottom:0;">
+        <div class="section-header">
+          <span class="section-title">🌿 나에게 맞는 웰니스</span>
+          <button class="section-link">전체 보기</button>
+        </div>
+      </div>
+
+      <!-- 카테고리 슬라이드 -->
+      <div class="wellness-cat-strip" id="wellnessCatStrip">
+        <button class="wellness-cat-pill active" data-cat="eat">
+          <span class="wellness-cat-pill-icon">🥗</span>
+          <span class="wellness-cat-pill-label">잘먹기</span>
+        </button>
+        <button class="wellness-cat-pill" data-cat="fill">
+          <span class="wellness-cat-pill-icon">💊</span>
+          <span class="wellness-cat-pill-label">잘채우기</span>
+        </button>
+        <button class="wellness-cat-pill" data-cat="move">
+          <span class="wellness-cat-pill-icon">🏃</span>
+          <span class="wellness-cat-pill-label">잘움직이기</span>
+        </button>
+        <button class="wellness-cat-pill" data-cat="rest">
+          <span class="wellness-cat-pill-icon">😴</span>
+          <span class="wellness-cat-pill-label">잘쉬기</span>
+        </button>
+        <button class="wellness-cat-pill" data-cat="groom">
+          <span class="wellness-cat-pill-icon">✨</span>
+          <span class="wellness-cat-pill-label">잘가꾸기</span>
+        </button>
+        <button class="wellness-cat-pill" data-cat="care">
+          <span class="wellness-cat-pill-icon">🩺</span>
+          <span class="wellness-cat-pill-label">잘케어하기</span>
+        </button>
+      </div>
+
+      <!-- ── 잘먹기 ── -->
+      <div class="wellness-section active" id="wcat-eat">
+        <div class="section-wrap">
+          <div class="section-header">
+            <span class="section-title">🥗 잘먹기 · 건강한 식사</span>
+            <button class="section-link">전체 보기</button>
+          </div>
+          <p class="wellness-cat-desc">균형 잡힌 식사로 건강한 하루를 시작해요</p>
+          <div class="wellness-prod-scroll">
+            <div class="wellness-prod-card">
+              <div class="wellness-prod-thumb">🥛<span class="wellness-prod-tag">베스트</span></div>
+              <div class="wellness-prod-body">
+                <p class="wellness-prod-brand">셀렉스</p>
+                <p class="wellness-prod-name">고단백<br>그릭요거트</p>
+                <div class="wellness-prod-foot">
+                  <div><p class="wellness-prod-price">₩3,200</p><p class="wellness-prod-rating">⭐4.7 · 2.1k</p></div>
+                  <button class="wellness-prod-cart">+</button>
+                </div>
+              </div>
+            </div>
+            <div class="wellness-prod-card">
+              <div class="wellness-prod-thumb">🍚</div>
+              <div class="wellness-prod-body">
+                <p class="wellness-prod-brand">CJ</p>
+                <p class="wellness-prod-name">현미·귀리<br>곤약밥</p>
+                <div class="wellness-prod-foot">
+                  <div><p class="wellness-prod-price">₩8,500</p><p class="wellness-prod-rating">⭐4.5 · 890</p></div>
+                  <button class="wellness-prod-cart">+</button>
+                </div>
+              </div>
+            </div>
+            <div class="wellness-prod-card">
+              <div class="wellness-prod-thumb">🍗<span class="wellness-prod-tag">인기</span></div>
+              <div class="wellness-prod-body">
+                <p class="wellness-prod-brand">오쉐</p>
+                <p class="wellness-prod-name">닭가슴살<br>스팀 100g</p>
+                <div class="wellness-prod-foot">
+                  <div><p class="wellness-prod-price">₩2,800</p><p class="wellness-prod-rating">⭐4.8 · 3.4k</p></div>
+                  <button class="wellness-prod-cart">+</button>
+                </div>
+              </div>
+            </div>
+            <div class="wellness-prod-card">
+              <div class="wellness-prod-thumb">🥤</div>
+              <div class="wellness-prod-body">
+                <p class="wellness-prod-brand">바프</p>
+                <p class="wellness-prod-name">콜드브루<br>단백질 쉐이크</p>
+                <div class="wellness-prod-foot">
+                  <div><p class="wellness-prod-price">₩4,500</p><p class="wellness-prod-rating">⭐4.6 · 1.2k</p></div>
+                  <button class="wellness-prod-cart">+</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── 잘채우기 ── -->
+      <div class="wellness-section" id="wcat-fill">
+        <div class="section-wrap">
+          <div class="section-header">
+            <span class="section-title">💊 잘채우기 · 영양 보충</span>
+            <button class="section-link">전체 보기</button>
+          </div>
+          <p class="wellness-cat-desc">부족한 영양소를 채워 몸의 균형을 맞춰요</p>
+          <div class="wellness-prod-scroll">
+            <div class="wellness-prod-card">
+              <div class="wellness-prod-thumb">🐟<span class="wellness-prod-tag">베스트</span></div>
+              <div class="wellness-prod-body">
+                <p class="wellness-prod-brand">뉴트리원</p>
+                <p class="wellness-prod-name">오메가-3<br>EPA/DHA</p>
+                <div class="wellness-prod-foot">
+                  <div><p class="wellness-prod-price">₩24,900</p><p class="wellness-prod-rating">⭐4.9 · 5.2k</p></div>
+                  <button class="wellness-prod-cart">+</button>
+                </div>
+              </div>
+            </div>
+            <div class="wellness-prod-card">
+              <div class="wellness-prod-thumb">🌈</div>
+              <div class="wellness-prod-body">
+                <p class="wellness-prod-brand">얼라이브</p>
+                <p class="wellness-prod-name">멀티비타민<br>& 미네랄</p>
+                <div class="wellness-prod-foot">
+                  <div><p class="wellness-prod-price">₩18,000</p><p class="wellness-prod-rating">⭐4.7 · 3.1k</p></div>
+                  <button class="wellness-prod-cart">+</button>
+                </div>
+              </div>
+            </div>
+            <div class="wellness-prod-card">
+              <div class="wellness-prod-thumb">☀️<span class="wellness-prod-tag">인기</span></div>
+              <div class="wellness-prod-body">
+                <p class="wellness-prod-brand">솔가</p>
+                <p class="wellness-prod-name">비타민 D3<br>+ K2</p>
+                <div class="wellness-prod-foot">
+                  <div><p class="wellness-prod-price">₩16,500</p><p class="wellness-prod-rating">⭐4.8 · 2.8k</p></div>
+                  <button class="wellness-prod-cart">+</button>
+                </div>
+              </div>
+            </div>
+            <div class="wellness-prod-card">
+              <div class="wellness-prod-thumb">🦠</div>
+              <div class="wellness-prod-body">
+                <p class="wellness-prod-brand">쎈느</p>
+                <p class="wellness-prod-name">프로바이오틱스<br>30억</p>
+                <div class="wellness-prod-foot">
+                  <div><p class="wellness-prod-price">₩22,000</p><p class="wellness-prod-rating">⭐4.6 · 1.9k</p></div>
+                  <button class="wellness-prod-cart">+</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── 잘움직이기 ── -->
+      <div class="wellness-section" id="wcat-move">
+        <div class="section-wrap">
+          <div class="section-header">
+            <span class="section-title">🏃 잘움직이기 · 활동·운동</span>
+            <button class="section-link">전체 보기</button>
+          </div>
+          <p class="wellness-cat-desc">꾸준한 움직임으로 활력 넘치는 하루를 만들어요</p>
+          <div class="wellness-prod-scroll">
+            <div class="wellness-prod-card">
+              <div class="wellness-prod-thumb">🧘<span class="wellness-prod-tag">베스트</span></div>
+              <div class="wellness-prod-body">
+                <p class="wellness-prod-brand">만다까</p>
+                <p class="wellness-prod-name">요가 매트<br>6mm 논슬립</p>
+                <div class="wellness-prod-foot">
+                  <div><p class="wellness-prod-price">₩18,000</p><p class="wellness-prod-rating">⭐4.6 · 1.8k</p></div>
+                  <button class="wellness-prod-cart">+</button>
+                </div>
+              </div>
+            </div>
+            <div class="wellness-prod-card">
+              <div class="wellness-prod-thumb">🔵</div>
+              <div class="wellness-prod-body">
+                <p class="wellness-prod-brand">리복</p>
+                <p class="wellness-prod-name">스트레칭<br>폼롤러</p>
+                <div class="wellness-prod-foot">
+                  <div><p class="wellness-prod-price">₩12,000</p><p class="wellness-prod-rating">⭐4.7 · 2.3k</p></div>
+                  <button class="wellness-prod-cart">+</button>
+                </div>
+              </div>
+            </div>
+            <div class="wellness-prod-card">
+              <div class="wellness-prod-thumb">💪<span class="wellness-prod-tag">인기</span></div>
+              <div class="wellness-prod-body">
+                <p class="wellness-prod-brand">ON</p>
+                <p class="wellness-prod-name">BCAA<br>아미노산</p>
+                <div class="wellness-prod-foot">
+                  <div><p class="wellness-prod-price">₩29,000</p><p class="wellness-prod-rating">⭐4.8 · 3.5k</p></div>
+                  <button class="wellness-prod-cart">+</button>
+                </div>
+              </div>
+            </div>
+            <div class="wellness-prod-card">
+              <div class="wellness-prod-thumb">🍫</div>
+              <div class="wellness-prod-body">
+                <p class="wellness-prod-brand">마이프로틴</p>
+                <p class="wellness-prod-name">스포츠<br>단백질 바</p>
+                <div class="wellness-prod-foot">
+                  <div><p class="wellness-prod-price">₩2,500</p><p class="wellness-prod-rating">⭐4.5 · 4.1k</p></div>
+                  <button class="wellness-prod-cart">+</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── 잘쉬기 ── -->
+      <div class="wellness-section" id="wcat-rest">
+        <div class="section-wrap">
+          <div class="section-header">
+            <span class="section-title">😴 잘쉬기 · 수면·휴식</span>
+            <button class="section-link">전체 보기</button>
+          </div>
+          <p class="wellness-cat-desc">깊은 수면과 충분한 휴식으로 몸을 회복해요</p>
+          <div class="wellness-prod-scroll">
+            <div class="wellness-prod-card">
+              <div class="wellness-prod-thumb">🌙<span class="wellness-prod-tag">베스트</span></div>
+              <div class="wellness-prod-body">
+                <p class="wellness-prod-brand">나우푸드</p>
+                <p class="wellness-prod-name">GABA<br>수면 지원</p>
+                <div class="wellness-prod-foot">
+                  <div><p class="wellness-prod-price">₩22,000</p><p class="wellness-prod-rating">⭐4.7 · 1.5k</p></div>
+                  <button class="wellness-prod-cart">+</button>
+                </div>
+              </div>
+            </div>
+            <div class="wellness-prod-card">
+              <div class="wellness-prod-thumb">🪨</div>
+              <div class="wellness-prod-body">
+                <p class="wellness-prod-brand">닥터베스트</p>
+                <p class="wellness-prod-name">마그네슘<br>글리시네이트</p>
+                <div class="wellness-prod-foot">
+                  <div><p class="wellness-prod-price">₩19,800</p><p class="wellness-prod-rating">⭐4.8 · 2.2k</p></div>
+                  <button class="wellness-prod-cart">+</button>
+                </div>
+              </div>
+            </div>
+            <div class="wellness-prod-card">
+              <div class="wellness-prod-thumb">💜<span class="wellness-prod-tag">인기</span></div>
+              <div class="wellness-prod-body">
+                <p class="wellness-prod-brand">욜로</p>
+                <p class="wellness-prod-name">라벤더<br>아로마 디퓨저</p>
+                <div class="wellness-prod-foot">
+                  <div><p class="wellness-prod-price">₩28,000</p><p class="wellness-prod-rating">⭐4.6 · 980</p></div>
+                  <button class="wellness-prod-cart">+</button>
+                </div>
+              </div>
+            </div>
+            <div class="wellness-prod-card">
+              <div class="wellness-prod-thumb">😴</div>
+              <div class="wellness-prod-body">
+                <p class="wellness-prod-brand">주무기좋은날</p>
+                <p class="wellness-prod-name">실크<br>수면 안대</p>
+                <div class="wellness-prod-foot">
+                  <div><p class="wellness-prod-price">₩8,900</p><p class="wellness-prod-rating">⭐4.7 · 760</p></div>
+                  <button class="wellness-prod-cart">+</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── 잘가꾸기 ── -->
+      <div class="wellness-section" id="wcat-groom">
+        <div class="section-wrap">
+          <div class="section-header">
+            <span class="section-title">✨ 잘가꾸기 · 피부·뷰티</span>
+            <button class="section-link">전체 보기</button>
+          </div>
+          <p class="wellness-cat-desc">건강한 피부와 외면 관리로 자신감을 높여요</p>
+          <div class="wellness-prod-scroll">
+            <div class="wellness-prod-card">
+              <div class="wellness-prod-thumb">💧<span class="wellness-prod-tag">베스트</span></div>
+              <div class="wellness-prod-body">
+                <p class="wellness-prod-brand">마녀공장</p>
+                <p class="wellness-prod-name">히알루론산<br>고농축 세럼</p>
+                <div class="wellness-prod-foot">
+                  <div><p class="wellness-prod-price">₩32,000</p><p class="wellness-prod-rating">⭐4.9 · 6.7k</p></div>
+                  <button class="wellness-prod-cart">+</button>
+                </div>
+              </div>
+            </div>
+            <div class="wellness-prod-card">
+              <div class="wellness-prod-thumb">✨</div>
+              <div class="wellness-prod-body">
+                <p class="wellness-prod-brand">코어셀</p>
+                <p class="wellness-prod-name">콜라겐<br>드링크 10병</p>
+                <div class="wellness-prod-foot">
+                  <div><p class="wellness-prod-price">₩29,000</p><p class="wellness-prod-rating">⭐4.8 · 3.4k</p></div>
+                  <button class="wellness-prod-cart">+</button>
+                </div>
+              </div>
+            </div>
+            <div class="wellness-prod-card">
+              <div class="wellness-prod-thumb">🌞<span class="wellness-prod-tag">인기</span></div>
+              <div class="wellness-prod-body">
+                <p class="wellness-prod-brand">에스트라</p>
+                <p class="wellness-prod-name">선케어<br>SPF50+ PA+++</p>
+                <div class="wellness-prod-foot">
+                  <div><p class="wellness-prod-price">₩18,000</p><p class="wellness-prod-rating">⭐4.8 · 4.2k</p></div>
+                  <button class="wellness-prod-cart">+</button>
+                </div>
+              </div>
+            </div>
+            <div class="wellness-prod-card">
+              <div class="wellness-prod-thumb">💇</div>
+              <div class="wellness-prod-body">
+                <p class="wellness-prod-brand">솔가</p>
+                <p class="wellness-prod-name">비오틴<br>헤어 케어</p>
+                <div class="wellness-prod-foot">
+                  <div><p class="wellness-prod-price">₩14,500</p><p class="wellness-prod-rating">⭐4.7 · 2.1k</p></div>
+                  <button class="wellness-prod-cart">+</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── 잘케어하기 ── -->
+      <div class="wellness-section" id="wcat-care">
+        <div class="section-wrap">
+          <div class="section-header">
+            <span class="section-title">🩺 잘케어하기 · 건강 관리</span>
+            <button class="section-link">전체 보기</button>
+          </div>
+          <p class="wellness-cat-desc">건강 수치를 체크하고 나를 더 잘 알아가요</p>
+          <div class="wellness-prod-scroll">
+            <div class="wellness-prod-card">
+              <div class="wellness-prod-thumb">⚖️<span class="wellness-prod-tag">베스트</span></div>
+              <div class="wellness-prod-body">
+                <p class="wellness-prod-brand">샤오미</p>
+                <p class="wellness-prod-name">체성분<br>스마트 체중계</p>
+                <div class="wellness-prod-foot">
+                  <div><p class="wellness-prod-price">₩49,000</p><p class="wellness-prod-rating">⭐4.6 · 3.8k</p></div>
+                  <button class="wellness-prod-cart">+</button>
+                </div>
+              </div>
+            </div>
+            <div class="wellness-prod-card">
+              <div class="wellness-prod-thumb">❤️</div>
+              <div class="wellness-prod-body">
+                <p class="wellness-prod-brand">오므론</p>
+                <p class="wellness-prod-name">자동<br>혈압계</p>
+                <div class="wellness-prod-foot">
+                  <div><p class="wellness-prod-price">₩89,000</p><p class="wellness-prod-rating">⭐4.8 · 2.1k</p></div>
+                  <button class="wellness-prod-cart">+</button>
+                </div>
+              </div>
+            </div>
+            <div class="wellness-prod-card">
+              <div class="wellness-prod-thumb">🩸<span class="wellness-prod-tag">인기</span></div>
+              <div class="wellness-prod-body">
+                <p class="wellness-prod-brand">아큐첵</p>
+                <p class="wellness-prod-name">혈당<br>체크 키트</p>
+                <div class="wellness-prod-foot">
+                  <div><p class="wellness-prod-price">₩35,000</p><p class="wellness-prod-rating">⭐4.7 · 1.4k</p></div>
+                  <button class="wellness-prod-cart">+</button>
+                </div>
+              </div>
+            </div>
+            <div class="wellness-prod-card">
+              <div class="wellness-prod-thumb">🌡️</div>
+              <div class="wellness-prod-body">
+                <p class="wellness-prod-brand">브라운</p>
+                <p class="wellness-prod-name">이어<br>테르모미터</p>
+                <div class="wellness-prod-foot">
+                  <div><p class="wellness-prod-price">₩28,000</p><p class="wellness-prod-rating">⭐4.6 · 890</p></div>
+                  <button class="wellness-prod-cart">+</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /home-tab-content -->
+
+    <!-- ══════════════════════════════════
+         ★  AI맞춤 TAB CONTENT  ★
+         (웰니스 루틴 + AI 처방)
+    ══════════════════════════════════ -->
+    <div id="ai-tab-content" style="display:none;">
+
+    <!-- ★ AI 개인화 피드백 섹션 (온보딩 데이터 기반) ★ -->
+    <div class="section-wrap" id="ai-feedback-section" style="display:none;">
+      <div class="ai-feedback-card">
+        <div class="ai-fb-top">
+          <div class="ai-fb-badge">✦ AI 분석 완료</div>
+          <div class="ai-fb-time" id="ai-fb-time">방금 전</div>
+        </div>
+        <div class="ai-fb-greeting" id="ai-fb-greeting">좋은 하루예요, 웰니스 회원님 👋</div>
+        <div class="ai-fb-msg" id="ai-fb-msg">분석 중…</div>
+        <div class="ai-fb-tags" id="ai-fb-tags"></div>
+        <div class="ai-fb-scores">
+          <div class="ai-fb-score-item">
+            <div class="ai-fb-score-val" id="ai-score-sleep">–</div>
+            <div class="ai-fb-score-label">수면 지수</div>
+            <div class="ai-fb-bar-wrap"><div class="ai-fb-bar-fill" id="ai-bar-sleep"></div></div>
+          </div>
+          <div class="ai-fb-score-item">
+            <div class="ai-fb-score-val" id="ai-score-stress">–</div>
+            <div class="ai-fb-score-label">스트레스</div>
+            <div class="ai-fb-bar-wrap"><div class="ai-fb-bar-fill" id="ai-bar-stress"></div></div>
+          </div>
+          <div class="ai-fb-score-item">
+            <div class="ai-fb-score-val" id="ai-score-diet">–</div>
+            <div class="ai-fb-score-label">식습관</div>
+            <div class="ai-fb-bar-wrap"><div class="ai-fb-bar-fill" id="ai-bar-diet"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ★ Seamless 상품 연계 섹션 (AI 진단 결과 기반) ★ -->
+    <div class="section-wrap" id="seamless-section" style="display:none;">
+      <div class="section-header">
+        <span class="section-title">🤖 AI 솔루션 추천</span>
+        <button class="section-link">전체 보기</button>
+      </div>
+      <div class="seamless-reason-banner">
+        <div class="seamless-reason-icon">🔬</div>
+        <div class="seamless-reason-text">
+          <b id="seamless-banner-title">분석 결과 기반 추천</b>
+          <p id="seamless-banner-desc">잠시만 기다려주세요.</p>
+        </div>
+      </div>
+      <div class="seamless-scroll" id="seamless-product-scroll"></div>
+    </div>
+
+    <!-- Today's Prescription -->
+    <div class="section-wrap">
+      <div class="section-header">
+        <span class="section-title">🫒 오늘의 AI 처방</span>
+        <button class="section-link">이유 보기</button>
+      </div>
+      <div class="prescription-card">
+        <div class="rx-label"><span>✦ 지수님 맞춤</span></div>
+        <p class="rx-title">오늘 꼭 챙겨야 할 것들</p>
+        <p class="rx-sub">건강 데이터 + 식단 기반으로 오늘 처방을 맞췄어요</p>
+        <div class="rx-items">
+          <div class="rx-item">
+            <div class="rx-item-icon">💊</div>
+            <div class="rx-item-info">
+              <p class="rx-item-name">오메가-3  1캡슐</p>
+              <p class="rx-item-reason">수면 질 개선 + 피로 회복에 효과적</p>
+            </div>
+            <div class="rx-item-check done" onclick="toggleCheck(this)">
+              <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            </div>
+          </div>
+          <div class="rx-item">
+            <div class="rx-item-icon">🌿</div>
+            <div class="rx-item-info">
+              <p class="rx-item-name">마그네슘  400mg</p>
+              <p class="rx-item-reason">근육 피로와 수면 패턴 불규칙에 도움</p>
+            </div>
+            <div class="rx-item-check" onclick="toggleCheck(this)">
+              <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            </div>
+          </div>
+          <div class="rx-item">
+            <div class="rx-item-icon">🥗</div>
+            <div class="rx-item-info">
+              <p class="rx-item-name">점심  단백질 위주 식단</p>
+              <p class="rx-item-reason">불규칙 식습관 보완 · 포만감 유지</p>
+            </div>
+            <div class="rx-item-check" onclick="toggleCheck(this)">
+              <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 식단 기록 -->
+    <div class="section-wrap">
+      <div class="section-header">
+        <span class="section-title">🍽 오늘의 식단 기록</span>
+        <button class="section-link">분석 보기</button>
+      </div>
+      <div class="meal-card">
+        <div class="meal-slots">
+          <div class="meal-slot logged" id="slot-morning" onclick="openMealModal('아침')">
+            <div class="meal-slot-icon">🌅</div>
+            <div class="meal-slot-label">아침</div>
+            <div class="meal-slot-status">기록 완료</div>
+          </div>
+          <div class="meal-slot" id="slot-lunch" onclick="openMealModal('점심')">
+            <div class="meal-slot-icon">☀️</div>
+            <div class="meal-slot-label">점심</div>
+            <div class="meal-slot-status">+ 기록하기</div>
+          </div>
+          <div class="meal-slot" id="slot-dinner" onclick="openMealModal('저녁')">
+            <div class="meal-slot-icon">🌙</div>
+            <div class="meal-slot-label">저녁</div>
+            <div class="meal-slot-status">+ 기록하기</div>
+          </div>
+        </div>
+        <div class="meal-tags" id="mealTags">
+          <span class="meal-tag">🥚 계란후라이</span>
+          <span class="meal-tag">🍞 통밀토스트</span>
+          <span class="meal-tag">🥛 두유</span>
+        </div>
+        <button class="meal-add-btn" onclick="openMealModal('간식')">+ 간식 · 음료 추가</button>
+      </div>
+    </div>
+
+    <!-- 루틴 -->
+    <div class="section-wrap">
+      <div class="section-header">
+        <span class="section-title">✅ 오늘의 루틴</span>
+        <button class="section-link">편집</button>
+      </div>
+      <div class="routine-card">
+        <div class="routine-header">
+          <span class="routine-title">3 / 5 완료</span>
+          <span class="progress-text">60%</span>
+        </div>
+        <div class="progress-bar-wrap">
+          <div class="progress-bar" id="progressBar" style="width:60%"></div>
+        </div>
+        <div class="routine-list">
+          <div class="routine-item done" onclick="toggleRoutine(this)">
+            <div class="check-circle"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+            <span class="routine-text">아침 비타민 D 복용</span>
+            <span class="routine-time">오전 8:00</span>
+          </div>
+          <div class="routine-item done" onclick="toggleRoutine(this)">
+            <div class="check-circle"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+            <span class="routine-text">아침 물 2잔 마시기</span>
+            <span class="routine-time">오전 8:30</span>
+          </div>
+          <div class="routine-item done" onclick="toggleRoutine(this)">
+            <div class="check-circle"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+            <span class="routine-text">점심 후 10분 산책</span>
+            <span class="routine-time">오후 1:00</span>
+          </div>
+          <div class="routine-item" onclick="toggleRoutine(this)">
+            <div class="check-circle"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+            <span class="routine-text">저녁 오메가-3 복용</span>
+            <span class="routine-time">오후 7:00</span>
+          </div>
+          <div class="routine-item" onclick="toggleRoutine(this)">
+            <div class="check-circle"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+            <span class="routine-text">취침 전 마그네슘 복용</span>
+            <span class="routine-time">오후 10:00</span>
+          </div>
+        </div>
+        <div class="encourage-msg" id="encourageMsg">💪 절반 넘었어요! 오늘도 잘 하고 있어요 🌿</div>
+      </div>
+    </div>
+
+    <!-- 이번 주 달성률 -->
+    <div class="section-wrap">
+      <div class="section-header">
+        <span class="section-title">📅 이번 주 달성률</span>
+        <button class="section-link">자세히</button>
+      </div>
+      <div class="weekly-card">
+        <div class="week-days">
+          <div class="day-item"><span class="day-label">월</span><div class="day-dot done">✓</div></div>
+          <div class="day-item"><span class="day-label">화</span><div class="day-dot done">✓</div></div>
+          <div class="day-item"><span class="day-label">수</span><div class="day-dot done">✓</div></div>
+          <div class="day-item"><span class="day-label">목</span><div class="day-dot partial">△</div></div>
+          <div class="day-item"><span class="day-label">금</span><div class="day-dot done">✓</div></div>
+          <div class="day-item"><span class="day-label">토</span><div class="day-dot today">●</div></div>
+          <div class="day-item"><span class="day-label">일</span><div class="day-dot empty">–</div></div>
+        </div>
+        <div class="weekly-summary">✨ 이번 주 5/6일 달성! 목요일 하루 놓쳤지만 괜찮아요. 다시 시작하면 돼요.</div>
+      </div>
+    </div>
+
+    <!-- 4주 예측 -->
+    <div class="section-wrap">
+      <div class="section-header">
+        <span class="section-title">🔮 4주 후 이렇게 달라져요</span>
+        <button class="section-link">더 알아보기</button>
+      </div>
+      <div class="predict-card" id="predictCard">
+        <span class="predict-badge">AI 예측</span>
+        <p class="predict-title">지금처럼 유지하면…</p>
+        <p class="predict-sub">현재 루틴 완료율 83% 기준 · 4주 후 예상 변화</p>
+        <div class="predict-metrics">
+          <div class="predict-metric">
+            <div class="predict-metric-header">
+              <span class="predict-metric-label">😴 수면 질</span>
+              <span class="predict-metric-change">+28% 개선</span>
+            </div>
+            <div class="predict-bar-wrap"><div class="predict-bar-fill sleep"></div></div>
+          </div>
+          <div class="predict-metric">
+            <div class="predict-metric-header">
+              <span class="predict-metric-label">⚡ 일상 에너지</span>
+              <span class="predict-metric-change">+35% 향상</span>
+            </div>
+            <div class="predict-bar-wrap"><div class="predict-bar-fill energy"></div></div>
+          </div>
+          <div class="predict-metric">
+            <div class="predict-metric-header">
+              <span class="predict-metric-label">🧠 집중력</span>
+              <span class="predict-metric-change">+22% 향상</span>
+            </div>
+            <div class="predict-bar-wrap"><div class="predict-bar-fill focus"></div></div>
+          </div>
+          <div class="predict-metric">
+            <div class="predict-metric-header">
+              <span class="predict-metric-label">🛡️ 면역력</span>
+              <span class="predict-metric-change">+18% 강화</span>
+            </div>
+            <div class="predict-bar-wrap"><div class="predict-bar-fill immune"></div></div>
+          </div>
+        </div>
+        <div class="predict-footer">📊 올리브 웰니스 사용자 1,200명의 4주 후 데이터 기반</div>
+      </div>
+    </div>
+
+    <!-- 프로필 넛지 -->
+    <div class="section-wrap">
+      <div class="nudge-banner">
+        <div class="nudge-icon">📊</div>
+        <div class="nudge-text">
+          <p class="nudge-title">프로필을 더 채워볼까요?</p>
+          <p class="nudge-sub">수면 정보 추가 시 추천 정확도 +34%</p>
+        </div>
+        <button class="nudge-btn">지금 추가</button>
+      </div>
+    </div>
+
+    <!-- 나를 위한 추천 -->
+    <div class="section-wrap">
+      <div class="section-header">
+        <span class="section-title">🛍 나를 위한 추천</span>
+        <button class="section-link">전체 보기</button>
+      </div>
+      <div class="reco-scroll">
+        <div class="reco-card">
+          <span class="reco-emoji">🫐</span>
+          <span class="reco-type">영양제</span>
+          <p class="reco-name">루테인 &<br>지아잔틴</p>
+          <p class="reco-reason">장시간 모니터 사용으로 인한 눈 피로 완화</p>
+          <p class="reco-price">₩18,900</p>
+          <p class="reco-rating">⭐ 4.8 · 1,240명</p>
+        </div>
+        <div class="reco-card">
+          <span class="reco-emoji">🌙</span>
+          <span class="reco-type">영양제</span>
+          <p class="reco-name">GABA<br>수면 지원</p>
+          <p class="reco-reason">수면 질 개선, 긴장 완화에 임상 검증</p>
+          <p class="reco-price">₩22,000</p>
+          <p class="reco-rating">⭐ 4.7 · 892명</p>
+        </div>
+        <div class="reco-card">
+          <span class="reco-emoji">🥑</span>
+          <span class="reco-type">식품</span>
+          <p class="reco-name">아보카도<br>토스트</p>
+          <p class="reco-reason">건강한 지방 + 복합 탄수화물로 에너지 지속</p>
+          <p class="reco-price">추천 레시피</p>
+          <p class="reco-rating">⭐ 4.9 · 560명</p>
+        </div>
+        <div class="reco-card">
+          <span class="reco-emoji">💪</span>
+          <span class="reco-type">영양제</span>
+          <p class="reco-name">비타민 B<br>콤플렉스</p>
+          <p class="reco-reason">만성 피로 개선, 에너지 대사 활성화</p>
+          <p class="reco-price">₩14,500</p>
+          <p class="reco-rating">⭐ 4.6 · 2,100명</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 후기 -->
+    <div class="section-wrap">
+      <div class="section-header">
+        <span class="section-title">💬 나와 비슷한 사람들의 후기</span>
+        <button class="section-link">더 보기</button>
+      </div>
+      <div class="review-card">
+        <div class="similar-tag"><span>👥 나와 유사 87% · 28세 직장인 · 피로 개선</span></div>
+        <div class="review-header">
+          <div class="review-avatar" style="background:var(--yellow-light);">🙍‍♀️</div>
+          <div class="review-meta">
+            <p class="review-name">김민*  ·  28세</p>
+            <p class="review-profile">서울 직장인 · 3개월째 사용 중</p>
+          </div>
+        </div>
+        <p class="review-stars">⭐⭐⭐⭐⭐</p>
+        <p class="review-text">"오메가-3 추천받고 2주 만에 집중력이 달라졌어요. 이유를 설명해줘서 믿음이 가더라고요."</p>
+        <div class="review-badge"><span>✓ 구매 인증</span></div>
+      </div>
+      <div class="review-card">
+        <div class="similar-tag"><span>👥 나와 유사 79% · 27세 직장인 · 수면 개선</span></div>
+        <div class="review-header">
+          <div class="review-avatar" style="background:var(--purple-soft);">🙎‍♀️</div>
+          <div class="review-meta">
+            <p class="review-name">이서*  ·  27세</p>
+            <p class="review-profile">혼자 사는 직장인 · 6주째 사용 중</p>
+          </div>
+        </div>
+        <p class="review-stars">⭐⭐⭐⭐⭐</p>
+        <p class="review-text">"바쁜 날엔 최소 루틴으로 자동 줄여줘서 포기 안 하게 해줘요. 7주 연속 중이에요!"</p>
+        <div class="review-badge"><span>✓ 구매 인증</span></div>
+      </div>
+    </div>
+
+    <!-- 주간 체크인 -->
+    <div class="section-wrap">
+      <div class="quick-check">
+        <span class="quick-check-icon">📋</span>
+        <div class="quick-check-text">
+          <p class="quick-check-title">주간 체크인 (3분)</p>
+          <p class="quick-check-sub">몸 상태 업데이트하면 추천이 더 정확해져요</p>
+        </div>
+        <button class="quick-check-btn">시작</button>
+      </div>
+    </div>
+
+    </div><!-- /ai-tab-content -->
+
+  </div><!-- /main-content -->
+  </div><!-- /page-home -->
+
+  <!-- ── Page: 카테고리 ── -->
+  <div id="page-category" class="page">
+
+    <!-- Category Header -->
+    <div class="header">
+      <div class="header-row">
+        <div class="header-logo">
+          <div class="logo-mark">🫒</div>
+          <span class="logo-text">카테고리</span>
+        </div>
+        <div class="header-actions">
+          <button class="hbtn" aria-label="검색">
+            <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="search-wrap">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <span>건강·뷰티 상품, 브랜드 검색</span>
+      </div>
+    </div>
+
+    <!-- 상단 탭바 -->
+    <div class="cat-tabs" id="catTabs">
+      <button class="cat-tab active" data-tab="all">전체</button>
+      <button class="cat-tab" data-tab="supplement">영양제</button>
+      <button class="cat-tab" data-tab="food">건강식품</button>
+      <button class="cat-tab" data-tab="beauty">뷰티</button>
+      <button class="cat-tab" data-tab="exercise">운동</button>
+    </div>
+
+    <div class="main-content" style="padding-bottom:0;">
+
+      <!-- 건강 목표로 찾기 -->
+      <div class="cat-section">
+        <div class="cat-section-header">
+          <span class="cat-section-title">🎯 건강 목표로 찾기</span>
+          <button class="cat-section-link">전체</button>
+        </div>
+        <div class="goal-grid">
+          <div class="goal-card">
+            <span class="goal-icon">⚡</span>
+            <p class="goal-name">피로<br>회복</p>
+            <p class="goal-count">상품 142개</p>
+          </div>
+          <div class="goal-card">
+            <span class="goal-icon">😴</span>
+            <p class="goal-name">수면<br>개선</p>
+            <p class="goal-count">상품 89개</p>
+          </div>
+          <div class="goal-card">
+            <span class="goal-icon">🛡️</span>
+            <p class="goal-name">면역력<br>강화</p>
+            <p class="goal-count">상품 203개</p>
+          </div>
+          <div class="goal-card">
+            <span class="goal-icon">🔥</span>
+            <p class="goal-name">다이어트</p>
+            <p class="goal-count">상품 176개</p>
+          </div>
+          <div class="goal-card">
+            <span class="goal-icon">🧠</span>
+            <p class="goal-name">집중력<br>향상</p>
+            <p class="goal-count">상품 67개</p>
+          </div>
+          <div class="goal-card">
+            <span class="goal-icon">🌿</span>
+            <p class="goal-name">장 건강</p>
+            <p class="goal-count">상품 115개</p>
+          </div>
+          <div class="goal-card">
+            <span class="goal-icon">✨</span>
+            <p class="goal-name">피부<br>건강</p>
+            <p class="goal-count">상품 94개</p>
+          </div>
+          <div class="goal-card">
+            <span class="goal-icon">💪</span>
+            <p class="goal-name">근육<br>증가</p>
+            <p class="goal-count">상품 58개</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- AI 루틴 패키지 -->
+      <div class="cat-section">
+        <div class="cat-section-header">
+          <span class="cat-section-title">🤖 AI 추천 루틴 패키지</span>
+        </div>
+        <div class="pkg-card">
+          <div class="pkg-badge"><span>✦ 지수님 맞춤</span></div>
+          <p class="pkg-title">피로 회복 4주 패키지</p>
+          <p class="pkg-sub">수면 + 에너지 + 집중력을 한번에 케어</p>
+          <div class="pkg-items">
+            <span class="pkg-item-tag">💊 오메가-3</span>
+            <span class="pkg-item-tag">🌿 마그네슘</span>
+            <span class="pkg-item-tag">⚡ 비타민B</span>
+            <span class="pkg-item-tag">😴 GABA</span>
+          </div>
+          <button class="pkg-cta">
+            패키지 보러가기
+            <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- 영양제 종류로 찾기 -->
+      <div class="cat-section">
+        <div class="cat-section-header">
+          <span class="cat-section-title">💊 영양제 종류로 찾기</span>
+          <button class="cat-section-link">전체</button>
+        </div>
+        <div class="type-scroll">
+          <div class="type-chip">
+            <span class="type-emoji">🌞</span>
+            <span class="type-name">비타민</span>
+          </div>
+          <div class="type-chip">
+            <span class="type-emoji">🦴</span>
+            <span class="type-name">미네랄</span>
+          </div>
+          <div class="type-chip">
+            <span class="type-emoji">🐟</span>
+            <span class="type-name">오메가-3</span>
+          </div>
+          <div class="type-chip">
+            <span class="type-emoji">🦠</span>
+            <span class="type-name">유산균</span>
+          </div>
+          <div class="type-chip">
+            <span class="type-emoji">💎</span>
+            <span class="type-name">콜라겐</span>
+          </div>
+          <div class="type-chip">
+            <span class="type-emoji">🌙</span>
+            <span class="type-name">수면보조</span>
+          </div>
+          <div class="type-chip">
+            <span class="type-emoji">🫐</span>
+            <span class="type-name">항산화</span>
+          </div>
+          <div class="type-chip">
+            <span class="type-emoji">🔩</span>
+            <span class="type-name">마그네슘</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 지금 인기 카테고리 -->
+      <div class="cat-section">
+        <div class="cat-section-header">
+          <span class="cat-section-title">🔥 지금 인기 카테고리</span>
+          <button class="cat-section-link">더 보기</button>
+        </div>
+        <div style="background:var(--card); border-radius:var(--radius-md); padding:0 16px; border:1px solid var(--border); box-shadow:var(--shadow-sm);">
+          <div class="rank-list">
+            <div class="rank-item">
+              <span class="rank-num top">1</span>
+              <div class="rank-icon" style="background:#FFF3E0;">🐟</div>
+              <div class="rank-info">
+                <p class="rank-name">오메가-3 / EPA·DHA</p>
+                <p class="rank-sub">혈행 · 눈 건강 · 피로 회복</p>
+              </div>
+              <span class="rank-badge hot">HOT</span>
+            </div>
+            <div class="rank-item">
+              <span class="rank-num top">2</span>
+              <div class="rank-icon" style="background:var(--yellow-light);">🌞</div>
+              <div class="rank-info">
+                <p class="rank-name">비타민 D3+K2</p>
+                <p class="rank-sub">면역력 · 뼈 건강 · 기분 조절</p>
+              </div>
+              <span class="rank-badge hot">HOT</span>
+            </div>
+            <div class="rank-item">
+              <span class="rank-num top">3</span>
+              <div class="rank-icon" style="background:var(--purple-soft);">🦠</div>
+              <div class="rank-info">
+                <p class="rank-name">프로바이오틱스</p>
+                <p class="rank-sub">장 건강 · 면역 · 피부 개선</p>
+              </div>
+              <span class="rank-badge new">NEW</span>
+            </div>
+            <div class="rank-item">
+              <span class="rank-num">4</span>
+              <div class="rank-icon" style="background:#E8F5E9;">🔩</div>
+              <div class="rank-info">
+                <p class="rank-name">마그네슘</p>
+                <p class="rank-sub">수면 · 근육 이완 · 스트레스 완화</p>
+              </div>
+              <span class="rank-badge" style="background:var(--yellow-light);color:var(--primary-dark);">추천</span>
+            </div>
+            <div class="rank-item">
+              <span class="rank-num">5</span>
+              <div class="rank-icon" style="background:#FFF0EE;">⚡</div>
+              <div class="rank-info">
+                <p class="rank-name">비타민 B 복합체</p>
+                <p class="rank-sub">에너지 대사 · 만성 피로 개선</p>
+              </div>
+              <span class="rank-badge" style="background:var(--yellow-light);color:var(--primary-dark);">추천</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 브랜드 탐색 -->
+      <div class="cat-section" style="padding-bottom:24px;">
+        <div class="cat-section-header">
+          <span class="cat-section-title">🏷 브랜드 탐색</span>
+          <button class="cat-section-link">전체</button>
+        </div>
+        <div class="brand-scroll">
+          <div class="brand-chip">뉴트리코어</div>
+          <div class="brand-chip">종근당건강</div>
+          <div class="brand-chip">GNC</div>
+          <div class="brand-chip">닥터스베스트</div>
+          <div class="brand-chip">나우푸드</div>
+          <div class="brand-chip">솔가</div>
+          <div class="brand-chip">네이처메이드</div>
+          <div class="brand-chip">스완슨</div>
+        </div>
+      </div>
+
+    </div><!-- /main-content -->
+  </div><!-- /page-category -->
+
+  <!-- ── Page: 발견 ── -->
+  <div id="page-discover" class="page">
+
+    <div class="header">
+      <div class="header-row">
+        <div class="header-logo">
+          <div class="logo-mark">🫒</div>
+          <span class="logo-text">발견</span>
+        </div>
+        <div class="header-actions">
+          <button class="hbtn" aria-label="검색">
+            <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 주제 필터 -->
+    <div class="topic-scroll" id="topicScroll">
+      <button class="topic-pill active">전체</button>
+      <button class="topic-pill">수면</button>
+      <button class="topic-pill">영양</button>
+      <button class="topic-pill">운동</button>
+      <button class="topic-pill">피부</button>
+      <button class="topic-pill">식단</button>
+      <button class="topic-pill">스트레스</button>
+    </div>
+
+    <div class="main-content" style="padding-bottom:0;">
+
+      <!-- 피처드 큐레이션 -->
+      <div style="padding:16px 16px 0;">
+        <div class="feature-article">
+          <div class="feature-article-bg" style="background:linear-gradient(135deg,#0A2010 0%,#1E5C30 40%,#38A060 80%,#90D090 100%);">
+            <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:80px;opacity:0.25;">🌿</div>
+            <div class="feature-article-overlay"></div>
+            <div class="feature-article-content">
+              <span class="feature-tag">✦ 이번 주 에디터 픽</span>
+              <p class="feature-title">직장인 피로 회복,<br>진짜 효과 있는 루틴은?</p>
+              <p class="feature-meta">영양사 김지현 · 읽는 시간 5분</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 웰니스 큐레이션 -->
+      <div class="section-wrap" style="padding-top:20px;">
+        <div class="section-header">
+          <span class="section-title">🌿 웰니스 큐레이션</span>
+          <button class="section-link">전체 보기</button>
+        </div>
+        <div class="curation-scroll">
+          <div class="curation-card">
+            <div class="curation-thumb" style="background:linear-gradient(135deg,#1A0E30,#7C5CFC);">🌙</div>
+            <div class="curation-body">
+              <span class="curation-tag">수면</span>
+              <p class="curation-title">잠들기 30분 전,<br>이것만 지켜도 달라져요</p>
+              <p class="curation-meta">3분 읽기 · 좋아요 284</p>
+            </div>
+          </div>
+          <div class="curation-card">
+            <div class="curation-thumb" style="background:linear-gradient(135deg,#0A2010,#38A060);">🥗</div>
+            <div class="curation-body">
+              <span class="curation-tag">식단</span>
+              <p class="curation-title">바쁜 아침, 5분 만에<br>영양 챙기는 법</p>
+              <p class="curation-meta">4분 읽기 · 좋아요 512</p>
+            </div>
+          </div>
+          <div class="curation-card">
+            <div class="curation-thumb" style="background:linear-gradient(135deg,#3D0808,#C04040);">💪</div>
+            <div class="curation-body">
+              <span class="curation-tag">운동</span>
+              <p class="curation-title">책상 앞 30분 운동,<br>집중력도 올라가요</p>
+              <p class="curation-meta">3분 읽기 · 좋아요 391</p>
+            </div>
+          </div>
+          <div class="curation-card">
+            <div class="curation-thumb" style="background:linear-gradient(135deg,#1A1000,#C0840A);">✨</div>
+            <div class="curation-body">
+              <span class="curation-tag">피부</span>
+              <p class="curation-title">콜라겐보다 먼저<br>챙겨야 할 영양소</p>
+              <p class="curation-meta">4분 읽기 · 좋아요 448</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 전문가 칼럼 -->
+      <div class="section-wrap">
+        <div class="section-header">
+          <span class="section-title">🔬 전문가 칼럼</span>
+          <button class="section-link">더 보기</button>
+        </div>
+        <div class="expert-card">
+          <div class="expert-thumb" style="background:var(--purple-soft);">🧪</div>
+          <div class="expert-body">
+            <span class="expert-label">영양사 칼럼</span>
+            <p class="expert-title">오메가-3, 언제 먹어야<br>가장 효과적일까요?</p>
+            <p class="expert-author">영양사 박민경 · 임상영양사 10년</p>
+            <p class="expert-read">읽는 시간 4분 · 좋아요 623</p>
+          </div>
+        </div>
+        <div class="expert-card">
+          <div class="expert-thumb" style="background:#E8F5E9;">🩺</div>
+          <div class="expert-body">
+            <span class="expert-label">의사 추천</span>
+            <p class="expert-title">마그네슘 부족 신호,<br>이런 증상 있으세요?</p>
+            <p class="expert-author">내과 전문의 이승우 · 가정의학</p>
+            <p class="expert-read">읽는 시간 3분 · 좋아요 481</p>
+          </div>
+        </div>
+        <div class="expert-card">
+          <div class="expert-thumb" style="background:var(--yellow-light);">😴</div>
+          <div class="expert-body">
+            <span class="expert-label">수면 연구</span>
+            <p class="expert-title">수면 부채, 주말에<br>몰아 자면 해결될까요?</p>
+            <p class="expert-author">수면 전문가 최유진 · 뇌과학 박사</p>
+            <p class="expert-read">읽는 시간 5분 · 좋아요 807</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 나와 비슷한 사람들의 루틴 -->
+      <div class="section-wrap" style="padding-bottom:24px;">
+        <div class="section-header">
+          <span class="section-title">👥 비슷한 사람들의 루틴</span>
+          <button class="section-link">더 보기</button>
+        </div>
+        <div class="routine-share-card">
+          <div class="routine-share-header">
+            <div class="routine-share-avatar" style="background:var(--yellow-light);">🙍‍♀️</div>
+            <div class="routine-share-meta">
+              <p class="routine-share-name">김민*  ·  28세 직장인</p>
+              <p class="routine-share-profile">피로 회복 목표 · 2개월째 진행 중</p>
+            </div>
+          </div>
+          <div class="routine-share-tags">
+            <span class="routine-share-tag">💊 오메가-3</span>
+            <span class="routine-share-tag">🌿 마그네슘</span>
+            <span class="routine-share-tag">🌅 아침 산책 10분</span>
+          </div>
+          <p class="routine-share-result">"2주 지나니까 오후 집중력이 달라졌어요. <strong>특히 마그네슘은 수면 질에 진짜 효과</strong> 봤고요. 처음엔 귀찮았는데 이젠 습관이 됐어요."</p>
+          <div class="routine-share-footer">
+            <span class="routine-share-like">❤️ 147명이 좋아해요</span>
+            <button class="routine-share-save">루틴 저장</button>
+          </div>
+        </div>
+        <div class="routine-share-card">
+          <div class="routine-share-header">
+            <div class="routine-share-avatar" style="background:var(--purple-soft);">🙎‍♀️</div>
+            <div class="routine-share-meta">
+              <p class="routine-share-name">이서*  ·  27세 직장인</p>
+              <p class="routine-share-profile">수면 개선 목표 · 6주째 진행 중</p>
+            </div>
+          </div>
+          <div class="routine-share-tags">
+            <span class="routine-share-tag">😴 GABA 수면</span>
+            <span class="routine-share-tag">📵 취침 1시간 전 폰 끄기</span>
+          </div>
+          <p class="routine-share-result">"GABA 먹고 나서 자다가 깨는 게 확실히 줄었어요. <strong>앱이 바쁜 날엔 루틴을 짧게 줄여줘서</strong> 포기 안 하고 7주 연속 유지했어요!"</p>
+          <div class="routine-share-footer">
+            <span class="routine-share-like">❤️ 203명이 좋아해요</span>
+            <button class="routine-share-save">루틴 저장</button>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /main-content -->
+  </div><!-- /page-discover -->
+
+  <!-- ── Page: 올영매장 ── -->
+  <div id="page-store" class="page">
+
+    <div class="header">
+      <div class="header-row">
+        <div class="header-logo">
+          <div class="logo-mark">🫒</div>
+          <span class="logo-text">올영매장</span>
+        </div>
+        <div class="header-actions">
+          <button class="hbtn" aria-label="검색">
+            <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 세그먼트 컨트롤 -->
+    <div class="store-segment">
+      <button class="store-seg-btn active" id="seg-oliveyoung" onclick="switchStoreTab('oliveyoung')">🏪 올리브영</button>
+      <button class="store-seg-btn" id="seg-olivebetter" onclick="switchStoreTab('olivebetter')">🫒 올리브베러</button>
+    </div>
+
+    <!-- 내 위치 배너 -->
+    <div class="location-banner">
+      <span class="location-icon">📍</span>
+      <div class="location-text">
+        <p class="location-title">현재 위치 기반으로 찾는 중</p>
+        <p class="location-sub">서울 강남구 역삼동 기준</p>
+      </div>
+      <button class="location-btn">위치 변경</button>
+    </div>
+
+    <!-- 올리브영 매장 목록 -->
+    <div id="tab-oliveyoung">
+      <div class="store-section-label">
+        <span>🏪 가까운 올리브영</span>
+        <span class="store-count">전국 1,300+ 매장</span>
+      </div>
+      <div class="store-list">
+
+        <div class="store-card">
+          <div class="store-card-header">
+            <div class="store-card-icon" style="background:#FFF3E0;">🏪</div>
+            <div class="store-card-info">
+              <p class="store-card-name">올리브영 강남역점</p>
+              <p class="store-card-addr">서울 강남구 강남대로 390<br>강남역 11번 출구 도보 1분</p>
+            </div>
+            <div class="store-card-right">
+              <span class="store-dist">0.3km</span>
+              <span class="store-open open">영업 중</span>
+            </div>
+          </div>
+          <div class="store-tags">
+            <span class="store-tag">24시간</span>
+            <span class="store-tag">영양제 특화</span>
+            <span class="store-tag">픽업 가능</span>
+          </div>
+          <div class="store-card-footer">
+            <button class="store-action-btn primary">길찾기</button>
+            <button class="store-action-btn secondary">📞 전화</button>
+            <button class="store-action-btn secondary">재고 확인</button>
+          </div>
+        </div>
+
+        <div class="store-card">
+          <div class="store-card-header">
+            <div class="store-card-icon" style="background:#FFF3E0;">🏪</div>
+            <div class="store-card-info">
+              <p class="store-card-name">올리브영 역삼점</p>
+              <p class="store-card-addr">서울 강남구 테헤란로 134<br>역삼역 1번 출구 도보 3분</p>
+            </div>
+            <div class="store-card-right">
+              <span class="store-dist">0.8km</span>
+              <span class="store-open open">영업 중</span>
+            </div>
+          </div>
+          <div class="store-tags">
+            <span class="store-tag">10:00~22:00</span>
+            <span class="store-tag">뷰티 특화</span>
+            <span class="store-tag">픽업 가능</span>
+          </div>
+          <div class="store-card-footer">
+            <button class="store-action-btn primary">길찾기</button>
+            <button class="store-action-btn secondary">📞 전화</button>
+            <button class="store-action-btn secondary">재고 확인</button>
+          </div>
+        </div>
+
+        <div class="store-card">
+          <div class="store-card-header">
+            <div class="store-card-icon" style="background:#FFF3E0;">🏪</div>
+            <div class="store-card-info">
+              <p class="store-card-name">올리브영 선릉역점</p>
+              <p class="store-card-addr">서울 강남구 선릉로 433<br>선릉역 3번 출구 도보 2분</p>
+            </div>
+            <div class="store-card-right">
+              <span class="store-dist">1.4km</span>
+              <span class="store-open open">영업 중</span>
+            </div>
+          </div>
+          <div class="store-tags">
+            <span class="store-tag">10:00~22:00</span>
+            <span class="store-tag">픽업 가능</span>
+          </div>
+          <div class="store-card-footer">
+            <button class="store-action-btn primary">길찾기</button>
+            <button class="store-action-btn secondary">📞 전화</button>
+            <button class="store-action-btn secondary">재고 확인</button>
+          </div>
+        </div>
+
+        <div class="store-card" style="margin-bottom:24px;">
+          <div class="store-card-header">
+            <div class="store-card-icon" style="background:#FFF3E0;">🏪</div>
+            <div class="store-card-info">
+              <p class="store-card-name">올리브영 삼성역점</p>
+              <p class="store-card-addr">서울 강남구 영동대로 513<br>삼성역 코엑스몰 B1</p>
+            </div>
+            <div class="store-card-right">
+              <span class="store-dist">2.1km</span>
+              <span class="store-open closed">영업 종료</span>
+            </div>
+          </div>
+          <div class="store-tags">
+            <span class="store-tag">10:00~21:00</span>
+            <span class="store-tag">대형 매장</span>
+          </div>
+          <div class="store-card-footer">
+            <button class="store-action-btn primary">길찾기</button>
+            <button class="store-action-btn secondary">📞 전화</button>
+            <button class="store-action-btn secondary">재고 확인</button>
+          </div>
+        </div>
+
+      </div>
+    </div><!-- /tab-oliveyoung -->
+
+    <!-- 올리브베러 매장 목록 -->
+    <div id="tab-olivebetter" style="display:none;">
+      <div class="store-section-label">
+        <span>🫒 올리브베러 매장</span>
+        <span class="store-count">웰니스 특화 12개 매장</span>
+      </div>
+
+      <!-- 올리브베러 소개 배너 -->
+      <div style="margin:0 16px 16px;">
+        <div style="background:var(--yellow-light);border:1.5px solid var(--border);border-radius:var(--radius-md);padding:14px 16px;">
+          <p style="font-size:13px;font-weight:900;color:var(--primary-dark);margin-bottom:4px;">🫒 올리브베러 매장이란?</p>
+          <p style="font-size:12px;color:var(--text-secondary);line-height:1.6;">AI 맞춤 웰니스 상담 · 영양사 1:1 케어 · 체성분 측정 · 맞춤 루틴 설계가 가능한 프리미엄 웰니스 특화 매장이에요.</p>
+        </div>
+      </div>
+
+      <div style="padding:0 16px 24px;display:flex;flex-direction:column;gap:10px;">
+
+        <div class="better-card">
+          <div class="better-card-badge"><span>🌟 플래그십 스토어</span></div>
+          <div class="better-card-header">
+            <p class="better-card-name">올리브베러 강남점</p>
+            <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;">
+              <span class="better-card-dist">0.5km</span>
+              <span style="font-size:11px;font-weight:700;background:rgba(80,220,100,0.3);color:#90FFB0;padding:2px 8px;border-radius:20px;">영업 중</span>
+            </div>
+          </div>
+          <p class="better-card-addr">서울 강남구 강남대로 396 · 강남역 9번 출구 도보 2분<br>운영시간 10:00 – 21:00</p>
+          <div class="better-card-features">
+            <span class="better-feature-tag">🤖 AI 건강 상담</span>
+            <span class="better-feature-tag">🥗 영양사 1:1 케어</span>
+            <span class="better-feature-tag">⚖️ 체성분 측정</span>
+            <span class="better-feature-tag">💊 맞춤 루틴 설계</span>
+          </div>
+          <div class="better-card-footer">
+            <button class="better-action-btn primary">길찾기</button>
+            <button class="better-action-btn secondary">📅 상담 예약</button>
+          </div>
+        </div>
+
+        <div class="better-card">
+          <div class="better-card-badge"><span>🫒 웰니스 케어 센터</span></div>
+          <div class="better-card-header">
+            <p class="better-card-name">올리브베러 홍대점</p>
+            <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;">
+              <span class="better-card-dist">5.2km</span>
+              <span style="font-size:11px;font-weight:700;background:rgba(80,220,100,0.3);color:#90FFB0;padding:2px 8px;border-radius:20px;">영업 중</span>
+            </div>
+          </div>
+          <p class="better-card-addr">서울 마포구 양화로 160 · 홍대입구역 9번 출구 도보 3분<br>운영시간 11:00 – 22:00</p>
+          <div class="better-card-features">
+            <span class="better-feature-tag">🤖 AI 건강 상담</span>
+            <span class="better-feature-tag">⚖️ 체성분 측정</span>
+            <span class="better-feature-tag">💊 맞춤 루틴 설계</span>
+            <span class="better-feature-tag">🎁 웰니스 패키지</span>
+          </div>
+          <div class="better-card-footer">
+            <button class="better-action-btn primary">길찾기</button>
+            <button class="better-action-btn secondary">📅 상담 예약</button>
+          </div>
+        </div>
+
+        <div class="better-card">
+          <div class="better-card-badge"><span>🫒 웰니스 케어 센터</span></div>
+          <div class="better-card-header">
+            <p class="better-card-name">올리브베러 신촌점</p>
+            <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;">
+              <span class="better-card-dist">6.8km</span>
+              <span style="font-size:11px;font-weight:700;background:rgba(255,100,100,0.3);color:#FFB0B0;padding:2px 8px;border-radius:20px;">영업 종료</span>
+            </div>
+          </div>
+          <p class="better-card-addr">서울 서대문구 신촌로 83 · 신촌역 1번 출구 도보 2분<br>운영시간 10:00 – 20:00</p>
+          <div class="better-card-features">
+            <span class="better-feature-tag">🤖 AI 건강 상담</span>
+            <span class="better-feature-tag">🥗 영양사 1:1 케어</span>
+            <span class="better-feature-tag">📊 건강 리포트</span>
+          </div>
+          <div class="better-card-footer">
+            <button class="better-action-btn primary">길찾기</button>
+            <button class="better-action-btn secondary">📅 상담 예약</button>
+          </div>
+        </div>
+
+      </div>
+    </div><!-- /tab-olivebetter -->
+
+  </div><!-- /page-store -->
+
+  <!-- ── Page: 좋아요 ── -->
+  <div id="page-likes" class="page">
+
+    <div class="header">
+      <div class="header-row">
+        <div class="header-logo">
+          <div class="logo-mark">🫒</div>
+          <span class="logo-text">좋아요</span>
+        </div>
+        <div class="header-actions">
+          <button class="hbtn" aria-label="검색">
+            <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3탭 세그먼트 (CSS로 숨김 처리) -->
+    <div class="likes-segment">
+      <button class="likes-seg-btn active" id="lseg-recent" onclick="switchLikesTab('recent')">최근 본</button>
+      <button class="likes-seg-btn" id="lseg-liked" onclick="switchLikesTab('liked')">좋아요한</button>
+      <button class="likes-seg-btn" id="lseg-frequent" onclick="switchLikesTab('frequent')">자주사는</button>
+    </div>
+
+    <!-- ① 최근 본 -->
+    <div class="likes-section-title">🕐 최근 본 상품 <span>5개</span></div>
+    <div id="ltab-recent">
+      <div class="recent-scroll">
+        <div class="recent-card">
+          <div class="recent-thumb">🐟</div>
+          <div class="recent-body">
+            <p class="recent-name">오메가-3 EPA·DHA</p>
+            <p class="recent-price">₩24,900</p>
+          </div>
+        </div>
+        <div class="recent-card">
+          <div class="recent-thumb">🌙</div>
+          <div class="recent-body">
+            <p class="recent-name">GABA 수면 지원</p>
+            <p class="recent-price">₩22,000</p>
+          </div>
+        </div>
+        <div class="recent-card">
+          <div class="recent-thumb">🔩</div>
+          <div class="recent-body">
+            <p class="recent-name">마그네슘 400mg</p>
+            <p class="recent-price">₩18,500</p>
+          </div>
+        </div>
+        <div class="recent-card">
+          <div class="recent-thumb">🌞</div>
+          <div class="recent-body">
+            <p class="recent-name">비타민 D3+K2</p>
+            <p class="recent-price">₩16,900</p>
+          </div>
+        </div>
+        <div class="recent-card">
+          <div class="recent-thumb">💪</div>
+          <div class="recent-body">
+            <p class="recent-name">비타민 B 복합체</p>
+            <p class="recent-price">₩14,500</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 추천 상품 -->
+      <div class="likes-reco-section">
+        <div class="likes-reco-header">
+          <span class="section-title">✨ 최근 본 상품 기반 추천</span>
+          <button class="section-link">전체</button>
+        </div>
+        <div class="likes-reco-scroll">
+          <div class="likes-reco-card">
+            <div class="likes-reco-thumb">🫐</div>
+            <div class="likes-reco-body">
+              <span class="likes-reco-tag">영양제</span>
+              <p class="likes-reco-name">루테인 &<br>지아잔틴</p>
+              <p class="likes-reco-price">₩18,900</p>
+            </div>
+          </div>
+          <div class="likes-reco-card">
+            <div class="likes-reco-thumb">🦠</div>
+            <div class="likes-reco-body">
+              <span class="likes-reco-tag">영양제</span>
+              <p class="likes-reco-name">프로바이오<br>틱스 50억</p>
+              <p class="likes-reco-price">₩21,000</p>
+            </div>
+          </div>
+          <div class="likes-reco-card">
+            <div class="likes-reco-thumb">🌿</div>
+            <div class="likes-reco-body">
+              <span class="likes-reco-tag">영양제</span>
+              <p class="likes-reco-name">아쉬와간다<br>스트레스 완화</p>
+              <p class="likes-reco-price">₩26,000</p>
+            </div>
+          </div>
+          <div class="likes-reco-card">
+            <div class="likes-reco-thumb">💎</div>
+            <div class="likes-reco-body">
+              <span class="likes-reco-tag">뷰티</span>
+              <p class="likes-reco-name">저분자 콜라겐<br>펩타이드</p>
+              <p class="likes-reco-price">₩32,000</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div><!-- /ltab-recent -->
+
+    <!-- 구분선 -->
+    <div class="likes-section-divider"></div>
+
+    <!-- ② 좋아요한 상품 -->
+    <div class="likes-section-title">❤️ 좋아요한 상품 <span>4개</span></div>
+    <div id="ltab-liked">
+      <div class="product-grid">
+        <div class="product-card">
+          <div class="product-thumb">🐟
+            <button class="product-heart">❤️</button>
+          </div>
+          <div class="product-body">
+            <p class="product-brand">종근당건강</p>
+            <p class="product-name">오메가-3<br>EPA·DHA 1000mg</p>
+            <p class="product-desc">혈행 개선 · 눈 건강 · 피로 회복</p>
+            <div class="product-price-row">
+              <span class="product-price">₩24,900</span>
+              <span class="product-rating">⭐ 4.8</span>
+            </div>
+            <button class="product-cart-btn">장바구니 담기</button>
+          </div>
+        </div>
+        <div class="product-card">
+          <div class="product-thumb">🌙
+            <button class="product-heart">❤️</button>
+          </div>
+          <div class="product-body">
+            <p class="product-brand">나우푸드</p>
+            <p class="product-name">GABA<br>수면 지원 750mg</p>
+            <p class="product-desc">긴장 완화 · 수면 질 개선 임상 검증</p>
+            <div class="product-price-row">
+              <span class="product-price">₩22,000</span>
+              <span class="product-rating">⭐ 4.7</span>
+            </div>
+            <button class="product-cart-btn">장바구니 담기</button>
+          </div>
+        </div>
+        <div class="product-card">
+          <div class="product-thumb">🔩
+            <button class="product-heart">❤️</button>
+          </div>
+          <div class="product-body">
+            <p class="product-brand">닥터스베스트</p>
+            <p class="product-name">마그네슘<br>글리시네이트 400mg</p>
+            <p class="product-desc">수면 · 근육 이완 · 스트레스 완화</p>
+            <div class="product-price-row">
+              <span class="product-price">₩18,500</span>
+              <span class="product-rating">⭐ 4.9</span>
+            </div>
+            <button class="product-cart-btn">장바구니 담기</button>
+          </div>
+        </div>
+        <div class="product-card">
+          <div class="product-thumb">🫐
+            <button class="product-heart">❤️</button>
+          </div>
+          <div class="product-body">
+            <p class="product-brand">솔가</p>
+            <p class="product-name">루테인 &<br>지아잔틴 20mg</p>
+            <p class="product-desc">눈 피로 완화 · 블루라이트 차단</p>
+            <div class="product-price-row">
+              <span class="product-price">₩18,900</span>
+              <span class="product-rating">⭐ 4.8</span>
+            </div>
+            <button class="product-cart-btn">장바구니 담기</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 추천 상품 -->
+      <div class="likes-reco-section">
+        <div class="likes-reco-header">
+          <span class="section-title">💡 좋아요 기반 추천</span>
+          <button class="section-link">전체</button>
+        </div>
+        <div class="likes-reco-scroll">
+          <div class="likes-reco-card">
+            <div class="likes-reco-thumb">⚡</div>
+            <div class="likes-reco-body">
+              <span class="likes-reco-tag">영양제</span>
+              <p class="likes-reco-name">비타민 B<br>복합체</p>
+              <p class="likes-reco-price">₩14,500</p>
+            </div>
+          </div>
+          <div class="likes-reco-card">
+            <div class="likes-reco-thumb">🌿</div>
+            <div class="likes-reco-body">
+              <span class="likes-reco-tag">영양제</span>
+              <p class="likes-reco-name">아쉬와간다<br>스트레스 완화</p>
+              <p class="likes-reco-price">₩26,000</p>
+            </div>
+          </div>
+          <div class="likes-reco-card">
+            <div class="likes-reco-thumb">🦠</div>
+            <div class="likes-reco-body">
+              <span class="likes-reco-tag">영양제</span>
+              <p class="likes-reco-name">프로바이오<br>틱스 50억</p>
+              <p class="likes-reco-price">₩21,000</p>
+            </div>
+          </div>
+          <div class="likes-reco-card">
+            <div class="likes-reco-thumb">💎</div>
+            <div class="likes-reco-body">
+              <span class="likes-reco-tag">뷰티</span>
+              <p class="likes-reco-name">저분자 콜라겐<br>펩타이드</p>
+              <p class="likes-reco-price">₩32,000</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div><!-- /ltab-liked -->
+
+    <!-- 구분선 -->
+    <div class="likes-section-divider"></div>
+
+    <!-- ③ 자주 사는 상품 -->
+    <div class="likes-section-title">🔄 자주 사는 상품 <span>정기배송 추천</span></div>
+    <div id="ltab-frequent">
+      <div class="product-grid">
+        <div class="product-card">
+          <div class="product-thumb" style="position:relative;">🐟
+            <button class="product-heart">🔄</button>
+          </div>
+          <div class="product-body">
+            <p class="product-brand">종근당건강</p>
+            <p class="product-name">오메가-3<br>EPA·DHA 1000mg</p>
+            <p class="product-desc" style="color:var(--primary);font-weight:700;">3회 구매 · 2개월마다</p>
+            <div class="product-price-row">
+              <span class="product-price">₩24,900</span>
+              <span class="product-rating">⭐ 4.8</span>
+            </div>
+            <button class="product-cart-btn">정기배송 신청</button>
+          </div>
+        </div>
+        <div class="product-card">
+          <div class="product-thumb" style="position:relative;">🔩
+            <button class="product-heart">🔄</button>
+          </div>
+          <div class="product-body">
+            <p class="product-brand">닥터스베스트</p>
+            <p class="product-name">마그네슘<br>400mg</p>
+            <p class="product-desc" style="color:var(--primary);font-weight:700;">2회 구매 · 3개월마다</p>
+            <div class="product-price-row">
+              <span class="product-price">₩18,500</span>
+              <span class="product-rating">⭐ 4.9</span>
+            </div>
+            <button class="product-cart-btn">정기배송 신청</button>
+          </div>
+        </div>
+        <div class="product-card">
+          <div class="product-thumb" style="position:relative;">💪
+            <button class="product-heart">🔄</button>
+          </div>
+          <div class="product-body">
+            <p class="product-brand">뉴트리코어</p>
+            <p class="product-name">비타민 B<br>복합체</p>
+            <p class="product-desc" style="color:var(--primary);font-weight:700;">4회 구매 · 1개월마다</p>
+            <div class="product-price-row">
+              <span class="product-price">₩14,500</span>
+              <span class="product-rating">⭐ 4.6</span>
+            </div>
+            <button class="product-cart-btn">정기배송 신청</button>
+          </div>
+        </div>
+        <div class="product-card">
+          <div class="product-thumb" style="position:relative;">🌞
+            <button class="product-heart">🔄</button>
+          </div>
+          <div class="product-body">
+            <p class="product-brand">GNC</p>
+            <p class="product-name">비타민 D3+K2<br>2000IU</p>
+            <p class="product-desc" style="color:var(--primary);font-weight:700;">2회 구매 · 2개월마다</p>
+            <div class="product-price-row">
+              <span class="product-price">₩16,900</span>
+              <span class="product-rating">⭐ 4.7</span>
+            </div>
+            <button class="product-cart-btn">정기배송 신청</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 추천 상품 -->
+      <div class="likes-reco-section">
+        <div class="likes-reco-header">
+          <span class="section-title">🔄 함께 사면 좋은 상품</span>
+          <button class="section-link">전체</button>
+        </div>
+        <div class="likes-reco-scroll">
+          <div class="likes-reco-card">
+            <div class="likes-reco-thumb">🦠</div>
+            <div class="likes-reco-body">
+              <span class="likes-reco-tag">영양제</span>
+              <p class="likes-reco-name">유산균<br>프리미엄</p>
+              <p class="likes-reco-price">₩21,000</p>
+            </div>
+          </div>
+          <div class="likes-reco-card">
+            <div class="likes-reco-thumb">🌿</div>
+            <div class="likes-reco-body">
+              <span class="likes-reco-tag">영양제</span>
+              <p class="likes-reco-name">아연<br>피코리네이트</p>
+              <p class="likes-reco-price">₩12,900</p>
+            </div>
+          </div>
+          <div class="likes-reco-card">
+            <div class="likes-reco-thumb">🫐</div>
+            <div class="likes-reco-body">
+              <span class="likes-reco-tag">영양제</span>
+              <p class="likes-reco-name">루테인 &<br>지아잔틴</p>
+              <p class="likes-reco-price">₩18,900</p>
+            </div>
+          </div>
+          <div class="likes-reco-card">
+            <div class="likes-reco-thumb">🍵</div>
+            <div class="likes-reco-body">
+              <span class="likes-reco-tag">건강식품</span>
+              <p class="likes-reco-name">녹차 추출물<br>EGCG</p>
+              <p class="likes-reco-price">₩19,500</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div><!-- /ltab-frequent -->
+
+  </div><!-- /page-likes -->
+
+  <!-- ── Page: 마이 ── -->
+  <div id="page-my" class="page">
+
+    <!-- 프로필 카드 -->
+    <div class="my-profile-card">
+      <div class="my-profile-row">
+        <div class="my-avatar">🙍‍♀️</div>
+        <div class="my-info">
+          <p class="my-name">이지수님</p>
+          <div class="my-level"><span>🌿 웰니스 레벨 3 · 성장 중</span></div>
+        </div>
+        <button class="my-edit-btn">프로필 수정</button>
+      </div>
+      <div class="my-stats">
+        <div class="my-stat">
+          <p class="my-stat-val">21</p>
+          <p class="my-stat-label">연속 달성일</p>
+        </div>
+        <div class="my-stat">
+          <p class="my-stat-val">83%</p>
+          <p class="my-stat-label">이번 주 완료율</p>
+        </div>
+        <div class="my-stat">
+          <p class="my-stat-val">5</p>
+          <p class="my-stat-label">저장한 루틴</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 건강 목표 태그 -->
+    <div class="my-goals-row">
+      <span class="my-goal-tag">⚡ 피로 회복</span>
+      <span class="my-goal-tag">😴 수면 개선</span>
+      <span class="my-goal-tag">🧠 집중력 향상</span>
+      <button style="display:inline-flex;align-items:center;gap:4px;background:var(--input-bg);border:1.5px dashed var(--border);border-radius:20px;padding:6px 14px;font-size:12px;font-weight:800;color:var(--text-muted);cursor:pointer;">+ 목표 추가</button>
+    </div>
+
+    <!-- 건강 데이터 요약 -->
+    <div class="my-section">
+      <div class="my-section-header">
+        <span class="my-section-title">📊 내 건강 데이터</span>
+        <button class="my-section-link">전체 보기</button>
+      </div>
+      <div class="health-data-row">
+        <div class="health-data-card">
+          <span class="health-data-icon">⚖️</span>
+          <p class="health-data-label">체중</p>
+          <p class="health-data-val">54.2<span class="health-data-unit"> kg</span></p>
+          <p class="health-data-trend">▼ 0.8kg 감소</p>
+        </div>
+        <div class="health-data-card">
+          <span class="health-data-icon">😴</span>
+          <p class="health-data-label">평균 수면</p>
+          <p class="health-data-val">6.4<span class="health-data-unit"> h</span></p>
+          <p class="health-data-trend">▲ 0.5h 개선</p>
+        </div>
+        <div class="health-data-card">
+          <span class="health-data-icon">🚶</span>
+          <p class="health-data-label">오늘 걸음</p>
+          <p class="health-data-val">4,820<span class="health-data-unit"> 보</span></p>
+          <p class="health-data-trend">목표 8,000보</p>
+        </div>
+        <div class="health-data-card">
+          <span class="health-data-icon">💧</span>
+          <p class="health-data-label">수분 섭취</p>
+          <p class="health-data-val">1.2<span class="health-data-unit"> L</span></p>
+          <p class="health-data-trend">목표 2.0L</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 나의 영양제 루틴 설정 -->
+    <div class="my-section">
+      <div class="my-section-header">
+        <span class="my-section-title">💊 나의 영양제 루틴</span>
+        <button class="my-section-link">편집</button>
+      </div>
+      <div class="routine-setup-card">
+        <div class="routine-slot">
+          <div class="routine-slot-time-col">
+            <p class="routine-slot-time-label">🌅 아침</p>
+            <p class="routine-slot-time">08:00</p>
+          </div>
+          <div class="routine-slot-pills">
+            <span class="routine-pill-tag">🌞 비타민 D3</span>
+            <span class="routine-pill-tag">💊 오메가-3</span>
+            <span class="routine-pill-tag">💪 비타민 B</span>
+          </div>
+          <div class="routine-slot-add">+</div>
+        </div>
+        <div class="routine-slot">
+          <div class="routine-slot-time-col">
+            <p class="routine-slot-time-label">☀️ 점심</p>
+            <p class="routine-slot-time">13:00</p>
+          </div>
+          <div class="routine-slot-pills">
+            <span class="routine-pill-tag">🫐 루테인</span>
+          </div>
+          <div class="routine-slot-add">+</div>
+        </div>
+        <div class="routine-slot">
+          <div class="routine-slot-time-col">
+            <p class="routine-slot-time-label">🌇 저녁</p>
+            <p class="routine-slot-time">19:00</p>
+          </div>
+          <div class="routine-slot-pills">
+            <span class="routine-pill-tag">🐟 오메가-3</span>
+            <span class="routine-pill-tag">🦠 유산균</span>
+          </div>
+          <div class="routine-slot-add">+</div>
+        </div>
+        <div class="routine-slot">
+          <div class="routine-slot-time-col">
+            <p class="routine-slot-time-label">🌙 취침</p>
+            <p class="routine-slot-time">22:00</p>
+          </div>
+          <div class="routine-slot-pills">
+            <span class="routine-pill-tag">🔩 마그네슘</span>
+            <span class="routine-pill-tag">😴 GABA</span>
+          </div>
+          <div class="routine-slot-add">+</div>
+        </div>
+      </div>
+      <button class="routine-add-full">+ 복용 시간대 추가</button>
+    </div>
+
+    <!-- 설정 메뉴 -->
+    <div class="my-section">
+      <div class="my-section-header">
+        <span class="my-section-title">⚙️ 설정 및 관리</span>
+      </div>
+      <div class="my-menu-card">
+        <div class="my-menu-item">
+          <div class="my-menu-icon" style="background:var(--yellow-light);">🔔</div>
+          <div class="my-menu-text">
+            <p class="my-menu-label">알림 설정</p>
+            <p class="my-menu-sub">복용 알림 · 루틴 리마인더</p>
+          </div>
+          <span class="my-menu-arrow">›</span>
+        </div>
+        <div class="my-menu-item">
+          <div class="my-menu-icon" style="background:var(--purple-soft);">📋</div>
+          <div class="my-menu-text">
+            <p class="my-menu-label">주간 체크인</p>
+            <p class="my-menu-sub">몸 상태 업데이트 · 추천 정확도 향상</p>
+          </div>
+          <span class="my-menu-badge">NEW</span>
+          <span class="my-menu-arrow">›</span>
+        </div>
+        <div class="my-menu-item">
+          <div class="my-menu-icon" style="background:#E8F5E9;">📊</div>
+          <div class="my-menu-text">
+            <p class="my-menu-label">건강 데이터 관리</p>
+            <p class="my-menu-sub">수면 · 운동 · 식단 기록 전체 보기</p>
+          </div>
+          <span class="my-menu-arrow">›</span>
+        </div>
+        <div class="my-menu-item">
+          <div class="my-menu-icon" style="background:#FFF0EE;">⭐</div>
+          <div class="my-menu-text">
+            <p class="my-menu-label">내 리뷰 관리</p>
+            <p class="my-menu-sub">작성한 리뷰 3개</p>
+          </div>
+          <span class="my-menu-arrow">›</span>
+        </div>
+        <div class="my-menu-item">
+          <div class="my-menu-icon" style="background:var(--yellow-light);">🛍</div>
+          <div class="my-menu-text">
+            <p class="my-menu-label">구매 내역</p>
+            <p class="my-menu-sub">최근 주문 · 배송 현황 확인</p>
+          </div>
+          <span class="my-menu-arrow">›</span>
+        </div>
+        <div class="my-menu-item" style="border-bottom:none;">
+          <div class="my-menu-icon" style="background:var(--input-bg);">🔒</div>
+          <div class="my-menu-text">
+            <p class="my-menu-label">개인정보 및 보안</p>
+            <p class="my-menu-sub">비밀번호 변경 · 계정 관리</p>
+          </div>
+          <span class="my-menu-arrow">›</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 로그아웃 -->
+    <div style="padding:16px 16px 32px;">
+      <button style="width:100%;padding:13px;background:var(--card);border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:14px;font-weight:700;color:var(--text-muted);cursor:pointer;">로그아웃</button>
+    </div>
+
+  </div><!-- /page-my -->
+
+</div><!-- /app-wrap -->
+
+<!-- Meal Modal -->
+<div class="modal-overlay" id="mealModal" onclick="closeMealModal(event)">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <p class="modal-title" id="modalTitle">점심 식단 기록</p>
+    <div class="food-option-grid">
+      <div class="food-option" onclick="toggleFood(this)"><span class="food-option-emoji">🍚</span><span class="food-option-name">밥</span></div>
+      <div class="food-option" onclick="toggleFood(this)"><span class="food-option-emoji">🍗</span><span class="food-option-name">닭가슴살</span></div>
+      <div class="food-option" onclick="toggleFood(this)"><span class="food-option-emoji">🥗</span><span class="food-option-name">샐러드</span></div>
+      <div class="food-option" onclick="toggleFood(this)"><span class="food-option-emoji">🍜</span><span class="food-option-name">면류</span></div>
+      <div class="food-option" onclick="toggleFood(this)"><span class="food-option-emoji">🥪</span><span class="food-option-name">샌드위치</span></div>
+      <div class="food-option" onclick="toggleFood(this)"><span class="food-option-emoji">🍱</span><span class="food-option-name">도시락</span></div>
+      <div class="food-option" onclick="toggleFood(this)"><span class="food-option-emoji">🍣</span><span class="food-option-name">생선</span></div>
+      <div class="food-option" onclick="toggleFood(this)"><span class="food-option-emoji">🥦</span><span class="food-option-name">채소류</span></div>
+      <div class="food-option" onclick="toggleFood(this)"><span class="food-option-emoji">🍳</span><span class="food-option-name">계란</span></div>
+    </div>
+    <button class="modal-confirm" onclick="confirmMeal()">기록 완료</button>
+  </div>
+</div>
+
+<!-- Cart Overlay -->
+<div id="cart-overlay" onclick="closeCartOverlay(event)">
+  <div id="cart-sheet">
+    <div class="cart-header">
+      <span class="cart-title">🛒 웰니스 장바구니</span>
+      <button class="cart-close-btn" onclick="closeCart()">✕</button>
+    </div>
+    <div class="cart-body" id="cartBody">
+      <div class="cart-empty" id="cartEmpty">
+        <span class="cart-empty-icon">🛒</span>
+        <p class="cart-empty-text">장바구니가 비어있어요</p>
+        <p class="cart-empty-sub">웰니스 상품의 + 버튼을 눌러 담아보세요</p>
+      </div>
+    </div>
+    <div class="cart-footer" id="cartFooter" style="display:none;">
+      <div class="cart-total-row">
+        <span class="cart-total-label">총 금액</span>
+        <span class="cart-total-price" id="cartTotal">₩0</span>
+      </div>
+      <button class="cart-order-btn">주문하기</button>
+    </div>
+  </div>
+</div>
+
+<!-- Bottom Navigation -->
+<nav class="bottom-nav">
+  <button class="nav-item active">
+    <div class="nav-icon">
+      <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    </div>
+    <span class="nav-label">홈</span>
+    <div class="nav-dot"></div>
+  </button>
+  <button class="nav-item">
+    <div class="nav-icon">
+      <svg viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+    </div>
+    <span class="nav-label">카테고리</span>
+  </button>
+  <button class="nav-item">
+    <div class="nav-icon">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+    </div>
+    <span class="nav-label">발견</span>
+  </button>
+  <button class="nav-item">
+    <div class="nav-icon">
+      <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><circle cx="12" cy="13" r="3"/></svg>
+    </div>
+    <span class="nav-label">올영매장</span>
+  </button>
+  <button class="nav-item">
+    <div class="nav-icon">
+      <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+    </div>
+    <span class="nav-label">좋아요</span>
+  </button>
+  <button class="nav-item">
+    <div class="nav-icon">
+      <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    </div>
+    <span class="nav-label">마이</span>
+  </button>
+</nav>
+
+<script>
+  /* ── Curator carousel ── */
+  const TOTAL = 4;
+  let current = 0;
+  let autoTimer;
+
+  function moveCurator(dir) {
+    current = (current + dir + TOTAL) % TOTAL;
+    renderCurator();
+    resetAuto();
+  }
+
+  function renderCurator() {
+    document.getElementById('curatorTrack').style.transform = `translateX(-${current * 100}%)`;
+    document.getElementById('slideCounter').textContent = `${current + 1} / ${TOTAL}`;
+    document.querySelectorAll('.curator-dot').forEach((d, i) => {
+      d.classList.toggle('active', i === current);
+    });
+  }
+
+  function resetAuto() {
+    clearInterval(autoTimer);
+    autoTimer = setInterval(() => moveCurator(1), 4000);
+  }
+
+  resetAuto();
+
+  /* touch swipe */
+  const track = document.getElementById('curatorTrack');
+  let touchX = 0;
+  track.addEventListener('touchstart', e => { touchX = e.touches[0].clientX; }, { passive: true });
+  track.addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].clientX - touchX;
+    if (Math.abs(dx) > 40) moveCurator(dx < 0 ? 1 : -1);
+  }, { passive: true });
+
+  /* ── Prescription check ── */
+  function toggleCheck(el) { el.classList.toggle('done'); }
+
+  /* ── Routine ── */
+  function toggleRoutine(item) { item.classList.toggle('done'); updateProgress(); }
+  function updateProgress() {
+    const items = document.querySelectorAll('.routine-item');
+    const done  = document.querySelectorAll('.routine-item.done').length;
+    const pct   = Math.round((done / items.length) * 100);
+    document.getElementById('progressBar').style.width = pct + '%';
+    document.querySelector('.routine-title').textContent = done + ' / ' + items.length + ' 완료';
+    document.querySelector('.progress-text').textContent = pct + '%';
+    const msg = document.getElementById('encourageMsg');
+    if (pct === 100)    msg.textContent = '🎉 오늘 루틴 완벽 달성! 정말 대단해요!';
+    else if (pct >= 60) msg.textContent = '💪 절반 넘었어요! 오늘도 잘 하고 있어요 🌿';
+    else if (pct > 0)   msg.textContent = '✨ 시작이 반! 계속 해봐요 😊';
+    else                msg.textContent = '🌱 오늘도 건강한 하루 시작해요!';
+  }
+
+  /* ── Meal modal ── */
+  let activeMealSlot = null;
+  function openMealModal(meal) {
+    activeMealSlot = meal;
+    document.getElementById('modalTitle').textContent = meal + ' 식단 기록';
+    document.querySelectorAll('.food-option').forEach(o => o.classList.remove('selected'));
+    document.getElementById('mealModal').classList.add('open');
+  }
+  function closeMealModal(e) {
+    if (e.target === document.getElementById('mealModal'))
+      document.getElementById('mealModal').classList.remove('open');
+  }
+  function toggleFood(el) { el.classList.toggle('selected'); }
+  function confirmMeal() {
+    const selected = [...document.querySelectorAll('.food-option.selected')];
+    const slotMap = { '아침': 'slot-morning', '점심': 'slot-lunch', '저녁': 'slot-dinner' };
+    const slotId = slotMap[activeMealSlot];
+    if (slotId && selected.length > 0) {
+      const slot = document.getElementById(slotId);
+      slot.classList.add('logged');
+      slot.querySelector('.meal-slot-status').textContent = '기록 완료';
+    }
+    const tags = document.getElementById('mealTags');
+    selected.forEach(opt => {
+      const tag = document.createElement('span');
+      tag.className = 'meal-tag';
+      tag.textContent = opt.querySelector('.food-option-emoji').textContent + ' ' + opt.querySelector('.food-option-name').textContent;
+      tags.appendChild(tag);
+    });
+    document.getElementById('mealModal').classList.remove('open');
+  }
+
+  /* ── Predict bar animation ── */
+  const predictCard = document.getElementById('predictCard');
+  new IntersectionObserver(entries => {
+    if (entries[0].isIntersecting) {
+      predictCard.classList.add('visible');
+    }
+  }, { threshold: 0.3 }).observe(predictCard);
+
+  /* ── Bottom nav + page routing ── */
+  const pages = {
+    0: 'page-home',
+    1: 'page-category',
+    2: 'page-discover',
+    3: 'page-store',
+    4: 'page-likes',
+    5: 'page-my',
+  };
+  const headerHome = document.getElementById('header-home');
+
+  function showPage(index) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    const pageId = pages[index];
+    if (pageId) document.getElementById(pageId).classList.add('active');
+    headerHome.style.display = (index === 0) ? '' : 'none';
+    window.scrollTo(0, 0);
+  }
+
+  document.querySelectorAll('.nav-item').forEach((btn, idx) => {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+      showPage(idx);
+    });
+  });
+
+  /* ── Category tab switching ── */
+  document.querySelectorAll('.cat-tab').forEach(tab => {
+    tab.addEventListener('click', function() {
+      document.querySelectorAll('.cat-tab').forEach(t => t.classList.remove('active'));
+      this.classList.add('active');
+    });
+  });
+
+  /* ── Discover topic pill switching ── */
+  document.querySelectorAll('.topic-pill').forEach(pill => {
+    pill.addEventListener('click', function() {
+      document.querySelectorAll('.topic-pill').forEach(p => p.classList.remove('active'));
+      this.classList.add('active');
+    });
+  });
+
+  /* ── Likes tab switching ── */
+  function switchLikesTab(tab) {
+    ['recent','liked','frequent'].forEach(t => {
+      document.getElementById('lseg-' + t).classList.toggle('active', t === tab);
+      document.getElementById('ltab-' + t).style.display = (t === tab) ? '' : 'none';
+    });
+  }
+
+  /* ── Store tab switching ── */
+  function switchStoreTab(tab) {
+    const isOY = tab === 'oliveyoung';
+    document.getElementById('seg-oliveyoung').classList.toggle('active', isOY);
+    document.getElementById('seg-olivebetter').classList.toggle('active', !isOY);
+    document.getElementById('tab-oliveyoung').style.display = isOY ? '' : 'none';
+    document.getElementById('tab-olivebetter').style.display = isOY ? 'none' : '';
+  }
+
+  /* ════════════════════════════════════════
+     ★  ONBOARDING LOGIC  ★
+  ════════════════════════════════════════ */
+  const obData = { sleep: null, stress: null, diet: null };
+
+  function initObChips(containerId, key, dotIdx) {
+    document.getElementById(containerId).querySelectorAll('.ob-chip').forEach(chip => {
+      chip.addEventListener('click', function() {
+        document.getElementById(containerId).querySelectorAll('.ob-chip').forEach(c => c.classList.remove('active'));
+        this.classList.add('active');
+        obData[key] = this.dataset.val;
+        updateObDots();
+        checkObReady();
+      });
+    });
+  }
+  initObChips('ob-sleep-chips',  'sleep',  0);
+  initObChips('ob-stress-chips', 'stress', 1);
+  initObChips('ob-diet-chips',   'diet',   2);
+
+  function updateObDots() {
+    const filled = [obData.sleep, obData.stress, obData.diet].filter(Boolean).length;
+    for (let i = 0; i < 3; i++) {
+      document.getElementById('ob-dot' + i).classList.toggle('active', i < filled + 1 && i <= 2);
+    }
+  }
+
+  function checkObReady() {
+    document.getElementById('ob-start-btn').disabled = !(obData.sleep && obData.stress && obData.diet);
+  }
+
+  document.getElementById('ob-start-btn').addEventListener('click', function() {
+    if (!(obData.sleep && obData.stress && obData.diet)) return;
+    const overlay = document.getElementById('ob-overlay');
+    overlay.classList.add('ob-hide');
+    setTimeout(() => {
+      overlay.style.display = 'none';
+      const appMain = document.getElementById('app-main');
+      appMain.classList.add('app-visible');
+      buildAiFeedback();
+      buildSeamlessProducts();
+    }, 560);
+  });
+
+  /* ════════════════════════════════════════
+     ★  AI SCORE ENGINE  ★
+  ════════════════════════════════════════ */
+  const SLEEP_SCORE  = { '4시간 미만': 28, '4–5시간': 46, '6–7시간': 72, '7시간 이상': 90 };
+  const STRESS_SCORE = { '매우 낮음': 88, '보통': 65, '높음': 38, '매우 높음': 20 };
+  const DIET_SCORE   = { '규칙적인 3끼': 90, '채식 위주': 78, '불규칙한 식사': 42, '야식이 잦음': 35 };
+
+  function getAiMsg(sleep, stress) {
+    const ss = SLEEP_SCORE[sleep] || 70;
+    const st = STRESS_SCORE[stress] || 70;
+    if (ss < 40 && st < 45) return '수면 부족과 높은 스트레스가 동시에 감지됐어요. 오늘은 <em>몸 회복</em>을 최우선으로 삼아봐요.';
+    if (ss < 50)  return '수면이 많이 부족해요. <em>딱 한 가지 루틴</em>부터 차근차근 시작해봐요.';
+    if (st < 45)  return '스트레스 수치가 높아요. 오늘은 <em>마음을 돌보는 루틴</em>에 집중해볼까요?';
+    if (ss >= 80 && st >= 80) return '컨디션이 최상이에요! <em>지금의 밸런스</em>를 루틴으로 유지해봐요. 💪';
+    return '전반적으로 양호한 상태예요. 꾸준한 루틴으로 <em>더 건강한 내일</em>을 만들어봐요.';
+  }
+
+  function buildAiFeedback() {
+    const ss = SLEEP_SCORE[obData.sleep]  || 70;
+    const st = STRESS_SCORE[obData.stress] || 70;
+    const sd = DIET_SCORE[obData.diet]    || 70;
+
+    document.getElementById('ai-score-sleep').textContent  = ss;
+    document.getElementById('ai-score-stress').textContent = st;
+    document.getElementById('ai-score-diet').textContent   = sd;
+
+    setTimeout(() => {
+      document.getElementById('ai-bar-sleep').style.width  = ss + '%';
+      document.getElementById('ai-bar-stress').style.width = st + '%';
+      document.getElementById('ai-bar-diet').style.width   = sd + '%';
+    }, 300);
+
+    document.getElementById('ai-fb-msg').innerHTML = getAiMsg(obData.sleep, obData.stress);
+
+    const hour = new Date().getHours();
+    const greet = hour < 12 ? '좋은 아침이에요' : hour < 18 ? '좋은 오후예요' : '좋은 저녁이에요';
+    document.getElementById('ai-fb-greeting').textContent = greet + ', 웰니스 회원님 👋';
+
+    const tags = [];
+    if (ss < 55)  tags.push('수면 개선 필요');
+    if (st < 50)  tags.push('스트레스 관리');
+    if (obData.diet === '야식이 잦음') tags.push('야간 식습관 주의');
+    if (obData.diet === '채식 위주')   tags.push('영양 보완 필요');
+    if (ss >= 80) tags.push('수면 우수 ✓');
+    if (sd >= 85) tags.push('균형 식단 ✓');
+    document.getElementById('ai-fb-tags').innerHTML = tags.map(t => `<div class="ai-fb-tag">${t}</div>`).join('');
+
+    document.getElementById('ai-feedback-section').style.display = '';
+  }
+
+  /* ════════════════════════════════════════
+     ★  SEAMLESS PRODUCT ENGINE  ★
+  ════════════════════════════════════════ */
+  const SEAMLESS_CATALOG = {
+    sleep: [
+      { emoji:'🌙', bg:'#EEF0FF', tag:'수면 개선', reason:'수면 부족 케어', name:'테아닌 + 마그네슘 수면 지원', brand:'올리브영 케어', price:'28,900', discount:'15% 할인' },
+      { emoji:'💜', bg:'#F5F0FF', tag:'릴렉스 루틴', reason:'긴장 완화 추천', name:'라벤더 아로마 수면 롤온', brand:'이너피스', price:'18,500', discount:'' },
+    ],
+    stress: [
+      { emoji:'🍃', bg:'#EFF7ED', tag:'스트레스 완화', reason:'코르티솔 케어', name:'아쉬와간다 스트레스 릴리프', brand:'바이탈뷰티', price:'35,000', discount:'20% 할인' },
+      { emoji:'🧘', bg:'#FFF3E0', tag:'마음 안정', reason:'스트레스 지수 대응', name:'L-테아닌 + 감마오리자놀 복합', brand:'CJ웰케어', price:'22,000', discount:'' },
+    ],
+    diet_불규칙: [
+      { emoji:'🥗', bg:'#FFFDE7', tag:'영양 균형', reason:'불규칙 식사 보완', name:'멀티비타민 올인원 데일리팩', brand:'얼라이브', price:'41,000', discount:'18% 할인' },
+      { emoji:'⚡', bg:'#FFF8E1', tag:'에너지', reason:'활력 보충 추천', name:'비타민B 컴플렉스 에너지 부스터', brand:'솔가', price:'32,500', discount:'' },
+    ],
+    diet_야식: [
+      { emoji:'🌙', bg:'#F0F4FF', tag:'야간 관리', reason:'야식 습관 케어', name:'저녁 공복 케어 유산균', brand:'종근당건강', price:'29,000', discount:'12% 할인' },
+      { emoji:'🔥', bg:'#FFF3E0', tag:'대사 지원', reason:'야간 소화 지원', name:'식이섬유 + 소화효소 나이트케어', brand:'뉴트리원', price:'24,000', discount:'' },
+    ],
+    diet_채식: [
+      { emoji:'🌱', bg:'#F1F8E9', tag:'비건 인증', reason:'채식 영양소 보완', name:'비건 비타민D3+K2 식물성 캡슐', brand:'가든오브라이프', price:'36,000', discount:'15% 할인' },
+      { emoji:'💊', bg:'#FCE4EC', tag:'철분 보충', reason:'채식 철분 부족 대비', name:'식물성 철분 + 비타민C 복합', brand:'솔라레이', price:'27,500', discount:'' },
+    ],
+    diet_balanced: [
+      { emoji:'💪', bg:'#E3F2FD', tag:'체력 유지', reason:'균형 루틴 강화', name:'오메가3 고함량 트리플 스트렝스', brand:'노르딕내추럴스', price:'52,000', discount:'10% 할인' },
+      { emoji:'🥦', bg:'#E8F5E9', tag:'항산화', reason:'면역 강화 추천', name:'비타민C 1000 + 아연 면역케어', brand:'올리브영 케어', price:'18,000', discount:'' },
+    ],
+  };
+
+  function buildSeamlessProducts() {
+    const ss = SLEEP_SCORE[obData.sleep]  || 70;
+    const st = STRESS_SCORE[obData.stress] || 70;
+    const items = [];
+
+    if (ss < 60) items.push(...SEAMLESS_CATALOG.sleep);
+    if (st < 55) items.push(...SEAMLESS_CATALOG.stress);
+
+    if      (obData.diet === '불규칙한 식사') items.push(...SEAMLESS_CATALOG.diet_불규칙);
+    else if (obData.diet === '야식이 잦음')   items.push(...SEAMLESS_CATALOG.diet_야식);
+    else if (obData.diet === '채식 위주')     items.push(...SEAMLESS_CATALOG.diet_채식);
+    else                                      items.push(...SEAMLESS_CATALOG.diet_balanced);
+
+    if (items.length === 0) items.push(...SEAMLESS_CATALOG.diet_balanced);
+
+    const products = items.slice(0, 4);
+    const scroll = document.getElementById('seamless-product-scroll');
+    scroll.innerHTML = products.map(p => `
+      <div class="seamless-pcard">
+        <div class="seamless-pcard-thumb" style="background:${p.bg};">
+          <span>${p.emoji}</span>
+          <div class="seamless-pcard-tag">${p.tag}</div>
+        </div>
+        <div class="seamless-pcard-body">
+          <div class="seamless-pcard-reason"># ${p.reason}</div>
+          <div class="seamless-pcard-name">${p.name}</div>
+          <div class="seamless-pcard-brand">${p.brand}</div>
+          <div class="seamless-pcard-foot">
+            <div>
+              <div class="seamless-pcard-price">${p.price}원</div>
+              ${p.discount ? `<div class="seamless-pcard-discount">↓ ${p.discount}</div>` : ''}
+            </div>
+            <button class="seamless-cart-btn" onclick="this.textContent='✓';this.style.background='var(--primary)';this.style.color='var(--yellow)';">+</button>
+          </div>
+        </div>
+      </div>`).join('');
+
+    /* 배너 텍스트 */
+    let title = 'AI 분석 기반 맞춤 솔루션';
+    let desc  = '입력하신 라이프스타일 데이터를 분석해 최적의 웰니스 제품을 선별했어요.';
+    if (ss < 50 && st < 50) {
+      title = '수면 + 스트레스 집중 케어';
+      desc  = `<em>수면 부족</em>과 <em>높은 스트레스</em>가 동시에 감지됐어요. 빠른 회복을 위한 제품을 먼저 만나보세요.`;
+    } else if (ss < 60) {
+      title = '수면 품질 개선 솔루션';
+      desc  = `<em>${obData.sleep}</em> 수면은 회복을 방해해요. 수면의 질을 높여줄 성분 위주로 구성했어요.`;
+    } else if (st < 55) {
+      title = '스트레스 완화 솔루션';
+      desc  = `<em>${obData.stress}</em> 스트레스 상태예요. 코르티솔을 낮추는 데 도움이 되는 제품들이에요.`;
+    }
+    document.getElementById('seamless-banner-title').textContent = title;
+    document.getElementById('seamless-banner-desc').innerHTML   = desc;
+    document.getElementById('seamless-section').style.display   = '';
+  }
+
+  /* ── Header Nav Tabs ── */
+  (function() {
+    const homeContent  = document.getElementById('home-tab-content');
+    const aiContent    = document.getElementById('ai-tab-content');
+    const tabs         = document.querySelectorAll('#headerNavTabs .header-nav-tab');
+
+    /* 오특·랭킹·기획전용 안내 배너 */
+    const subInfo = {
+      special: { emoji:'🔥', title:'오늘의 특가', desc:'오늘만 할인! 시간 한정 웰니스 특가예요', badge:'오특', color:'#C0440A' },
+      ranking: { emoji:'🏆', title:'실시간 랭킹', desc:'지금 가장 많이 팔리는 웰니스 상품이에요', badge:'랭킹', color:'#6B3F18' },
+      event:   { emoji:'🎁', title:'이번 주 기획전', desc:'테마별로 큐레이션된 웰니스 기획전이에요', badge:'기획전', color:'#7C5CFC' },
+    };
+
+    let banner = document.createElement('div');
+    banner.id = 'htab-banner';
+    Object.assign(banner.style, {
+      display:'none', padding:'14px 16px', margin:'0',
+      background:'rgba(255,255,255,0.88)', backdropFilter:'blur(12px)',
+      WebkitBackdropFilter:'blur(12px)',
+      borderBottom:'1px solid rgba(237,224,200,0.7)',
+      alignItems:'center', gap:'12px',
+    });
+    banner.innerHTML = `
+      <div id="htab-bi" style="width:38px;height:38px;border-radius:11px;
+        display:flex;align-items:center;justify-content:center;
+        font-size:19px;flex-shrink:0;box-shadow:0 2px 8px rgba(107,63,24,0.15);">🫒</div>
+      <div style="flex:1;min-width:0;">
+        <div id="htab-bt" style="font-size:14px;font-weight:900;color:var(--text-primary);margin-bottom:2px;"></div>
+        <div id="htab-bd" style="font-size:11px;color:var(--text-muted);"></div>
+      </div>
+      <div id="htab-bb" style="font-size:10px;font-weight:900;padding:4px 10px;
+        border-radius:20px;white-space:nowrap;color:#fff;flex-shrink:0;"></div>
+    `;
+    const mainContent = document.querySelector('#page-home .main-content');
+    mainContent.insertBefore(banner, mainContent.firstChild);
+
+    function showHome() {
+      homeContent.style.display = '';
+      aiContent.style.display   = 'none';
+      banner.style.display      = 'none';
+    }
+    function showAI() {
+      homeContent.style.display = 'none';
+      aiContent.style.display   = '';
+      banner.style.display      = 'none';
+      aiContent.scrollIntoView({ behavior:'smooth', block:'start' });
+    }
+    function showSub(key) {
+      const info = subInfo[key];
+      homeContent.style.display = '';
+      aiContent.style.display   = 'none';
+      document.getElementById('htab-bi').textContent           = info.emoji;
+      document.getElementById('htab-bi').style.background      = info.color + '22';
+      document.getElementById('htab-bt').textContent           = info.title;
+      document.getElementById('htab-bd').textContent           = info.desc;
+      document.getElementById('htab-bb').textContent           = info.badge;
+      document.getElementById('htab-bb').style.background      = info.color;
+      banner.style.display = 'flex';
+    }
+
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        tabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        const key = tab.dataset.htab;
+        if      (key === 'home')    showHome();
+        else if (key === 'ai')      showAI();
+        else                        showSub(key);
+      });
+    });
+  })();
+
+  /* ── Wellness Category Pills ── */
+  (function() {
+    const pills    = document.querySelectorAll('#wellnessCatStrip .wellness-cat-pill');
+    const sections = document.querySelectorAll('.wellness-section');
+    pills.forEach(pill => {
+      pill.addEventListener('click', () => {
+        pills.forEach(p => p.classList.remove('active'));
+        pill.classList.add('active');
+        const cat = pill.dataset.cat;
+        sections.forEach(s => s.classList.remove('active'));
+        const target = document.getElementById('wcat-' + cat);
+        if (target) target.classList.add('active');
+      });
+    });
+  })();
+
+  /* ════════════════════════════════════════
+     ★  CART LOGIC  ★
+  ════════════════════════════════════════ */
+  const cartItems = [];
+
+  function getProductFromBtn(btn) {
+    const card  = btn.closest('.wellness-prod-card');
+    const thumb = card.querySelector('.wellness-prod-thumb');
+    const emoji = [...thumb.childNodes].find(n => n.nodeType === Node.TEXT_NODE && n.textContent.trim())?.textContent.trim()
+                  || thumb.textContent.trim().charAt(0);
+    const brand = card.querySelector('.wellness-prod-brand').textContent.trim();
+    const name  = card.querySelector('.wellness-prod-name').textContent.trim().replace(/\s+/g, ' ');
+    const priceText = card.querySelector('.wellness-prod-price').textContent.trim();
+    const price = parseInt(priceText.replace(/[₩,]/g, ''), 10) || 0;
+    return { emoji, brand, name, price };
+  }
+
+  function updateCartBadge() {
+    const total = cartItems.reduce((s, i) => s + i.qty, 0);
+    const badge = document.getElementById('cartBadge');
+    badge.textContent = total;
+    badge.classList.toggle('show', total > 0);
+  }
+
+  function renderCart() {
+    const body   = document.getElementById('cartBody');
+    const empty  = document.getElementById('cartEmpty');
+    const footer = document.getElementById('cartFooter');
+
+    if (cartItems.length === 0) {
+      empty.style.display  = '';
+      footer.style.display = 'none';
+      const existing = body.querySelectorAll('.cart-item');
+      existing.forEach(el => el.remove());
+      return;
+    }
+
+    empty.style.display  = 'none';
+    footer.style.display = '';
+
+    const existing = body.querySelectorAll('.cart-item');
+    existing.forEach(el => el.remove());
+
+    cartItems.forEach((item, idx) => {
+      const div = document.createElement('div');
+      div.className = 'cart-item';
+      div.innerHTML = `
+        <div class="cart-item-thumb">${item.emoji}</div>
+        <div class="cart-item-info">
+          <p class="cart-item-brand">${item.brand}</p>
+          <p class="cart-item-name">${item.name}</p>
+          <p class="cart-item-price">₩${(item.price * item.qty).toLocaleString()}</p>
+        </div>
+        <div class="cart-item-qty">
+          <button class="qty-btn" onclick="changeQty(${idx}, -1)">−</button>
+          <span class="qty-num">${item.qty}</span>
+          <button class="qty-btn" onclick="changeQty(${idx}, 1)">+</button>
+        </div>`;
+      body.insertBefore(div, footer);
+    });
+
+    const total = cartItems.reduce((s, i) => s + i.price * i.qty, 0);
+    document.getElementById('cartTotal').textContent = '₩' + total.toLocaleString();
+  }
+
+  function changeQty(idx, delta) {
+    cartItems[idx].qty += delta;
+    if (cartItems[idx].qty <= 0) cartItems.splice(idx, 1);
+    updateCartBadge();
+    renderCart();
+  }
+
+  function openCart() {
+    renderCart();
+    document.getElementById('cart-overlay').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeCart() {
+    document.getElementById('cart-overlay').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  function closeCartOverlay(e) {
+    if (e.target === document.getElementById('cart-overlay')) closeCart();
+  }
+
+  /* + 버튼 이벤트 */
+  document.querySelectorAll('.wellness-prod-cart').forEach(btn => {
+    btn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      const product = getProductFromBtn(this);
+      const existing = cartItems.find(i => i.name === product.name && i.brand === product.brand);
+      if (existing) {
+        existing.qty++;
+      } else {
+        cartItems.push({ ...product, qty: 1 });
+      }
+      updateCartBadge();
+
+      /* 버튼 피드백 */
+      const orig = this.textContent;
+      this.textContent = '✓';
+      this.style.background = 'var(--primary)';
+      this.style.color = 'var(--yellow)';
+      setTimeout(() => {
+        this.textContent = orig;
+        this.style.background = '';
+        this.style.color = '';
+      }, 900);
+    });
+  });
+
+  /* 헤더 장바구니 버튼 */
+  document.getElementById('cartHeaderBtn').addEventListener('click', openCart);
+</script>
+</body>
+</html>
